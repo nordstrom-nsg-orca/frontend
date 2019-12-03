@@ -35,9 +35,9 @@ class ACL extends React.Component {
 
   renderDeleteButton(classes,aclId) {
     if (this.props.locked) return;
+    var cls = (aclId != null)? classes.deleteACLButton : classes.deletePreButton;
     return (
-      <IconButton size="small"
-                  className={classes.deleteButton}
+      <IconButton className={cls}
                   onClick={this.props.aclHandler.bind(this,'delete',this.props.index,aclId)}>
         <CloseIcon style={{fontSize: '18px'}}/>
       </IconButton>
@@ -48,7 +48,7 @@ class ACL extends React.Component {
     const { classes } = this.props;
     const keys = ['ip', 'allowed', 'desc'];
 
-    var addButton, deleteButton;
+    var addButton;
     if (!this.props.locked) {
       addButton = <IconButton size="small"
                     className={classes.addButton}
@@ -95,6 +95,9 @@ class ACL extends React.Component {
                         onChange={this.props.aclHandler.bind(this,'update',this.props.index,index,key) }/>
                     </TableCell>
                   )}
+                  <div>
+                  {this.renderDeleteButton(classes,index)}
+                  </div>
                   </TableRow>
                 )}
                 </TableBody>
@@ -102,6 +105,7 @@ class ACL extends React.Component {
               {addButton}
             </ExpansionPanelDetails>
           </ExpansionPanel>
+          {this.renderDeleteButton(classes,null)}
         </ListItem>
       </div>
     );
@@ -157,14 +161,28 @@ const styles = theme => ({
     color: 'black',
     backgroundColor: 'lightGreen'
   },
-  deleteButton: {
+  deleteACLButton: {
     '&:hover': {
       backgroundColor: 'red'
     },
-    padding: '0',
+    padding: '3px',
     margin: '7px auto',
     color: 'black',
-    backgroundColor: '#ffc6c4'
+    backgroundColor: '#ffc6c4',
+    position: 'absolute',
+    right: '10px'
+  },
+  deletePreButton: {
+    '&:hover': {
+      backgroundColor: 'red'
+    },
+    fontSize: '24px',
+    margin: '7px auto',
+    color: 'black',
+    backgroundColor: '#ffc6c4',
+    position: 'absolute',
+    top: '10px',
+    right: '-38px',
   }
 });
 

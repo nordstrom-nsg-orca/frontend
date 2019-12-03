@@ -84,7 +84,10 @@ class ACLList extends React.Component {
     }
 
     if (action === 'delete') {
-      copy[prefixId]['ips'].splice(aclId, 1);
+      if (aclId != null) {
+        copy[prefixId]['ips'].splice(aclId, 1);
+      } else
+        copy.splice(prefixId, 1);
     }
 
     if (action === 'update') {
@@ -101,7 +104,7 @@ class ACLList extends React.Component {
   }
 
   handleSave = () => {
-    this.forceUpdate();
+    console.log('save');
   }
 
   toggleLock = () => {
@@ -130,7 +133,7 @@ class ACLList extends React.Component {
                   </IconButton>;
     }
 
-    saveButton = (this.state.changed)? <Button className={classes.save}>Save</Button> : "";
+    saveButton = (this.state.changed)? <Button className={classes.save} onClick={this.handleSave}>Save</Button> : "";
 
     return (
       <div className={classes.root}>
