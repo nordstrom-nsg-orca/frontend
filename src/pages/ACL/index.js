@@ -11,8 +11,9 @@ import Typography from '@material-ui/core/Typography'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { withStyles } from '@material-ui/core/styles';
-import ACL from './acl';
 
+import ACL from './acl';
+import Navbar from '../../components/Navbar';
 
 const test = [
   {
@@ -72,7 +73,7 @@ class ACLList extends React.Component {
     super(props);
     this.state = {
       list: test,
-      locked: false
+      locked: true
     };
   }
 
@@ -136,6 +137,7 @@ class ACLList extends React.Component {
     saveButton = (this.state.changed)? <Button className={classes.save} onClick={this.handleSave}>Save</Button> : "";
 
     return (
+      <Navbar>
       <div className={classes.root}>
         <div className={classes.labelBar}>
           <Typography className={classes.title} variant="h4">ACL Lists</Typography>
@@ -153,6 +155,7 @@ class ACLList extends React.Component {
         </List>
         {addButton}
       </div>
+      </Navbar>
     );
   }
 
