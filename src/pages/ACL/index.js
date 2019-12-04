@@ -137,7 +137,6 @@ class ACLList extends React.Component {
     saveButton = (this.state.changed)? <Button className={classes.save} onClick={this.handleSave}>Save</Button> : "";
 
     return (
-      <Navbar>
       <div className={classes.root}>
         <div className={classes.labelBar}>
           <Typography className={classes.title} variant="h4">ACL Lists</Typography>
@@ -155,7 +154,6 @@ class ACLList extends React.Component {
         </List>
         {addButton}
       </div>
-      </Navbar>
     );
   }
 

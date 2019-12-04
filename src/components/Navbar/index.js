@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { Auth, withAuth } from '@okta/okta-react';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -19,35 +20,154 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const pages = [
+  {
+    "url": "/acl",
+    "text": "Edit ACLs",
+    "icon": <ViewHeadlineIcon />
+  },
+]
+
+
+class Navbar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      user: null,
+      userAnchor: null,
+      authenticated: false
+    };
+  }
+  
+  async checkAuthentication() {
+    const authenticated = await this.props.auth.isAuthenticated();
+    if (authenticated && !this.state.user) {
+      const userinfo = await this.props.auth.getUser();
+      this.setState({ 
+        authenticated: true,
+        user: userinfo 
+      });
+    }
+  }
+
+  async componentDidMount() { this.checkAuthentication(); }
+  async componentDidUpdate() { this.checkAuthentication(); }
+
+  toggleDrawer = () => {
+    this.setState({
+      open: !this.state.open
+    });
+  }
+
+  handleUserClick = (e) => {
+    this.setState({
+      userAnchor: e.currentTarget
+    })
+  }
+
+  handleCloseMenu = () => {
+    this.setState({
+      userAnchor: null
+    })
+  }
+
+  logout = () => {
+    this.props.auth.logout('/');
+  }
+
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        {this.state.authenticated && // don't render if not auth
+          <div>
+            <AppBar
+              position="fixed"
+              className={classes.appBar}>
+              <Toolbar>
+                <Link to="/">
+                  <img className={classes.logo} src="/images/logo.svg" alt="NSG_LOGO"/>
+                </Link>
+                <Button color="inherit" className={classes.user} onClick={this.handleUserClick}>
+                  {this.state.user != null? this.state.user.name : ""}
+                </Button>
+                <Menu anchorEl={this.state.userAnchor} keepMounted className={classes.menu}
+                  open={Boolean(this.state.userAnchor)} onClose={this.handleCloseMenu}>
+                  <MenuItem>Settings</MenuItem>
+                  <MenuItem onClick={this.logout}>Logout</MenuItem>
+                </Menu>
+              </Toolbar>
+            </AppBar>
+            
+            <Drawer
+              variant="permanent"
+              className={clsx(classes.drawer, {
+                [classes.drawerOpen]: this.state.open,
+                [classes.drawerClose]: !this.state.open,
+              })}
+              classes={{
+                paper: clsx({
+                  [classes.drawerOpen]: this.state.open,
+                  [classes.drawerClose]: !this.state.open,
+                }),
+              }}
+              open={this.state.open}
+            >
+              <div className={classes.toolbar} />
+              <Divider />
+              <IconButton onClick={this.toggleDrawer} style={{width: '100%', borderRadius:'0'}}>
+                  {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </IconButton>
+              <Divider />
+              <List>
+                {pages.map((item, index) => 
+                  <Link key={index} to={item.url} style={{textDecoration: 'none', color: 'black'}}>
+                    <Tooltip title={this.state.open? "" : item.text} placement="right">
+                    <ListItem button>
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      <ListItemText>{item.text}</ListItemText>
+                    </ListItem>
+                    </Tooltip>
+                  </Link>
+                )}
+              </List>
+            </Drawer>
+          </div>
+        }
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          {this.props.children}
+        </main>
+      </div>
+    )
+  }
+}
+
+const styles = theme => ({
   root: {
     display: 'flex',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+    backgroundColor: '#323232'
   },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+  logo: {
+    height: '90px',
+    position: 'absolute',
+    top: '-20px',
+    'left': '0px'
   },
-  menuButton: {
-    marginRight: 36,
-    // marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
+  menu: {
+    marginTop: '30px',
   },
   drawer: {
     width: drawerWidth,
@@ -83,90 +203,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
-  logout: {
+  user: {
     marginLeft: 'auto',
   }
-}));
+});
 
-const Dashboard = (props) => {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const logout = () => {
-    props.auth.logout('/');
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap >
-            <img src="/images/logo.png" alt="NSG_LOGO" style={{width: '100px', height: '50px'}}/>
-          </Typography>
-          <Button color="inherit" className = {classes.logout} onClick = {logout}> Logout </Button>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <Link to="/acl">
-          <ListItem button>
-            <ListItemIcon><ViewHeadlineIcon /></ListItemIcon>
-            <ListItemText>Edit ACLs</ListItemText>
-          </ListItem>
-          </Link>
-          
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {props.children}
-      </main>
-    </div>
-  );
-}
-export default withAuth(Dashboard);
+export default withAuth(withStyles(styles)(Navbar));

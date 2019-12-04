@@ -20,9 +20,11 @@ function App() {
   return (
     <Router>
       <Security {...config}>
-        <Route path='/implicit/callback' component={ImplicitCallback}/>
-        <SecureRoute path='/' exact={true} component={Dashboard}/>
-        <SecureRoute path='/acl' component={ACL}/>
+      	<Navbar>
+          <Route path='/implicit/callback' component={ImplicitCallback}/>
+          <SecureRoute path='/' exact={true} component={Dashboard}/>
+          <SecureRoute path='/acl' component={ACL}/>
+        </Navbar>
       </Security>
     </Router>
   );
