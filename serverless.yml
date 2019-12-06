@@ -1,0 +1,32 @@
+service: nsg-cloud-frontend
+
+frameworkVersion: "=1.57.0"
+
+provider:
+  name: aws
+  stage: dev
+  region: us-west-2
+
+
+
+resources:
+  Resources:
+    nsgCloudFrontEnd:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: nsg-fire-dragon
+        AccessControl: PublicReadWrite
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+
+
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: nsg-fire-dragon
+      localDir: build
+      acl: public-read-write

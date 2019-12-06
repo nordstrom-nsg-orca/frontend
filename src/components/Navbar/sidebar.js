@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
-
+import EnhancedEncryptionRoundedIcon from '@material-ui/icons/EnhancedEncryptionRounded';
 
 const drawerWidth = 240;
 
@@ -26,6 +26,11 @@ const pages = [
     "url": "/acl",
     "text": "Edit ACLs",
     "icon": <ViewHeadlineIcon />
+  },
+  {
+    "url": "/secret",
+    "text": "Secret Management",
+    "icon": <EnhancedEncryptionRoundedIcon />
   },
 ]
 
@@ -69,7 +74,7 @@ class Sidebar extends React.Component {
         </IconButton>
         <Divider />
         <List>
-          {pages.map((item, index) => 
+          {pages.map((item, index) =>
             <Link key={index} to={item.url} style={{textDecoration: 'none', color: 'black'}}>
               <Tooltip title={this.state.open? "" : item.text} placement="right">
               <ListItem button>
