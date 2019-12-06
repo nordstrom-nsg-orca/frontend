@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
-class Dashboard extends React.Component {
+class Home extends React.Component {
 
   render() {
     const { classes } = this.props;
@@ -12,7 +12,7 @@ class Dashboard extends React.Component {
       <div>
         <Paper className={classes.root}>
         <Typography>
-          Dashboard
+          Please Log in to continue
         </Typography>
         </Paper>
       </div>
@@ -30,4 +30,4 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(Home);

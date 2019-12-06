@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
@@ -9,11 +9,9 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import Typography from '@material-ui/core/Typography'
 
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import { withStyles } from '@material-ui/core/styles';
 
 import ACL from './acl';
-import Navbar from '../../components/Navbar';
 
 const test = [
   {

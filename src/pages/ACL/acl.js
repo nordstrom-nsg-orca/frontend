@@ -5,9 +5,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 
-
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 
 import Table from '@material-ui/core/Table';
@@ -16,7 +13,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
 
@@ -27,11 +23,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import { withStyles } from '@material-ui/core/styles';
 
 
-class ACL extends React.Component {
-  constructor(props) {
-    super(props);
-  }
- 
+class ACL extends React.Component { 
 
   renderDeleteButton(classes,aclId) {
     if (this.props.locked) return;
@@ -60,7 +52,7 @@ class ACL extends React.Component {
     return (
       <div className={classes.root}>
         <ListItem key={this.props.index} color="inherit">
-          <ExpansionPanel key={this.props.index} className={classes.item} defaultExpanded={this.props.index == 0? true : false}>
+          <ExpansionPanel key={this.props.index} className={classes.item} defaultExpanded={this.props.index === 0? true : false}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               
               <Input
