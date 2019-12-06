@@ -29,7 +29,7 @@ class Topbar extends React.Component {
   handleMenu = (e) => {
     console.log(this.props.auth);
     if (this.props.auth.user == null) {
-      this.props.auth.login();
+      this.props.login();
       return;
     }
     this.setState({
@@ -44,7 +44,6 @@ class Topbar extends React.Component {
   }
 
   logout = () => {
-    console.log(this.props.auth.logout)
     this.props.logout();
     this.setState({
       userAnchor: null,

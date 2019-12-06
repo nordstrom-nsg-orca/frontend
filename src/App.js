@@ -14,19 +14,16 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.logout = this.logout.bind(this);
+    this.login = this.login.bind(this);
     this.state = {
       auth: {
         user: null,
         authenticated: false,
-        login: this.login,
-        logout: this.logout
       }
     };
-    console.log(this.state);
   }
 
   async checkAuthentication() {
-    console.log('checkauth');
     const authenticated = await this.props.auth.isAuthenticated();
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
@@ -37,13 +34,12 @@ class App extends React.Component {
         }
       });
     }
-    console.log(this.state);
   }
 
   async componentDidMount() { this.checkAuthentication(); }
   async componentDidUpdate() { this.checkAuthentication(); }
 
-  login = () => {
+  login() {
     if (!this.state.authenticated){
       this.props.auth.login('/dashboard');
     }

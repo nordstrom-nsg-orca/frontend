@@ -19,7 +19,7 @@ class Navbar extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Topbar auth={this.props.auth} logout={this.props.logout}/>
+        <Topbar auth={this.props.auth} logout={this.props.logout} login={this.props.login} />
         
         {this.props.auth.authenticated &&
           <Sidebar />
