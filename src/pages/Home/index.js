@@ -4,9 +4,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const { classes } = this.props;

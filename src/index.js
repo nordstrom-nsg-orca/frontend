@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { Security, ImplicitCallback, SecureRoute, Auth, withAuth } from '@okta/okta-react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Security } from '@okta/okta-react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const config = {

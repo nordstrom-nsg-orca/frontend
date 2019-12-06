@@ -1,6 +1,5 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Auth, withAuth } from '@okta/okta-react';
 
 import Sidebar from './sidebar';
 import Topbar from './topbar';

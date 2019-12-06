@@ -5,17 +5,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
-import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
-const pages = [
-  {
-    "url": "/acl",
-    "text": "Edit ACLs",
-    "icon": <ViewHeadlineIcon />
-  },
-]
 
 
 class Topbar extends React.Component {

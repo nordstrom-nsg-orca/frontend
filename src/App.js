@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Security, ImplicitCallback, SecureRoute, Auth, withAuth } from '@okta/okta-react';
+import { Route } from 'react-router-dom';
+import { ImplicitCallback, SecureRoute, withAuth } from '@okta/okta-react';
 
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
