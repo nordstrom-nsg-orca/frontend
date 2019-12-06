@@ -6,6 +6,8 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ACL from './pages/ACL';
+import Secret from './pages/Secret';
+
 
 import './App.css';
 
@@ -30,7 +32,7 @@ class App extends React.Component {
       this.setState({
         auth: {
           authenticated: authenticated,
-          user: userinfo 
+          user: userinfo
         }
       });
     }
@@ -62,6 +64,7 @@ class App extends React.Component {
         <Route path='/implicit/callback' component={ImplicitCallback} />
         <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
         <SecureRoute path='/acl' component={ACL} />
+        <SecureRoute path='/secret' component={Secret} />
       </Navbar>
     );
   }

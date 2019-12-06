@@ -8,7 +8,7 @@ import * as serviceWorker from './serviceWorker';
 
 const config = {
   issuer: 'https://nordstrom.oktapreview.com/oauth2/ausmbgds36nqid3rW0h7',
-  redirectUri: 'http://localhost:3000/implicit/callback',
+  redirectUri: window.location.origin + '/implicit/callback',
   clientId: '0oaornpnbhhBAAGNW0h7',
   pkce: false
 }

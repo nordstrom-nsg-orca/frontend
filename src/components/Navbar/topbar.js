@@ -49,14 +49,14 @@ class Topbar extends React.Component {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            <Link to="/">
+            <Link to="/dashboard">
               <img className={classes.logo} src="/images/logo.svg" alt="NSG_LOGO"/>
             </Link>
-            
+
             <Button color="inherit" className={classes.user} onClick={this.handleMenu}>
               {this.props.auth.user != null? this.props.auth.user.name : "Login"}
             </Button>
-            
+
             <Menu anchorEl={this.state.userAnchor} keepMounted className={classes.menu}
               open={Boolean(this.state.userAnchor)} onClose={this.handleCloseMenu}>
               <MenuItem>Settings</MenuItem>
