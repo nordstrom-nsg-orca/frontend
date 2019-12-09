@@ -4,7 +4,7 @@ frameworkVersion: "=1.57.0"
 
 provider:
   name: aws
-  stage: dev
+  stage: nonprod
   region: us-west-2
 
 
