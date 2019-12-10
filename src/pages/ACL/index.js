@@ -54,17 +54,17 @@ class ACLList extends React.Component {
 
   render() {
     const headers = [
-      { id: 'ip', label: 'IP', minWidth: 80, align: 'left' },
-      { id: 'allowed', label: 'Allowed', minWidth: 50, align: 'left' },
-      { id: 'description', label: 'Description', minWidth: 250, align: 'left' },
+      { id: 'ip', label: 'IP', minWidth: 80, align: 'left', index: 0},
+      { id: 'allowed', label: 'Allowed', minWidth: 50, align: 'left', index: 1 },
+      { id: 'description', label: 'Description', minWidth: 250, align: 'left', index: 2 },
       { id: 'action', label: 'Actions', minWidth: 50, align: 'left' },
     ];
-    const forms = [
-      {name: 'IP', id: 'ip', index :0, description: 'IP Address'},
-      {name: 'Allowed', id: 'allowed', index: 1,  description: 'Type of Allowed'},
-      {name: 'Description', id: 'description', index: 2,  description: 'Description'},
-      {name: 'Description', id: 'description', index: 3,  description: 'Key to Encrypt'},
-    ]
+    // const forms = [
+    //   {name: 'IP', id: 'ip', index :0, description: 'IP Address'},
+    //   {name: 'Allowed', id: 'allowed', index: 1,  description: 'Type of Allowed'},
+    //   {name: 'Description', id: 'description', index: 2,  description: 'Description'},
+    //   {name: 'Description', id: 'description', index: 3,  description: 'Key to Encrypt'},
+    // ]
     const actions = {
       'create': this.create,
       'update': this.update,
@@ -77,7 +77,6 @@ class ACLList extends React.Component {
           title = 'ACL Management'
           headers = {headers}
           data = {this.state.data}
-          forms = {forms}
           hasCreateTable = {true}
           actions = {actions}
           tables = {tables}

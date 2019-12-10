@@ -26,15 +26,10 @@ class Secret extends React.Component {
 
   };
 
-  handleActionButtons = (action, event) => {
-    if (action === 'add') {
-      this.setState({isAdd: true});
-    } else if (action === 'edit') {
 
-    }
-  }
 
   create = (tableName, id, createdData) => {
+    
     var copy = JSON.parse(JSON.stringify(this.state.data));
     var data = copy[tableName];
     data.push({id: id, data: createdData});
@@ -53,6 +48,7 @@ class Secret extends React.Component {
   }
 
   delete = (tableName, id) => {
+
     var copy = [];
     var tempData = this.state.data;
     tempData[tableName].map(value => {
@@ -68,14 +64,14 @@ class Secret extends React.Component {
 
   render() {
     const headers = [
-      { id: 'name', label: 'Name', minWidth: 100, align: 'left' },
-      { id: 'key', label: 'Key', minWidth: 250, align: 'left' },
+      { id: 'name', label: 'Name', minWidth: 100, align: 'left', index: 0},
+      { id: 'key', label: 'Key', minWidth: 250, align: 'left', index: 1 },
       { id: 'action', label: 'Actions', minWidth: 150, align: 'left' },
     ];
-    const forms = [
-      {name: 'Name', id: 'name', index :0, description: 'Key\'s name'},
-      {name: 'Key', id: 'key', index: 1,  description: 'Key to Encrypt'},
-    ]
+    // const forms = [
+    //   {name: 'Name', id: 'name', index :0, description: 'Key\'s name'},
+    //   {name: 'Key', id: 'key', index: 1,  description: 'Key to Encrypt'},
+    // ]
     const actions = {
       'create': this.create,
       'update': this.update,
@@ -88,8 +84,6 @@ class Secret extends React.Component {
           title = 'Secrets'
           headers = {headers}
           data = {this.state.data}
-          forms = {forms}
-          handleActionButtons = {this.handleActionButtons}
           hasCreateTable = {false}
           actions = {actions}
           tables = {tables}
