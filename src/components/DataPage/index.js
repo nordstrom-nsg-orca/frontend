@@ -5,26 +5,22 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import RemoveRedEyeRoundedIcon from '@material-ui/icons/RemoveRedEyeRounded';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';import Input from '@material-ui/core/Input';
+import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
-import TableFooter from '@material-ui/core/TableFooter';
 import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
 
 
@@ -61,7 +57,7 @@ const useStyles = theme => ({
 
 const popoverMessages = {
   add: 'Create',
-  edit: 'Edit',
+  update: 'Edit',
   delete: 'Delete',
   encrypt: 'Encrypt',
   addTable: 'Add Table'
@@ -73,16 +69,25 @@ class DataPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 0,
-      rowsPerPage: 10,
       isPopoverOpen: null,
       popoverMessage: null,
       isAdd: false,
+      isEdit: false,
+      initialData: null,
+      currentData: null,
+      currentID: null,
     };
   }
 
+  componentDidMount() {
+    console.log({...this.props.data});
+  }
+
+  componentDidUpdate() {
+    console.log(this.state.initialData);
+  }
+
   handlePopoverOpen = (event, action) => {
-    // console.log(popoverMessages[action]);
     this.setState({isPopoverOpen: event.currentTarget, popoverMessage: popoverMessages[action]});
   }
 
@@ -91,25 +96,42 @@ class DataPage extends React.Component {
   }
 
   handleDialogExit = () => {
-    this.setState({isAdd: false});
+    this.setState({isAdd: false, isEdit: false, currentID: null, currentData: null});
   }
 
   handleCreateButton = () => {
       this.setState({isAdd: true});
   }
 
+  handleOtherActions = (event, name, id, data) => {
+    // this.props.actions[name](rows);
+    // console.log(event.target);
+    if (name === 'update') {
+      console.log(id);
+      console.log(data);
+      this.setState({isEdit: true, currentData: data, currentID: id});
+    }
+  }
+
+  handleInput = (index, event) => {
+    var data = this.state.currentData;
+    data[index] = event.target.value;
+    this.setState({currentData: data});
+  }
+
   render() {
     const { classes } = this.props;
+    const data = [{...this.props.data}];
     const actionButtons = [
-      {name: 'edit', icon: <CreateRoundedIcon onClick = {event => this.props.actions.update(event)}/>},
-      {name: 'delete', icon: <DeleteRoundedIcon onClick = {event => this.props.actions.delete(event)}/>},
+      {name: 'update', icon: <CreateRoundedIcon />},
+      {name: 'delete', icon: <DeleteRoundedIcon />},
       // {name: 'encrypt', icon: <RemoveRedEyeRoundedIcon onClick = {event => this.props.handleActionButtons('encrypt', event)}/>},
     ];
 
     return (
 
       <div>
-        <Dialog open={this.state.isAdd} aria-labelledby="form-dialog-title" className = {classes.dialog} >
+        <Dialog open={this.state.isAdd || this.state.isEdit} aria-labelledby="form-dialog-title" className = {classes.dialog} >
           <DialogContent>
             <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
             <Grid
@@ -120,18 +142,35 @@ class DataPage extends React.Component {
               spacing = {5}
               style = {{marginBottom: '10px'}}
             >
-            { this.props.forms.map(form => {
-              return (
-                <Grid item md = {6} >
-                  <FormControl>
-                    <InputLabel htmlFor="my-input"> {form.name} </InputLabel>
-                    <Input id={form.id} aria-describedby="my-helper-text" />
-                    <FormHelperText id="my-helper-text"> {form.description} </FormHelperText>
-                  </FormControl>
-                </Grid>
-              );
-            })
+            {this.state.isAdd &&
+               this.props.forms.map(form => {
+                return (
+                  <Grid item md = {6} >
+                    <FormControl>
+                      <InputLabel htmlFor="my-input"> {form.name} </InputLabel>
+                      <Input id={form.name} aria-describedby="my-helper-text" onChange = {event => this.handleInput(form.index, event)}/>
+                      <FormHelperText id="my-helper-text"> {form.description} </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                );
+              })
             }
+
+            {this.state.isEdit &&
+               this.props.forms.map(form => {
+                return (
+                  <Grid item md = {6} >
+                    <FormControl>
+                      <InputLabel htmlFor="my-input"> {form.name} </InputLabel>
+                      <Input id={form.name} aria-describedby="my-helper-text" onChange = {event => this.handleInput(form.index, event)}
+                          value = {this.state.currentData[form.index]}/>
+                      <FormHelperText id={form.name}> {form.description} </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                );
+              })
+            }
+
             </Grid>
           </DialogContent>
 
@@ -139,9 +178,16 @@ class DataPage extends React.Component {
             <Button onClick={this.handleDialogExit} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.actions.create} color="primary">
-              Save
-            </Button>
+            { this.state.isAdd &&
+              <Button onClick={this.props.actions.create} color="primary">
+                Save
+              </Button>
+            }
+            { this.state.isEdit &&
+              <Button onClick={this.props.actions.update(this.state.currentID, this.state.currentData)} color="primary">
+                Update
+              </Button>
+            }
           </DialogActions>
 
         </Dialog>
@@ -203,7 +249,7 @@ class DataPage extends React.Component {
                     </TableHead>
                     <TableBody>
                       {this.props.data.map(rows => {
-                         var cells = rows.map(row => {
+                         var cells = rows.data.map(row => {
                           return (
                             <TableCell key ={row}>
                               {row}
@@ -211,13 +257,16 @@ class DataPage extends React.Component {
                           );
                         })
                         return (
-                            <TableRow role="checkbox" tabIndex={-1} key={rows[1]}>
+                            <TableRow role="checkbox" tabIndex={-1} key={rows.id}>
                               {cells}
                               <TableCell key = 'actions'>
                               { actionButtons.map((action, index) => {
+                                const name = action.name;
                                 return (
                                   <span>
-                                    <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}  onMouseLeave = {this.handlePopoverClose}>
+                                    <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
+                                      onMouseLeave = {this.handlePopoverClose}
+                                      onClick = {event => this.handleOtherActions(event, name, rows.id, rows.data)} >
                                       {action.icon}
                                     </span>
                                   </span>

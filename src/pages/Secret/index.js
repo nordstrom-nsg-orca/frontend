@@ -2,19 +2,24 @@ import React from 'react';
 import DataPage from '../../components/DataPage';
 
 const data = [
-  ['LiveAction_API', 'nsg'],
-  ['LiveAction_API', 'nsg2'],
-  ['LiveAction_API', 'nsg3']
+  {id: 0, data: ['LiveAction_API', 'nsg']},
+  {id: 1, data: ['LiveAction_API', 'nsg2']},
+  {id: 2, data: ['LiveAction_API', 'nsg3']}
 ];
 
 
 class Secret extends React.Component {
 
   constructor(props) {
-    super(props);
+    super();
     this.state = {
       page: 0,
       rowsPerPage: 10,
+      data: [
+        {id: 0, data: ['LiveAction_API', 'nsg']},
+        {id: 1, data: ['LiveAction_API', 'nsg2']},
+        {id: 2, data: ['LiveAction_API', 'nsg3']}
+      ]
     };
   }
   handleChangePage(event, newPage)  {
@@ -39,11 +44,11 @@ class Secret extends React.Component {
   }
 
   update = (event) => {
-    console.log('Updating...');
+
   }
 
   delete = (event) => {
-    console.log('Deleting..');
+    console.log(event);
   }
 
 
@@ -55,13 +60,13 @@ class Secret extends React.Component {
       { id: 'action', label: 'Actions', minWidth: 150, align: 'left' },
     ];
     const forms = [
-      {name: 'Name', id: 'name', description: 'Key\'s name'},
-      {name: 'Key', id: 'key', description: 'Key to Encrypt'},
+      {name: 'Name', id: 'name', index :0, description: 'Key\'s name'},
+      {name: 'Key', id: 'key', index: 1,  description: 'Key to Encrypt'},
     ]
     const actions = {
-      create: this.create,
-      update: this.update,
-      delete: this.delete
+      'create': this.create,
+      'update': this.update,
+      'delete': this.delete
     }
     return (
       <div>
