@@ -43,8 +43,14 @@ class Secret extends React.Component {
     console.log('Creating...');
   }
 
-  update = (event) => {
-
+  update = (id, updatedData) => {
+    var copy = JSON.parse(JSON.stringify(this.state.data));
+    copy.map(value => {
+      if (id === value.id) {
+        value.data = updatedData;
+      }
+    });
+    this.setState({data: copy});
   }
 
   delete = (event) => {
@@ -54,7 +60,7 @@ class Secret extends React.Component {
 
 
   render() {
-    const columns = [
+    const headers = [
       { id: 'name', label: 'Name', minWidth: 100, align: 'left' },
       { id: 'key', label: 'Key', minWidth: 250, align: 'left' },
       { id: 'action', label: 'Actions', minWidth: 150, align: 'left' },
@@ -72,8 +78,8 @@ class Secret extends React.Component {
       <div>
         <DataPage
           title = 'Secrets'
-          headers = {columns}
-          data = {data}
+          headers = {headers}
+          data = {this.state.data}
           forms = {forms}
           handleActionButtons = {this.handleActionButtons}
           hasCreateTable = {false}

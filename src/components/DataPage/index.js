@@ -80,11 +80,11 @@ class DataPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log({...this.props.data});
+    this.setState({initialData: JSON.parse(JSON.stringify(this.props.data))});
   }
 
   componentDidUpdate() {
-    console.log(this.state.initialData);
+    // console.log(this.state.initialData);
   }
 
   handlePopoverOpen = (event, action) => {
@@ -104,11 +104,7 @@ class DataPage extends React.Component {
   }
 
   handleOtherActions = (event, name, id, data) => {
-    // this.props.actions[name](rows);
-    // console.log(event.target);
     if (name === 'update') {
-      console.log(id);
-      console.log(data);
       this.setState({isEdit: true, currentData: data, currentID: id});
     }
   }
@@ -121,7 +117,7 @@ class DataPage extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const data = [{...this.props.data}];
+    const data = JSON.parse(JSON.stringify(this.props.data));
     const actionButtons = [
       {name: 'update', icon: <CreateRoundedIcon />},
       {name: 'delete', icon: <DeleteRoundedIcon />},
@@ -184,7 +180,7 @@ class DataPage extends React.Component {
               </Button>
             }
             { this.state.isEdit &&
-              <Button onClick={this.props.actions.update(this.state.currentID, this.state.currentData)} color="primary">
+              <Button onClick={event => this.props.actions.update(this.state.currentID, this.state.currentData)} color="primary">
                 Update
               </Button>
             }
@@ -248,7 +244,7 @@ class DataPage extends React.Component {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {this.props.data.map(rows => {
+                      {data.map(rows => {
                          var cells = rows.data.map(row => {
                           return (
                             <TableCell key ={row}>
