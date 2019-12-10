@@ -1,13 +1,6 @@
 import React from 'react';
 import DataPage from '../../components/DataPage';
 
-const data = [
-  {id: 0, data: ['LiveAction_API', 'nsg']},
-  {id: 1, data: ['LiveAction_API', 'nsg2']},
-  {id: 2, data: ['LiveAction_API', 'nsg3']}
-];
-
-
 class Secret extends React.Component {
 
   constructor(props) {

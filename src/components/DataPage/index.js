@@ -293,7 +293,6 @@ class DataPage extends React.Component {
           alignItems="center"
         >
           <Grid item md = {6}>
-
               {
                 this.state.currentTables.map(table => {
                   return (
@@ -386,62 +385,3 @@ class DataPage extends React.Component {
 
 }
 export default withStyles(useStyles)(DataPage);
-
-
-// <div className={classes.tableWrapper} >
-// <div>
-//   <span style={{float: "left", width: "95%", textAlign: "center"}}> {this.props.data.length === 0 ? '' : data[0].table} </span>
-//   <span style={{float: "left", width: "5%", textAlign: "right"}}> <CancelRoundedIcon/> </span>
-// </div>
-// <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px'}}>
-//   <TableHead>
-//     <TableRow>
-//       {this.props.headers.map(column => (
-//         <TableCell
-//           key={column.id}
-//           align={column.align}
-//           style={{ minWidth: column.minWidth }}
-//         >
-//           {column.label}
-//         </TableCell>
-//       ))}
-//     </TableRow>
-//   </TableHead>
-//   <TableBody>
-//   {data.map(rows => {
-//      var cells = rows.data.map(row => {
-//       return (
-//         <TableCell key ={row}>
-//           {row}
-//         </TableCell>
-//       );
-//     })
-//     return (
-//         <TableRow role="checkbox" tabIndex={-1} key={rows.id}>
-//           {cells}
-//           <TableCell key = 'actions'>
-//           { actionButtons.map((action, index) => {
-//             const name = action.name;
-//             return (
-//               <span>
-//                 <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
-//                   onMouseLeave = {this.handlePopoverClose}
-//                   onClick = {() => this.handleUpdateDelete(name, rows.id, rows.data)} >
-//                   {action.icon}
-//                 </span>
-//               </span>
-//             );
-//           })}
-//           </TableCell>
-//         </TableRow>
-//     );
-//     })
-//   }
-//   </TableBody>
-//
-// </Table>
-// <div align='center' >
-//   <AddCircleRoundedIcon className = {classes.addButton} onClick = {event => this.handleCreate(event)}
-//     onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
-// </div>
-// </div>

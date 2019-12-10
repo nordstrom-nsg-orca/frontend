@@ -1,35 +1,6 @@
 import React from 'react';
-
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-
-import Typography from '@material-ui/core/Typography'
-
-import List from '@material-ui/core/List';
-import { withStyles } from '@material-ui/core/styles';
 import DataPage from '../../components/DataPage';
-import ACL from './acl';
 
-const data = [
-  {
-    id: 0,
-    data: ["10.10.10.10/23", "SSH", "Test decription of what could actually go here"],
-    table: "REMOTE_MANAGEMENT2"
-  },
-  {
-    id: 1,
-    data: ["10.10.10.11/23", "SSH", "Test decription of what could actuall go here"],
-    table: "REMOTE_MANAGEMENT2"
-  },
-  {
-    id: 2,
-    data: ["10.10.10.12/23", "SNMP", "Test decription of what could actuall go here"],
-    table: "REMOTE_MANAGEMENT2"
-  },
-];
 
 class ACLList extends React.Component {
   constructor(props) {
