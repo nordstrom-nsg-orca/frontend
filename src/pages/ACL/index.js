@@ -10,203 +10,114 @@ import Typography from '@material-ui/core/Typography'
 
 import List from '@material-ui/core/List';
 import { withStyles } from '@material-ui/core/styles';
-
+import DataPage from '../../components/DataPage';
 import ACL from './acl';
 
-const test = [
+const data = [
   {
-    "prefix-list": "REMOTE_MANAGEMENT2",
-    "ips": [
-      {
-        "ip": "10.10.10.10/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.11/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.12/23",
-        "allowed": "SNMP",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.13/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      }
-    ]
+    id: 0,
+    data: ["10.10.10.10/23", "SSH", "Test decription of what could actually go here"],
+    table: "REMOTE_MANAGEMENT2"
   },
   {
-    "prefix-list": "REMOTE_MANAGEMENT",
-    "ips": [
-      {
-        "ip": "10.10.10.10/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.11/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.12/23",
-        "allowed": "SNMP",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.13/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      }
-    ]
-  }
+    id: 1,
+    data: ["10.10.10.11/23", "SSH", "Test decription of what could actuall go here"],
+    table: "REMOTE_MANAGEMENT2"
+  },
+  {
+    id: 2,
+    data: ["10.10.10.12/23", "SNMP", "Test decription of what could actuall go here"],
+    table: "REMOTE_MANAGEMENT2"
+  },
 ];
 
 class ACLList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: test,
-      locked: true
+      data:  {
+        'REMOTE_MANAGEMENT2': [
+          {
+            id: 0,
+            data: ["10.10.10.10/23", "SSH", "Test decription of what could actually go here"],
+          },
+          {
+            id: 1,
+            data: ["10.10.10.11/23", "SSH", "Test decription of what could actuall go here"],
+          },
+          {
+            id: 2,
+            data: ["10.10.10.12/23", "SNMP", "Test decription of what could actuall go here"],
+          },
+        ],
+        'REMOTE_MANAGEMENT': [
+          {
+            id: 0,
+            data: ["10.10.10.10/23", "SSH", "Test decription of what could actually go here"],
+          },
+          {
+            id: 1,
+            data: ["10.10.10.11/23", "SSH", "Test decription of what could actuall go here"],
+          },
+          {
+            id: 2,
+            data: ["10.10.10.12/23", "SNMP", "Test decription of what could actuall go here"],
+          },
+        ],
+      },
     };
   }
 
-  aclHandler = (action, prefixId, aclId, key, e) => {
-    var copy = JSON.parse(JSON.stringify(this.state.list))
-
-    if (action === 'add') {
-      copy[prefixId]['ips'].push({'ip': 'ip', 'allowed': 'allowed', 'desc': 'desc'});
-    }
-
-    if (action === 'delete') {
-      if (aclId != null) {
-        copy[prefixId]['ips'].splice(aclId, 1);
-      } else
-        copy.splice(prefixId, 1);
-    }
-
-    if (action === 'update') {
-      if (aclId != null) {
-        copy[prefixId]['ips'][aclId][key] = e.target.value;
-      } else
-        copy[prefixId]['prefix-list'] = e.target.value;
-    }
-    
-    this.setState({
-      list: copy,
-      changed: true
-    });
+  create = () => {
+    console.log('Create')
   }
 
-  handleSave = () => {
-    console.log('save');
+  delete = () => {
+    console.log('Delete');
   }
 
-  toggleLock = () => {
-    this.setState({locked : !this.state.locked});
+  update = () => {
+    console.log('Update');
   }
 
-  addList = () => {
-    var copy = JSON.parse(JSON.stringify(this.state.list));
-    copy.push({'prefix-list': 'NAME', 'ips': []});
-    this.setState({
-      list: copy
-    })
-  }
 
   render() {
-    const { classes } = this.props;
-
-    var lockicon, addButton, saveButton;
-
-    if (this.state.locked) {
-      lockicon = <LockIcon />;
-    } else {
-      lockicon = <LockOpenIcon />;
-      addButton = <IconButton className={classes.addButton} onClick={this.addList}>
-                    <AddIcon />
-                  </IconButton>;
+    const headers = [
+      { id: 'ip', label: 'IP', minWidth: 80, align: 'left' },
+      { id: 'allowed', label: 'Allowed', minWidth: 50, align: 'left' },
+      { id: 'description', label: 'Description', minWidth: 250, align: 'left' },
+      { id: 'action', label: 'Actions', minWidth: 50, align: 'left' },
+    ];
+    const forms = [
+      {name: 'IP', id: 'ip', index :0, description: 'IP Address'},
+      {name: 'Allowed', id: 'allowed', index: 1,  description: 'Type of Allowed'},
+      {name: 'Description', id: 'description', index: 2,  description: 'Description'},
+      {name: 'Description', id: 'description', index: 3,  description: 'Key to Encrypt'},
+    ]
+    const actions = {
+      'create': this.create,
+      'update': this.update,
+      'delete': this.delete
     }
-
-    saveButton = (this.state.changed)? <Button className={classes.save} onClick={this.handleSave}>Save</Button> : "";
-
+    const tables = ['REMOTE_MANAGEMENT2', "REMOTE_MANAGEMENT"]
     return (
-      <div className={classes.root}>
-        <div className={classes.labelBar}>
-          <Typography className={classes.title} variant="h4">ACL Lists</Typography>
-          {saveButton}
-          <IconButton onClick={this.toggleLock} className={classes.lockButton} color="inherit">
-            {lockicon}
-          </IconButton>
-        </div>
-        <List>
-          {this.state.list.map((value, index) => 
-            <ACL key={index} index={index} 
-              acl={value} locked={this.state.locked}
-              aclHandler={this.aclHandler} handleChange={this.handleChange}  />
-          )}
-        </List>
-        {addButton}
+      <div>
+        <DataPage
+          title = 'ACL Management'
+          headers = {headers}
+          data = {this.state.data}
+          forms = {forms}
+          hasCreateTable = {true}
+          actions = {actions}
+          tables = {tables}
+        />
       </div>
+
     );
   }
 
 }
 
-const styles = theme => ({
-  root: {
-    maxWidth: '700px',
-    margin: 'auto',
-    padding: '20px',
-    textAlign: 'center'
-  },
-  appbar: {
-    backgroundColor: '#333333',
-  },
-  addButton: {
-    '&:hover': {
-      backgroundColor: 'green'
-    },
-    margin: 'auto',
-    color: 'black',
-    // marginRight: theme.spacing(2),
-    backgroundColor: 'lightGreen'
-  },
-  title: {
-    flexGrow: 1,
-    textAlign: 'left',
-    verticalAlign: 'center',
-    padding: '7px'
-  },
-  labelBar: {
-    padding: '20px 10px 0px',
-    borderBottom: '1px solid #666666',
-    margin: '0px 20px',
-    color: '#444444',
-    display: 'flex'
-  },
-  lockButton: {
-    marginBottom: '8px'
-  },
-  save:{
-    width: '70px',
-    height: '30px',
-    margin: 'auto',
-    paddingTop: '4px',
-    paddingBottom: '8px',
-    backgroundColor: 'lightGreen',
-    '&:hover': {
-      backgroundColor: 'green'
-    },
-    marginRight: '8px'
-  },
-  hidden: {
-    display: 'none'
-  }
-});
 
-export default withStyles(styles)(ACLList);
+
+export default ACLList;

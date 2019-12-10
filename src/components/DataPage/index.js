@@ -22,7 +22,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import Popover from '@material-ui/core/Popover';
 import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
-
+import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 
 const useStyles = theme => ({
   root: {
@@ -33,8 +33,9 @@ const useStyles = theme => ({
     overflow: 'auto',
   },
   addButton: {
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
+    paddingBottom: 5
   },
   dialog: {
    display: 'flex',
@@ -73,47 +74,115 @@ class DataPage extends React.Component {
       popoverMessage: null,
       isAdd: false,
       isEdit: false,
-      initialData: null,
+      currentTables: null,
+      currentTableIndex: null,
       currentData: null,
       currentID: null,
+      currentTableName: null,
     };
   }
 
+  componentWillMount() {
+    this.setState({currentTables: [this.props.tables[0]], currentTableIndex: 0})
+    // console.log(this.props.data[this.props.tables[0]]);
+  }
   componentDidMount() {
-    this.setState({initialData: JSON.parse(JSON.stringify(this.props.data))});
+    // this.setState({initialData: JSON.parse(JSON.stringify(this.props.data))});
+    // console.log(this.state.currentTables);
   }
 
   componentDidUpdate() {
-    // console.log(this.state.initialData);
   }
 
+  /**
+  * Handles Popover Event on open.
+  * @param: event - the event information
+  * @param: action - type of actions that have been invoked (eg. update, delete, create)
+  */
   handlePopoverOpen = (event, action) => {
     this.setState({isPopoverOpen: event.currentTarget, popoverMessage: popoverMessages[action]});
   }
 
+  /**
+  * Handles Popover Event on close.
+  */
   handlePopoverClose = () => {
     this.setState({isPopoverOpen: null, popoverMessage: null});
   }
 
+  /**
+  * Handles Event on Dialog buttons (eg. Cancel, Save, Update)
+  */
   handleDialogExit = () => {
-    this.setState({isAdd: false, isEdit: false, currentID: null, currentData: null});
+    if (this.state.isEdit) {
+      this.props.actions.update(this.state.currentTableName, this.state.currentID, this.state.currentData);
+    } else if (this.state.isAdd && this.state.currentData !== null && this.state.currentTableName !== null) {
+      var id = this.props.data.length + 1;
+      this.props.actions.create(this.state.currentTableName, id, this.state.currentData);
+    }
+    this.setState({isAdd: false, isEdit: false, currentID: null, currentData: null, currentTableName: null});
   }
 
-  handleCreateButton = () => {
-      this.setState({isAdd: true});
+
+  /**
+  * Handles on Create button action.
+  */
+  handleCreate = (tableName) => {
+      this.setState({isAdd: true, currentTableName: tableName});
   }
 
-  handleOtherActions = (event, name, id, data) => {
-    if (name === 'update') {
-      this.setState({isEdit: true, currentData: data, currentID: id});
+
+  /**
+  * Handles on Update and Delete buttons action.
+  * @param: name - name of the action (eg. update, delete)
+  * @param: id - the id of the data.
+  * @param: data - the list of data value.
+  */
+  handleUpdateDelete = (action, tableName, id, data) => {
+    if (action === 'update') {
+        this.setState({isEdit: true, currentData: data, currentID: id, currentTableName: tableName});
+    } else if (action === 'delete') {
+      this.props.actions[action](tableName, id);
     }
   }
 
+
+  /**
+  * Handles Input event on update and create actions.
+  * @param: index - the index of the value.
+  * @param: event - the event information.
+  */
   handleInput = (index, event) => {
-    var data = this.state.currentData;
+    var data;
+    if (this.state.isAdd && this.state.currentData === null) {
+      data = [];
+    } else {
+      data = this.state.currentData;
+    }
     data[index] = event.target.value;
     this.setState({currentData: data});
+
   }
+
+  closeTable = (tableName) => {
+    var copy = JSON.parse(JSON.stringify(this.state.currentTables));
+    var index = copy.indexOf(tableName);
+    copy.splice(index, 1);
+    console.log(copy);
+    var tableIndex = this.state.currentTableIndex - 1;
+    this.setState({currentTables: copy, currentTableIndex: tableIndex});
+  }
+
+  createTable = () => {
+    if (this.state.currentTableIndex + 1 >= this.props.tables.length) {
+      return;
+    }
+    var tableIndex = this.state.currentTableIndex + 1;
+    var copy = this.state.currentTables;
+    copy.push(this.props.tables[tableIndex]);
+    this.setState({currentTables: copy, currentTableIndex: tableIndex});
+  }
+
 
   render() {
     const { classes } = this.props;
@@ -121,7 +190,6 @@ class DataPage extends React.Component {
     const actionButtons = [
       {name: 'update', icon: <CreateRoundedIcon />},
       {name: 'delete', icon: <DeleteRoundedIcon />},
-      // {name: 'encrypt', icon: <RemoveRedEyeRoundedIcon onClick = {event => this.props.handleActionButtons('encrypt', event)}/>},
     ];
 
     return (
@@ -140,6 +208,7 @@ class DataPage extends React.Component {
             >
             {this.state.isAdd &&
                this.props.forms.map(form => {
+                const gridSpace = 12 / this.props.forms.length;
                 return (
                   <Grid item md = {6} >
                     <FormControl>
@@ -154,6 +223,7 @@ class DataPage extends React.Component {
 
             {this.state.isEdit &&
                this.props.forms.map(form => {
+                 const gridSpace = 12 / this.props.forms.length;
                 return (
                   <Grid item md = {6} >
                     <FormControl>
@@ -175,12 +245,12 @@ class DataPage extends React.Component {
               Cancel
             </Button>
             { this.state.isAdd &&
-              <Button onClick={this.props.actions.create} color="primary">
+              <Button onClick={() => this.handleDialogExit()} color="primary">
                 Save
               </Button>
             }
             { this.state.isEdit &&
-              <Button onClick={event => this.props.actions.update(this.state.currentID, this.state.currentData)} color="primary">
+              <Button onClick={() => this.handleDialogExit()} color="primary">
                 Update
               </Button>
             }
@@ -211,12 +281,8 @@ class DataPage extends React.Component {
           justify="center"
           alignItems="center"
         >
-          <Grid item md = {6} align = 'center'>
+          <Grid item md = {12} align = 'center'>
             <h1> {this.props.title} </h1>
-          </Grid>
-          <Grid item md = {6} align = 'center'>
-            <AddCircleRoundedIcon className = {classes.addButton} onClick = {event => this.handleCreateButton(event)}
-              onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
           </Grid>
         </Grid>
 
@@ -227,59 +293,74 @@ class DataPage extends React.Component {
           alignItems="center"
         >
           <Grid item md = {6}>
-            <Paper className={classes.root}>
-              <div className={classes.tableWrapper}>
-                  <Table stickyHeader aria-label="sticky table" >
-                    <TableHead >
-                      <TableRow>
-                        {this.props.headers.map(column => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                          >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data.map(rows => {
-                         var cells = rows.data.map(row => {
-                          return (
-                            <TableCell key ={row}>
-                              {row}
-                            </TableCell>
-                          );
-                        })
-                        return (
-                            <TableRow role="checkbox" tabIndex={-1} key={rows.id}>
-                              {cells}
-                              <TableCell key = 'actions'>
-                              { actionButtons.map((action, index) => {
-                                const name = action.name;
-                                return (
-                                  <span>
-                                    <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
-                                      onMouseLeave = {this.handlePopoverClose}
-                                      onClick = {event => this.handleOtherActions(event, name, rows.id, rows.data)} >
-                                      {action.icon}
-                                    </span>
-                                  </span>
-                                );
-                              })}
-                              </TableCell>
+
+              {
+                this.state.currentTables.map(table => {
+                  return (
+                    <Paper className={classes.root} style = {{marginBottom : '20px'}}>
+                      <div className={classes.tableWrapper} >
+                        <div>
+                          <span style={{float: "left", width: "95%", textAlign: "center"}}> {table} </span>
+                          <span style={{float: "left", width: "5%", textAlign: "right"}} onClick = {() => this.closeTable(table)}> <CancelRoundedIcon/> </span>
+                        </div>
+                        <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px'}}>
+                          <TableHead>
+                            <TableRow>
+                              {this.props.headers.map(column => (
+                                <TableCell
+                                  key={column.id}
+                                  align={column.align}
+                                  style={{ minWidth: column.minWidth }}
+                                >
+                                  {column.label}
+                                </TableCell>
+                              ))}
                             </TableRow>
-                        );
-                        })
-                      }
-                    </TableBody>
+                          </TableHead>
+                          <TableBody>
+                          {data[table].map(rows => {
+                             var cells = rows.data.map(row => {
+                              return (
+                                <TableCell key ={row}>
+                                  {row}
+                                </TableCell>
+                              );
+                            })
+                            return (
+                                <TableRow role="checkbox" tabIndex={-1} key={rows.id}>
+                                  {cells}
+                                  <TableCell key = 'actions'>
+                                  { actionButtons.map((action, index) => {
+                                    const name = action.name;
+                                    return (
+                                      <span>
+                                        <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
+                                          onMouseLeave = {this.handlePopoverClose}
+                                          onClick = {() => this.handleUpdateDelete(name, table, rows.id, rows.data)} >
+                                          {action.icon}
+                                        </span>
+                                      </span>
+                                    );
+                                  })}
+                                  </TableCell>
+                                </TableRow>
+                            );
+                            })
+                          }
+                          </TableBody>
 
-                  </Table>
+                        </Table>
+                        <div align='center' >
+                          <AddCircleRoundedIcon className = {classes.addButton} onClick = {() => this.handleCreate(table)}
+                            onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
+                        </div>
+                      </div>
+                    </Paper>
+                  );
+                })
 
-                </div>
+              }
 
-            </Paper>
           </Grid>
           </Grid>
           <Grid
@@ -289,9 +370,10 @@ class DataPage extends React.Component {
             alignItems="flex-end"
           >
             {this.props.hasCreateTable &&
-              <Grid item xs = {6} >
+              <Grid item md = {12} align ='center'>
                   <PlaylistAddRoundedIcon className = {classes.createNewTableButton}
-                    onMouseEnter = {event => this.handlePopoverOpen(event, 'addTable')} onMouseLeave = {this.handlePopoverClose}/>
+                    onMouseEnter = {event => this.handlePopoverOpen(event, 'addTable')} onMouseLeave = {this.handlePopoverClose}
+                    onClick = {() => this.createTable()}/>
 
               </Grid>
             }
@@ -304,3 +386,62 @@ class DataPage extends React.Component {
 
 }
 export default withStyles(useStyles)(DataPage);
+
+
+// <div className={classes.tableWrapper} >
+// <div>
+//   <span style={{float: "left", width: "95%", textAlign: "center"}}> {this.props.data.length === 0 ? '' : data[0].table} </span>
+//   <span style={{float: "left", width: "5%", textAlign: "right"}}> <CancelRoundedIcon/> </span>
+// </div>
+// <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px'}}>
+//   <TableHead>
+//     <TableRow>
+//       {this.props.headers.map(column => (
+//         <TableCell
+//           key={column.id}
+//           align={column.align}
+//           style={{ minWidth: column.minWidth }}
+//         >
+//           {column.label}
+//         </TableCell>
+//       ))}
+//     </TableRow>
+//   </TableHead>
+//   <TableBody>
+//   {data.map(rows => {
+//      var cells = rows.data.map(row => {
+//       return (
+//         <TableCell key ={row}>
+//           {row}
+//         </TableCell>
+//       );
+//     })
+//     return (
+//         <TableRow role="checkbox" tabIndex={-1} key={rows.id}>
+//           {cells}
+//           <TableCell key = 'actions'>
+//           { actionButtons.map((action, index) => {
+//             const name = action.name;
+//             return (
+//               <span>
+//                 <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
+//                   onMouseLeave = {this.handlePopoverClose}
+//                   onClick = {() => this.handleUpdateDelete(name, rows.id, rows.data)} >
+//                   {action.icon}
+//                 </span>
+//               </span>
+//             );
+//           })}
+//           </TableCell>
+//         </TableRow>
+//     );
+//     })
+//   }
+//   </TableBody>
+//
+// </Table>
+// <div align='center' >
+//   <AddCircleRoundedIcon className = {classes.addButton} onClick = {event => this.handleCreate(event)}
+//     onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
+// </div>
+// </div>

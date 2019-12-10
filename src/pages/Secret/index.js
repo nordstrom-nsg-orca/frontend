@@ -15,11 +15,13 @@ class Secret extends React.Component {
     this.state = {
       page: 0,
       rowsPerPage: 10,
-      data: [
-        {id: 0, data: ['LiveAction_API', 'nsg']},
-        {id: 1, data: ['LiveAction_API', 'nsg2']},
-        {id: 2, data: ['LiveAction_API', 'nsg3']}
-      ]
+      data: {
+        'NSG Mystery': [
+          {id: 0, data: ['LiveAction_API', 'nsg']},
+          {id: 1, data: ['LiveAction_API', 'nsg2']},
+          {id: 2, data: ['LiveAction_API', 'nsg3']}
+        ],
+      }
     };
   }
   handleChangePage(event, newPage)  {
@@ -39,13 +41,17 @@ class Secret extends React.Component {
     }
   }
 
-  create = (event) => {
-    console.log('Creating...');
+  create = (tableName, id, createdData) => {
+    var copy = JSON.parse(JSON.stringify(this.state.data));
+    var data = copy[tableName];
+    data.push({id: id, data: createdData});
+    copy[tableName] = data;
+    this.setState({data: copy});
   }
 
-  update = (id, updatedData) => {
+  update = (tableName, id, updatedData) => {
     var copy = JSON.parse(JSON.stringify(this.state.data));
-    copy.map(value => {
+    copy[tableName].map(value => {
       if (id === value.id) {
         value.data = updatedData;
       }
@@ -53,8 +59,16 @@ class Secret extends React.Component {
     this.setState({data: copy});
   }
 
-  delete = (event) => {
-    console.log(event);
+  delete = (tableName, id) => {
+    var copy = [];
+    var tempData = this.state.data;
+    tempData[tableName].map(value => {
+      if (id !== value.id) {
+        copy.push({id: value.id, data: value.data});
+      }
+    });
+    tempData[tableName] = copy;
+    this.setState({data: tempData});
   }
 
 
@@ -74,6 +88,7 @@ class Secret extends React.Component {
       'update': this.update,
       'delete': this.delete
     }
+    const tables = ['NSG Mystery']
     return (
       <div>
         <DataPage
@@ -84,6 +99,7 @@ class Secret extends React.Component {
           handleActionButtons = {this.handleActionButtons}
           hasCreateTable = {false}
           actions = {actions}
+          tables = {tables}
         />
       </div>
 
