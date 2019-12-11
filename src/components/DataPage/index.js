@@ -190,7 +190,7 @@ class DataPage extends React.Component {
     copyTable.push('Name');
     var currentTables = this.state.currentTables;
     currentTables.push('Name');
-    this.setState({currentTables: currentTables});
+    this.setState({currentTables: currentTables, currentTableData: JSON.parse(JSON.stringify(copyData)) });
   }
 
   /**
