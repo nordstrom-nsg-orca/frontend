@@ -11,8 +11,8 @@ class Secret extends React.Component {
       data: {
         'API Keys': [
           {id: 0, data: ['LiveAction_API', 'nsg']},
-          {id: 1, data: ['LiveAction_API', 'nsg2']},
-          {id: 2, data: ['LiveAction_API', 'nsg3']}
+          {id: 1, data: ['CLEARPASS_API', 'nsg2']},
+          {id: 2, data: ['AWS_API', 'nsg3']}
         ],
       },
       tables: ['API Keys']

@@ -99,7 +99,7 @@ class DataPage extends React.Component {
 
   componentDidUpdate() {
 
-    console.log(this.state.currentSearchPhrase);
+    // console.log(this.state.currentSearchPhrase);
   }
 
   /**
@@ -235,37 +235,48 @@ class DataPage extends React.Component {
     var phrase = event.target.value;
     if (phrase === '') {
       phrase = null;
-      this.setState({currentTableData: JSON.parse(JSON.stringify(this.props.data))});
+      this.setState({currentTableData: JSON.parse(JSON.stringify(this.props.data)), currentTables: [this.props.tables[0]]});
       return;
     }
-    var index;
     var currentSearchFilter = this.state.currentSearchFilter;
+    var currentTableData = {};
+    var currentTables = new Set();
     if (currentSearchFilter === 'Table') {
-      var currentTableData = {};
-      var currentTables = [];
       var copyData = JSON.parse(JSON.stringify(this.props.data));
       for (var name in copyData) {
         if (name.toLowerCase().includes(phrase)) {
           currentTableData[name] = copyData[name];
-          currentTables.push(name);
+          currentTables.add(name);
         }
       }
-      console.log(currentTableData);
-      if (Object.entries(currentTableData).length > 0 && currentTableData.constructor === Object) {
-        this.setState({currentTableData: currentTableData, currentTables: currentTables});
-      }
+
     } else {
+      var index;
       this.props.headers.map(header => {
         if (header.label === currentSearchFilter) index = header.index;
       });
       var copyData = JSON.parse(JSON.stringify(this.props.data));
       for (var name in copyData) {
         copyData[name].map(value => {
-          console.log(value);
+          if (value.data[index].toLowerCase().includes(phrase)) {
+            if (name in currentTableData) {
+              var copy = currentTableData[name];
+              copy.push(value);
+              currentTableData[name] = copy;
+
+            } else {
+              currentTableData[name] = [value];
+            }
+            currentTables.add(name);
+          }
         });
       }
+
     }
 
+    if (Object.entries(currentTableData).length > 0 && currentTableData.constructor === Object) {
+      this.setState({currentTableData: currentTableData, currentTables: Array.from(currentTables)});
+    }
     this.setState({currentSearchPhrase: phrase});
   }
 
