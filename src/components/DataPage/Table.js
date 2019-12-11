@@ -40,7 +40,6 @@ class TableClass extends React.Component {
   * @param: action - type of actions that have been invoked (eg. update, delete, create)
   */
   handlePopoverOpen = (event, action) => {
-    // alert(action);
     this.setState({isPopoverOpen: event.currentTarget, popoverMessage: popoverMessages[action]});
   }
 
@@ -77,10 +76,10 @@ class TableClass extends React.Component {
           return (
             <Paper className={this.props.classes.root} style = {{marginBottom : '20px'}}>
               <div className={this.props.classes.tableWrapper} >
-                <div style={{float:'right', marginRight: '5px', marginTop: '2px'}}>
+                <div style={{float:'right', marginRight: '5px', marginTop: '2px'}} onMouseEnter = {event => this.handlePopoverOpen(event, 'closeTable')}
+                    onMouseLeave = {this.handlePopoverClose} onClick = {this.handlePopoverClose}>
                   <IconButton color='inherit'>
                     <CancelRoundedIcon onClick = {() => this.props.closeTable(table)}
-                      onMouseEnter = {event => this.handlePopoverOpen(event, 'closeTable')} onMouseLeave = {this.handlePopoverClose}
                     />
                   </IconButton>
                 </div>
