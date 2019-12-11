@@ -36,6 +36,7 @@ class ACLList extends React.Component {
           },
         ],
       },
+      tables: ['REMOTE_MANAGEMENT2', "REMOTE_MANAGEMENT"]
     };
   }
 
@@ -56,21 +57,16 @@ class ACLList extends React.Component {
     const headers = [
       { id: 'ip', label: 'IP', minWidth: 80, align: 'left', index: 0},
       { id: 'allowed', label: 'Allowed', minWidth: 50, align: 'left', index: 1 },
-      { id: 'description', label: 'Description', minWidth: 250, align: 'left', index: 2 },
-      { id: 'action', label: 'Actions', minWidth: 50, align: 'left' },
+      { id: 'description', label: 'Description', minWidth: 200, align: 'left', index: 2 },
+      { id: 'action', label: 'Actions', minWidth: 150, align: 'left' },
     ];
-    // const forms = [
-    //   {name: 'IP', id: 'ip', index :0, description: 'IP Address'},
-    //   {name: 'Allowed', id: 'allowed', index: 1,  description: 'Type of Allowed'},
-    //   {name: 'Description', id: 'description', index: 2,  description: 'Description'},
-    //   {name: 'Description', id: 'description', index: 3,  description: 'Key to Encrypt'},
-    // ]
+
     const actions = {
       'create': this.create,
       'update': this.update,
       'delete': this.delete
-    }
-    const tables = ['REMOTE_MANAGEMENT2', "REMOTE_MANAGEMENT"]
+    };
+    // const tables = ['REMOTE_MANAGEMENT2', "REMOTE_MANAGEMENT"]
     return (
       <div>
         <DataPage
@@ -79,7 +75,7 @@ class ACLList extends React.Component {
           data = {this.state.data}
           hasCreateTable = {true}
           actions = {actions}
-          tables = {tables}
+          tables = {this.state.tables}
         />
       </div>
 

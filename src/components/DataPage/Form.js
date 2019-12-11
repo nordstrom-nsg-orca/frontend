@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 
 class Form extends React.Component {
@@ -23,7 +24,7 @@ class Form extends React.Component {
 
   render() {
     return (
-      <Dialog open={this.props.isAdd || this.props.isEdit} aria-labelledby="form-dialog-title" className = {this.props.classes.dialog} >
+      <Dialog open={this.props.isAdd || this.props.isEdit || this.props.isDelete} aria-labelledby="form-dialog-title" className = {this.props.classes.dialog} >
         <DialogContent>
           <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
           <Grid
@@ -62,12 +63,24 @@ class Form extends React.Component {
                   <FormControl>
                     <InputLabel htmlFor="my-input"> {form.label} </InputLabel>
                     <Input id={form.label} aria-describedby="my-helper-text" onChange = {event => this.props.handleInput(form.index, event)}
-                        value = {this.props.currentData[form.index]}/>
+                        value = {this.props.currentInputData[form.index]}/>
                   </FormControl>
                 </Grid>
               );
             })
           }
+
+          {this.props.isDelete &&
+              <Grid item md = {12} >
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-slide-description">
+                    Are you sure you want to delete this?
+                  </DialogContentText>
+                </DialogContent>
+              </Grid>
+          }
+
+
 
           </Grid>
         </DialogContent>
@@ -84,6 +97,11 @@ class Form extends React.Component {
           { this.props.isEdit &&
             <Button onClick={() => this.props.handleDialogExit()} color="primary">
               Update
+            </Button>
+          }
+          { this.props.isDelete &&
+            <Button onClick={() => this.props.handleDeleteConfrim()} color="primary">
+              Delete
             </Button>
           }
         </DialogActions>

@@ -5,20 +5,22 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
-import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
+import Input from '@material-ui/core/Input';
+import IconButton from "@material-ui/core/IconButton";
+
 
 const popoverMessages = {
   add: 'Create',
   update: 'Edit',
   delete: 'Delete',
   encrypt: 'Encrypt',
-  addTable: 'Add Table'
+  addTable: 'Create Table',
+  closeTable: 'Close Table'
 };
 
 
@@ -75,18 +77,30 @@ class TableClass extends React.Component {
           return (
             <Paper className={this.props.classes.root} style = {{marginBottom : '20px'}}>
               <div className={this.props.classes.tableWrapper} >
-                <div>
-                  <span style={{float: "left", width: "95%", textAlign: "center"}}> {table} </span>
-                  <span style={{float: "left", width: "5%", textAlign: "right"}} onClick = {() => this.props.closeTable(table)}> <CancelRoundedIcon/> </span>
+                <div style={{float:'right', marginRight: '5px', marginTop: '2px'}}>
+                  <IconButton color='inherit'>
+                    <CancelRoundedIcon onClick = {() => this.props.closeTable(table)}
+                      onMouseEnter = {event => this.handlePopoverOpen(event, 'closeTable')} onMouseLeave = {this.handlePopoverClose}
+                    />
+                  </IconButton>
                 </div>
-                <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px'}}>
+                <div align='center' style = {{marginTop: '5px', marginBottom: '5px'}}>
+                <Input
+                  value={table}
+                  inputProps={{ style: {textAlign: 'center'} }}
+                  disableUnderline={true}
+                  style={{ width: '220px' }}
+                  onChange = {event => {this.props.updateTable(table, event)}}
+                />
+                </div>
+                <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px',}}>
                   <TableHead>
                     <TableRow>
                       {this.props.headers.map(column => (
                         <TableCell
                           key={column.id}
                           align={column.align}
-                          style={{ minWidth: column.minWidth }}
+                          style={{ minWidth: column.minWidth, fontWeight: 'bold'}}
                         >
                           {column.label}
                         </TableCell>
@@ -110,7 +124,7 @@ class TableClass extends React.Component {
                             const name = action.name;
                             return (
                               <span>
-                                <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
+                                <span style = {{marginRight: '1px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
                                   onMouseLeave = {this.handlePopoverClose}
                                   onClick = {() => this.props.handleUpdateDelete(name, table, rows.id, rows.data)} >
                                   {action.icon}
@@ -127,8 +141,10 @@ class TableClass extends React.Component {
 
                 </Table>
                 <div align='center' >
-                  <AddCircleRoundedIcon className = {this.props.classes.addButton} onClick = {() => this.props.handleCreate(table)}
-                    onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
+                  <IconButton color='inherit'>
+                    <AddCircleRoundedIcon className = {this.props.classes.addButton} onClick = {() => this.props.handleCreate(table)}
+                      onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
+                  </IconButton>
                 </div>
               </div>
             </Paper>
@@ -138,14 +154,16 @@ class TableClass extends React.Component {
       <Grid
         container
         direction="row"
-        justify="flex-end"
-        alignItems="flex-end"
+        justify="center"
+        alignItems="center"
       >
         {this.props.hasCreateTable &&
           <Grid item md = {12} align ='center'>
-              <PlaylistAddRoundedIcon className = {this.props.classes.createNewTableButton}
-                onMouseEnter = {event => this.handlePopoverOpen(event, 'addTable')} onMouseLeave = {this.handlePopoverClose}
-                onClick = {() => this.props.createTable()}/>
+              <IconButton color='inherit'>
+                <PlaylistAddRoundedIcon className = {this.props.classes.createNewTableButton}
+                  onMouseEnter = {event => this.handlePopoverOpen(event, 'addTable')} onMouseLeave = {this.handlePopoverClose}
+                  onClick = {() => this.props.createTable()}/>
+              </IconButton>
 
           </Grid>
         }
