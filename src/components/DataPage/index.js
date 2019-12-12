@@ -65,10 +65,9 @@ const useStyles = theme => ({
 		marginRight: theme.spacing.unit * 2
 	},
 
-
-
 });
 
+const DEFAULT_TABLE_NAME = 'Name';
 
 class DataPage extends React.Component {
 
@@ -81,7 +80,7 @@ class DataPage extends React.Component {
       isDropdown: false,
       currentSearchFilter: this.props.headers[0].label,
       currentSearchPhrase: null,
-      currentTables: null,
+      currentTables: JSON.parse(JSON.stringify(this.props.tables)),
       currentTableIndex: null,
       currentInputData: null,
       currentID: null,
@@ -91,7 +90,7 @@ class DataPage extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({currentTables: [this.props.tables[0]], currentTableIndex: 0})
+    // this.setState({currentTables: [this.props.tables[0]]});
   }
   componentDidMount() {
 
@@ -172,11 +171,21 @@ class DataPage extends React.Component {
     if (this.props.tables.length === 1) {
       return;
     }
-    var copy = JSON.parse(JSON.stringify(this.state.currentTables));
-    var index = copy.indexOf(tableName);
-    copy.splice(index, 1);
-    var tableIndex = this.state.currentTableIndex - 1;
-    this.setState({currentTables: copy, currentTableIndex: tableIndex});
+
+    if (tableName === DEFAULT_TABLE_NAME) {
+      var copyData = this.props.data;
+      var copyTables = this.props.tables;
+      delete copyData[tableName];
+      var index = copyTables.indexOf(tableName);
+      copyTables.splice(index, 1);
+      this.setState({currentTables: JSON.parse(JSON.stringify(copyTables)), currentTableData: JSON.parse(JSON.stringify(copyData))});
+    } else {
+      var copyTables = JSON.parse(JSON.stringify(this.state.currentTables));
+      var index = copyTables.indexOf(tableName);
+      copyTables.splice(index, 1);
+      this.setState({currentTables: JSON.parse(JSON.stringify(copyTables))});
+    }
+
   }
 
 
@@ -190,7 +199,7 @@ class DataPage extends React.Component {
     copyTable.push('Name');
     var currentTables = this.state.currentTables;
     currentTables.push('Name');
-    this.setState({currentTables: currentTables, currentTableData: JSON.parse(JSON.stringify(copyData)) });
+    this.setState({currentTables: currentTables, currentTableData: JSON.parse(JSON.stringify(copyData))});
   }
 
   /**
@@ -235,7 +244,7 @@ class DataPage extends React.Component {
     var phrase = event.target.value;
     if (phrase === '') {
       phrase = null;
-      this.setState({currentTableData: JSON.parse(JSON.stringify(this.props.data)), currentTables: [this.props.tables[0]]});
+      this.setState({currentTableData: JSON.parse(JSON.stringify(this.props.data)), currentTables: JSON.parse(JSON.stringify(this.props.tables))});
       return;
     }
     var currentSearchFilter = this.state.currentSearchFilter;

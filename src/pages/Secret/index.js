@@ -66,7 +66,7 @@ class Secret extends React.Component {
   render() {
     const headers = [
       { id: 'name', label: 'Name', minWidth: 100, align: 'left', index: 0},
-      { id: 'key', label: 'Key', minWidth: 250, align: 'left', index: 1 },
+      { id: 'key', label: 'Key', minWidth: 200, align: 'left', index: 1 },
       { id: 'action', label: 'Actions', minWidth: 50, align: 'left' },
     ];
 
