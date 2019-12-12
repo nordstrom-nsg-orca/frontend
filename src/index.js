@@ -7,9 +7,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const config = {
-  issuer: 'https://nordstrom.oktapreview.com/oauth2/ausmbgds36nqid3rW0h7',
+  issuer: process.env.REACT_APP_OKTA_ISSUER,
   redirectUri: window.location.origin + '/implicit/callback',
-  clientId: '0oaornpnbhhBAAGNW0h7',
+  clientId: process.env.REACT_APP_CLIENT_ID,
   pkce: false
 }
 

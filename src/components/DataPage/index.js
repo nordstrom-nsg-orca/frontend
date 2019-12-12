@@ -89,16 +89,13 @@ class DataPage extends React.Component {
     };
   }
 
-  componentWillMount() {
-    // this.setState({currentTables: [this.props.tables[0]]});
-  }
+
   componentDidMount() {
 
   }
 
   componentDidUpdate() {
-
-    // console.log(this.state.currentSearchPhrase);
+    // console.log(this.state.currentTableData);
   }
 
   /**
@@ -111,7 +108,8 @@ class DataPage extends React.Component {
       var id = this.props.data[this.state.currentTableName].length + 1;
       this.props.actions.create(this.state.currentTableName, id, this.state.currentInputData);
     }
-    this.setState({isAdd: false, isEdit: false, isDelete: false, currentID: null, currentInputData: null, currentTableName: null});
+    this.setState({isAdd: false, isEdit: false, isDelete: false, currentID: null, currentInputData: null, currentTableName: null,
+                    currentTableData: JSON.parse(JSON.stringify(this.props.data))});
   }
 
 
@@ -127,6 +125,7 @@ class DataPage extends React.Component {
   */
   handleDeleteConfrim = () => {
     this.props.actions.delete(this.state.currentTableName, this.state.currentID);
+    // this.setState({currentTableData: JSON.parse(JSON.stringify(this.props.data))});
     this.handleDialogExit();
   }
 
@@ -171,17 +170,19 @@ class DataPage extends React.Component {
     if (this.props.tables.length === 1) {
       return;
     }
-
+    var copyData;
+    var copyTables;
+    var index;
     if (tableName === DEFAULT_TABLE_NAME) {
-      var copyData = this.props.data;
-      var copyTables = this.props.tables;
+      copyData = this.props.data;
+      copyTables = this.props.tables;
       delete copyData[tableName];
-      var index = copyTables.indexOf(tableName);
+      index = copyTables.indexOf(tableName);
       copyTables.splice(index, 1);
       this.setState({currentTables: JSON.parse(JSON.stringify(copyTables)), currentTableData: JSON.parse(JSON.stringify(copyData))});
     } else {
-      var copyTables = JSON.parse(JSON.stringify(this.state.currentTables));
-      var index = copyTables.indexOf(tableName);
+      copyTables = JSON.parse(JSON.stringify(this.state.currentTables));
+      index = copyTables.indexOf(tableName);
       copyTables.splice(index, 1);
       this.setState({currentTables: JSON.parse(JSON.stringify(copyTables))});
     }
@@ -213,9 +214,9 @@ class DataPage extends React.Component {
     var valueCopy = copy[oldTableName];
     copy[event.target.value] = valueCopy;
     delete copy[oldTableName];
-    var currentTables = this.state.currentTables;
+    var currentTables = this.props.tables;
     currentTables[currentTables.indexOf(oldTableName)] = event.target.value;
-    this.setState({currentTables: currentTables, currentTableData: JSON.parse(JSON.stringify(copy))});
+    this.setState({currentTables: JSON.parse(JSON.stringify(currentTables)), currentTableData: JSON.parse(JSON.stringify(copy))});
   }
 
   /**
@@ -250,8 +251,9 @@ class DataPage extends React.Component {
     var currentSearchFilter = this.state.currentSearchFilter;
     var currentTableData = {};
     var currentTables = new Set();
+    var copyData;
     if (currentSearchFilter === 'Table') {
-      var copyData = JSON.parse(JSON.stringify(this.props.data));
+      copyData = JSON.parse(JSON.stringify(this.props.data));
       for (var name in copyData) {
         if (name.toLowerCase().includes(phrase)) {
           currentTableData[name] = copyData[name];
@@ -264,7 +266,7 @@ class DataPage extends React.Component {
       this.props.headers.map(header => {
         if (header.label === currentSearchFilter) index = header.index;
       });
-      var copyData = JSON.parse(JSON.stringify(this.props.data));
+      copyData = JSON.parse(JSON.stringify(this.props.data));
       for (var name in copyData) {
         copyData[name].map(value => {
           if (value.data[index].toLowerCase().includes(phrase)) {
@@ -319,47 +321,8 @@ class DataPage extends React.Component {
           justify="center"
           alignItems="center"
         >
-          <Grid item md = {6} align = 'center'>
+          <Grid item md = {12} align = 'center'>
             <h1> {this.props.title} </h1>
-          </Grid>
-          <Grid item md = {6} align = 'center'>
-              <IconButton>
-                <SearchRoundedIcon/>
-              </IconButton>
-  						<InputBase
-                placeholder="Search"
-                className={classes.searchInput}
-                onChange = {event => this.handleSearchEvent(event)}
-              />
-              <Select
-                labelId="demo-controlled-open-select-label"
-                id="demo-controlled-open-select"
-                open={this.state.isDropdown}
-                onClose={() => {this.handleDropdownEvent('close')}}
-                onOpen={() => {this.handleDropdownEvent('open')}}
-                value={this.state.currentSearchFilter}
-                onChange={event => this.handleFilterEvent(event)}
-                autoWidth={true}
-                inputProps ={{
-
-                }}
-              >
-                <MenuItem value="Filter" disabled>
-                  <em>Filter</em>
-                </MenuItem>
-                {this.props.headers.map(header => {
-                  if (header.label === 'Actions') return;
-                    return (
-                      <MenuItem value={header.label}>{header.label}</MenuItem>
-                    );
-
-                })
-
-                }
-                <MenuItem value='Table'>Table</MenuItem>
-              </Select>
-
-
           </Grid>
 
         </Grid>
@@ -369,8 +332,56 @@ class DataPage extends React.Component {
           direction="row"
           justify="center"
           alignItems="center"
+          style = {{paddingBottom: '10px'}}
         >
-          <Grid item md = {6}>
+        <Grid item md = {12} align = 'center'>
+            <IconButton>
+              <SearchRoundedIcon/>
+            </IconButton>
+            <InputBase
+              placeholder="Search"
+              className={classes.searchInput}
+              onChange = {event => this.handleSearchEvent(event)}
+            />
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              open={this.state.isDropdown}
+              onClose={() => {this.handleDropdownEvent('close')}}
+              onOpen={() => {this.handleDropdownEvent('open')}}
+              value={this.state.currentSearchFilter}
+              onChange={event => this.handleFilterEvent(event)}
+              autoWidth={true}
+              inputProps ={{
+
+              }}
+            >
+              <MenuItem value="Filter" disabled>
+                <em>Filter</em>
+              </MenuItem>
+              {this.props.headers.map(header => {
+                if (header.label === 'Actions') return;
+                  return (
+                    <MenuItem value={header.label}>{header.label}</MenuItem>
+                  );
+
+              })
+
+              }
+              <MenuItem value='Table'>Table</MenuItem>
+            </Select>
+
+
+        </Grid>
+        </Grid>
+
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item md = {9}>
               {<Table
                 currentTables = {this.state.currentTables}
                 classes = {classes}

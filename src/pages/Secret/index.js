@@ -30,16 +30,16 @@ class Secret extends React.Component {
 
 
   create = (tableName, id, createdData) => {
-
-    var copy = JSON.parse(JSON.stringify(this.state.data));
+    var copy = this.state.data;
     var data = copy[tableName];
     data.push({id: id, data: createdData});
     copy[tableName] = data;
+    // console.log(copy);
     this.setState({data: copy});
   }
 
   update = (tableName, id, updatedData) => {
-    var copy = JSON.parse(JSON.stringify(this.state.data));
+    var copy = this.state.data;
     copy[tableName].map(value => {
       if (id === value.id) {
         value.data = updatedData;
@@ -49,7 +49,6 @@ class Secret extends React.Component {
   }
 
   delete = (tableName, id) => {
-
     var copy = [];
     var tempData = this.state.data;
     tempData[tableName].map(value => {
@@ -58,6 +57,7 @@ class Secret extends React.Component {
       }
     });
     tempData[tableName] = copy;
+
     this.setState({data: tempData});
   }
 
