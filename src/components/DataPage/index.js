@@ -15,7 +15,8 @@ import Table from './table.js';
 
 const useStyles = theme => ({
   root: {
-    width: '100%',
+    width: '900px',
+    margin: '0 auto',
   },
   tableWrapper: {
     maxHeight: 440,
@@ -42,8 +43,11 @@ const useStyles = theme => ({
     align: 'center',
     justifyContent: 'center',
   },
+  tableCell: {
+    height: '15px'
+  },
   table: {
-    height: '10px'
+
   },
 	searchInput: {
 		borderRadius: '3px',
@@ -298,7 +302,7 @@ class DataPage extends React.Component {
 
     return (
 
-      <div style = {{width: '1000px', margin: '0 auto'}} align='center'>
+      <div className={classes.root} align='center'>
         {<Form
             classes = {classes}
             isAdd = {this.state.isAdd}

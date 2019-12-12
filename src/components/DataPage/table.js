@@ -75,7 +75,7 @@ class TableClass extends React.Component {
       {
         this.props.currentTables.map(table => {
           return (
-            <Paper className={this.props.classes.root} style = {{marginBottom : '20px'}}>
+            <Paper style = {{marginBottom : '20px'}}>
               <div className={this.props.classes.tableWrapper} >
                 <div style={{float:'right', marginRight: '5px', marginTop: '2px'}} onMouseEnter = {event => this.handlePopoverOpen(event, 'deleteTable')}
                     onMouseLeave = {this.handlePopoverClose} onClick = {this.handlePopoverClose}>
@@ -93,7 +93,7 @@ class TableClass extends React.Component {
                   onChange = {event => {this.props.updateTable(table, event)}}
                 />
                 </div>
-                <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px'}} size='small' >
+                <Table stickyHeader aria-label="sticky table" style = {{ width: '850px'}} size='small' align = 'center'>
                   <TableHead>
                     <TableRow >
                       {this.props.headers.map(column => (
@@ -102,6 +102,7 @@ class TableClass extends React.Component {
                           key={column.id}
                           align={column.align}
                           style={{ minWidth: column.minWidth, fontWeight: 'bold'}}
+                          align ='center'
                         >
                           {column.label}
                         </TableCell>
@@ -112,15 +113,15 @@ class TableClass extends React.Component {
                   {this.props.data[table].map(rows => {
                      var cells = rows.data.map(row => {
                       return (
-                        <TableCell key ={row} size='small'>
+                        <TableCell key ={row} size='small' align ='center'>
                           {row}
                         </TableCell>
                       );
                     })
                     return (
-                        <TableRow role="checkbox" tabIndex={-1} key={rows.id}>
+                        <TableRow role="checkbox" tabIndex={-1} key={rows.id} className = {this.props.classes.tableCell} >
                           {cells}
-                          <TableCell key = 'actions' size='small'>
+                          <TableCell key = 'actions' size='small' align ='center'>
                           { this.props.actionButtons.map((action, index) => {
                             const name = action.name;
                             return (

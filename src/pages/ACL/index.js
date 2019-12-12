@@ -148,8 +148,8 @@ class ACLList extends React.Component {
     const headers = [
       { id: 'ip', label: 'IP', minWidth: 80, align: 'left', index: 0},
       { id: 'allowed', label: 'Allowed', minWidth: 50, align: 'left', index: 1 },
-      { id: 'description', label: 'Description', minWidth: 200, align: 'left', index: 2 },
-      { id: 'action', label: 'Actions', minWidth: 150, align: 'left' },
+      { id: 'description', label: 'Description', minWidth: 150, align: 'left', index: 2 },
+      { id: 'action', label: 'Actions', minWidth: 50, align: 'left' },
     ];
 
     const actions = {
