@@ -22,22 +22,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
-
+import Popover from '@material-ui/core/Popover';
+import Typography from '@material-ui/core/Typography';
 
 const columns = [
   { id: 'name', label: 'Name', minWidth: 100, align: 'left' },
   { id: 'key', label: 'Key', minWidth: 250, align: 'left' },
   { id: 'action', label: 'Actions', minWidth: 150, align: 'left' },
 ];
-const actionButtons = [
-  {name: 'edit', icon: <CreateRoundedIcon />},
-  {name: 'delete', icon: <DeleteRoundedIcon/>},
-  {name: 'encrypt', icon: <RemoveRedEyeRoundedIcon/>},
 
-];
 
 const rows = [
-  {name: 'LiveAction_API', key: 'nsg', actions: actionButtons}
+  {name: 'LiveAction_API', key: 'nsg'}
 ]
 
 const forms = [
@@ -64,8 +60,19 @@ const useStyles = theme => ({
    display: 'flex',
    alignItems: 'center',
    justifyContent: 'center',
- }
+ },
+ popover: {
+    pointerEvents: 'none',
+  }
 });
+
+const popoverMessages = {
+  add: 'Add Key',
+  edit: 'Edit',
+  delete: 'Delete',
+  encrypt: 'Encrypt'
+};
+
 
 class SecretTable extends React.Component {
 
@@ -74,21 +81,28 @@ class SecretTable extends React.Component {
     this.state = {
       page: 0,
       rowsPerPage: 10,
+      isPopoverOpen: null,
+      popoverMessage: null,
     };
-    this.handleChangePage = this.handleChangePage.bind(this);
-    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
   }
-  handleChangePage(event, newPage)  {
-    this.setState({page: newPage});
-  };
 
-  handleChangeRowsPerPage(event) {
-    this.setState({page: 0, rowsPerPage: event.target.value});
+  handlePopoverOpen = (event, action) => {
+    // console.log(popoverMessages[action]);
+    this.setState({isPopoverOpen: event.currentTarget, popoverMessage: popoverMessages[action]});
+  }
 
-  };
+  handlePopoverClose = () => {
+    this.setState({isPopoverOpen: null, popoverMessage: null});
+  }
 
   render() {
     const { classes } = this.props;
+    const actionButtons = [
+      {name: 'edit', icon: <CreateRoundedIcon onClick = {event => this.props.handleActionButtons('edit', event)}/>},
+      {name: 'delete', icon: <DeleteRoundedIcon onClick = {event => this.props.handleActionButtons('delete', event)}/>},
+      {name: 'encrypt', icon: <RemoveRedEyeRoundedIcon onClick = {event => this.props.handleActionButtons('encrypt', event)}/>},
+    ];
+
     return (
 
       <div>
@@ -165,7 +179,7 @@ class SecretTable extends React.Component {
                     <TableBody>
                       {rows.map(row => {
                         return (
-                          <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                          <TableRow role="checkbox" tabIndex={-1} key={row.name}>
                             <TableCell key={row.name}>
                               {row.name}
                             </TableCell>
@@ -173,9 +187,31 @@ class SecretTable extends React.Component {
                               {row.key}
                             </TableCell>
                             <TableCell key = 'actions'>
-                            { row.actions.map((action, index) => {
+                            { actionButtons.map((action, index) => {
                               return (
-                                  <span style = {{marginRight: '5px'}}> {action.icon} </span>
+                                <span>
+                                  <span style = {{marginRight: '10px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}  onMouseLeave = {this.handlePopoverClose}>
+                                    {action.icon}
+                                  </span>
+                                  <Popover
+                                    id="mouse-over-popover"
+                                    className={classes.popover}
+                                    open={Boolean(this.state.isPopoverOpen)}
+                                    anchorEl={this.state.isPopoverOpen}
+                                    anchorOrigin={{
+                                      vertical: 'bottom',
+                                      horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                      vertical: 'top',
+                                      horizontal: 'center',
+                                    }}
+                                    onClose={this.handlePopoverClose}
+                                    disableRestoreFocus
+                                  >
+                                    {this.state.popoverMessage}
+                                  </Popover>
+                                </span>
                               );
                             })}
                             </TableCell>
@@ -204,7 +240,26 @@ class SecretTable extends React.Component {
             alignItems="flex-end"
           >
           <Grid item xs = {6} >
-              <AddCircleRoundedIcon className = {classes.addButton} onClick = {event => this.props.handleActionButtons('add', event)}/>
+              <AddCircleRoundedIcon className = {classes.addButton} onClick = {event => this.props.handleActionButtons('add', event)}
+                onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
+              <Popover
+                id="mouse-over-popover"
+                className={classes.popover}
+                open={Boolean(this.state.isPopoverOpen)}
+                anchorEl={this.state.isPopoverOpen}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                onClose={this.handlePopoverClose}
+                disableRestoreFocus
+              >
+                {this.state.popoverMessage}
+              </Popover>
           </Grid>
           </Grid>
       </div>

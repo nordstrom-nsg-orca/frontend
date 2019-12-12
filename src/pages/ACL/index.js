@@ -1,212 +1,183 @@
 import React from 'react';
+import DataPage from '../../components/DataPage';
 
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-
-import Typography from '@material-ui/core/Typography'
-
-import List from '@material-ui/core/List';
-import { withStyles } from '@material-ui/core/styles';
-
-import ACL from './acl';
-
-const test = [
-  {
-    "prefix-list": "REMOTE_MANAGEMENT2",
-    "ips": [
-      {
-        "ip": "10.10.10.10/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.11/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.12/23",
-        "allowed": "SNMP",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.13/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      }
-    ]
-  },
-  {
-    "prefix-list": "REMOTE_MANAGEMENT",
-    "ips": [
-      {
-        "ip": "10.10.10.10/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.11/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.12/23",
-        "allowed": "SNMP",
-        "desc": "Test decription of what could actuall go here"
-      },
-      {
-        "ip": "10.10.10.13/23",
-        "allowed": "SSH",
-        "desc": "Test decription of what could actuall go here"
-      }
-    ]
-  }
-];
+const DEFAULT_TABLE_NAME = 'Name';
 
 class ACLList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: test,
-      locked: true
+      data:  {
+        'REMOTE_MANAGEMENT2': [
+          {
+            id: 0,
+            data: ["10.10.10.10/23", "SSH", "Test decription of what could actually go here"],
+          },
+          {
+            id: 1,
+            data: ["10.10.10.11/23", "SSH", "Test decription of what could actuall go here"],
+          },
+          {
+            id: 2,
+            data: ["10.10.10.12/23", "SNMP", "Test decription of what could actuall go here"],
+          },
+        ],
+        'REMOTE_MANAGEMENT': [
+          {
+            id: 0,
+            data: ["10.10.10.10/23", "SSH", "Test decription of what could actually go here"],
+          },
+          {
+            id: 1,
+            data: ["10.10.10.11/23", "SSH", "Test decription of what could actuall go here"],
+          },
+          {
+            id: 2,
+            data: ["10.10.10.12/23", "SNMP", "Test decription of what could actuall go here"],
+          },
+        ],
+      },
+      tables: ['REMOTE_MANAGEMENT2', "REMOTE_MANAGEMENT"],
+      currentNewTableCount: 0,
     };
   }
 
-  aclHandler = (action, prefixId, aclId, key, e) => {
-    var copy = JSON.parse(JSON.stringify(this.state.list))
+  /**
+  * Creates a new data in a specific table.
+  * @param: tableName - name of the table
+  * @param: id - new id of the data
+  * @param: createdData - new data value to be created
+  */
+  create = (tableName, id, createdData) => {
+    var copy = this.state.data;
+    var data = copy[tableName];
+    data.push({id: id, data: createdData});
+    copy[tableName] = data;
+    this.setState({data: copy});
+  }
 
-    if (action === 'add') {
-      copy[prefixId]['ips'].push({'ip': 'ip', 'allowed': 'allowed', 'desc': 'desc'});
-    }
-
-    if (action === 'delete') {
-      if (aclId != null) {
-        copy[prefixId]['ips'].splice(aclId, 1);
-      } else
-        copy.splice(prefixId, 1);
-    }
-
-    if (action === 'update') {
-      if (aclId != null) {
-        copy[prefixId]['ips'][aclId][key] = e.target.value;
-      } else
-        copy[prefixId]['prefix-list'] = e.target.value;
-    }
-    
-    this.setState({
-      list: copy,
-      changed: true
+  /**
+  * Updates an existing data value in a table
+  * @param: tableName - name of the table
+  * @param: id -  id of the data
+  * @param: updatedData - updated data value
+  */
+  update = (tableName, id, updatedData) => {
+    var copy = this.state.data;
+    copy[tableName].map(value => {
+      if (id === value.id) {
+        value.data = updatedData;
+      }
     });
+    this.setState({data: copy});
   }
 
-  handleSave = () => {
-    console.log('save');
+  /**
+  * Deletes an existing data.
+  * @param: tableName - name of the table
+  * @param: id - id of the data
+  */
+  delete = (tableName, id) => {
+    var copy = [];
+    var tempData = this.state.data;
+    tempData[tableName].map(value => {
+      if (id !== value.id) {
+        copy.push({id: value.id, data: value.data});
+      }
+    });
+    tempData[tableName] = copy;
+
+    this.setState({data: tempData});
   }
 
-  toggleLock = () => {
-    this.setState({locked : !this.state.locked});
+  /**
+  * Creates a new table.
+  */
+  createTable = () => {
+    var copyTables = this.state.tables;
+    var copyData = this.state.data;
+    var tableName;
+    var currentNewTableCount = this.state.currentNewTableCount;
+    if (currentNewTableCount == 0) {
+      tableName = DEFAULT_TABLE_NAME;
+    } else { tableName = DEFAULT_TABLE_NAME + '' + currentNewTableCount; }
+
+    copyTables.push(tableName);
+    copyData[tableName] = [];
+    this.setState({tables: copyTables, data: copyData, currentNewTableCount: currentNewTableCount + 1});
   }
 
-  addList = () => {
-    var copy = JSON.parse(JSON.stringify(this.state.list));
-    copy.push({'prefix-list': 'NAME', 'ips': []});
-    this.setState({
-      list: copy
-    })
+  /**
+  * Deletes a table.
+  * @param: tableName - name of the table
+  * @param: id - new id of the data
+  * @param: createdData - new data value to be created
+  */
+  deleteTable = (tableName) => {
+    var currentNewTableCount = this.state.currentNewTableCount;
+    if (tableName.includes(DEFAULT_TABLE_NAME)) {
+      currentNewTableCount--;
+    }
+    var copyData = this.state.data;
+    var copyTables = this.state.tables;
+    delete copyData[tableName];
+    var index = copyTables.indexOf(tableName);
+    copyTables.splice(index, 1);
+    this.setState({tables: copyTables, data: copyData, currentNewTableCount: currentNewTableCount});
   }
+
+  /**
+  * Updates a table.
+  * @param: oldTableName - old name of the table
+  * @param: newTableName - new name of the table
+  */
+  updateTable = (oldTableName, newTableName) => {
+    if (oldTableName === newTableName) return;
+    var copy = this.state.data;
+    var valueCopy = copy[oldTableName];
+    copy[newTableName] = valueCopy;
+    delete copy[oldTableName];
+    var currentTables = this.state.tables;
+    currentTables[currentTables.indexOf(oldTableName)] = newTableName;
+    this.setState({tables: currentTables, data: copy});
+  }
+
+
 
   render() {
-    const { classes } = this.props;
+    const headers = [
+      { id: 'ip', label: 'IP', minWidth: 80, align: 'left', index: 0},
+      { id: 'allowed', label: 'Allowed', minWidth: 50, align: 'left', index: 1 },
+      { id: 'description', label: 'Description', minWidth: 150, align: 'left', index: 2 },
+      { id: 'action', label: 'Actions', minWidth: 50, align: 'left' },
+    ];
 
-    var lockicon, addButton, saveButton;
-
-    if (this.state.locked) {
-      lockicon = <LockIcon />;
-    } else {
-      lockicon = <LockOpenIcon />;
-      addButton = <IconButton className={classes.addButton} onClick={this.addList}>
-                    <AddIcon />
-                  </IconButton>;
-    }
-
-    saveButton = (this.state.changed)? <Button className={classes.save} onClick={this.handleSave}>Save</Button> : "";
-
+    const actions = {
+      'create': this.create,
+      'update': this.update,
+      'delete': this.delete,
+      'createTable': this.createTable,
+      'deleteTable': this.deleteTable,
+      'updateTable': this.updateTable,
+    };
+    // const tables = ['REMOTE_MANAGEMENT2', "REMOTE_MANAGEMENT"]
     return (
-      <div className={classes.root}>
-        <div className={classes.labelBar}>
-          <Typography className={classes.title} variant="h4">ACL Lists</Typography>
-          {saveButton}
-          <IconButton onClick={this.toggleLock} className={classes.lockButton} color="inherit">
-            {lockicon}
-          </IconButton>
-        </div>
-        <List>
-          {this.state.list.map((value, index) => 
-            <ACL key={index} index={index} 
-              acl={value} locked={this.state.locked}
-              aclHandler={this.aclHandler} handleChange={this.handleChange}  />
-          )}
-        </List>
-        {addButton}
+      <div>
+        <DataPage
+          title = 'ACL Management'
+          headers = {headers}
+          data = {this.state.data}
+          hasCreateTable = {true}
+          actions = {actions}
+          tables = {this.state.tables}
+        />
       </div>
+
     );
   }
 
 }
 
-const styles = theme => ({
-  root: {
-    maxWidth: '700px',
-    margin: 'auto',
-    padding: '20px',
-    textAlign: 'center'
-  },
-  appbar: {
-    backgroundColor: '#333333',
-  },
-  addButton: {
-    '&:hover': {
-      backgroundColor: 'green'
-    },
-    margin: 'auto',
-    color: 'black',
-    // marginRight: theme.spacing(2),
-    backgroundColor: 'lightGreen'
-  },
-  title: {
-    flexGrow: 1,
-    textAlign: 'left',
-    verticalAlign: 'center',
-    padding: '7px'
-  },
-  labelBar: {
-    padding: '20px 10px 0px',
-    borderBottom: '1px solid #666666',
-    margin: '0px 20px',
-    color: '#444444',
-    display: 'flex'
-  },
-  lockButton: {
-    marginBottom: '8px'
-  },
-  save:{
-    width: '70px',
-    height: '30px',
-    margin: 'auto',
-    paddingTop: '4px',
-    paddingBottom: '8px',
-    backgroundColor: 'lightGreen',
-    '&:hover': {
-      backgroundColor: 'green'
-    },
-    marginRight: '8px'
-  },
-  hidden: {
-    display: 'none'
-  }
-});
 
-export default withStyles(styles)(ACLList);
+
+export default ACLList;

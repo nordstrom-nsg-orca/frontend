@@ -81,7 +81,7 @@ const styles = theme => ({
     height: '90px',
     position: 'absolute',
     top: '-20px',
-    'left': '0px'
+    left: '0px'
   },
   menu: {
     marginTop: '30px',
