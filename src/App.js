@@ -62,6 +62,7 @@ class App extends React.Component {
     return (
     	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
         {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
+        {this.state.auth.authenticated && <Route path='/' exact={true} component={Dashboard} />}
         <Route path='/implicit/callback' component={ImplicitCallback} />
         <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
         <SecureRoute path='/acl' component={ACL} />

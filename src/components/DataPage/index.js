@@ -32,12 +32,8 @@ const useStyles = theme => ({
    alignItems: 'center',
    justifyContent: 'center',
  },
- popover: {
+  popover: {
     pointerEvents: 'none',
-  },
-  tableFooter: {
-    align: 'center',
-    justifyContent: 'center',
   },
   createNewTableButton: {
     marginTop: '5px',
@@ -46,14 +42,9 @@ const useStyles = theme => ({
     align: 'center',
     justifyContent: 'center',
   },
-  ui: {
-		position: 'absolute',
-		right: theme.spacing.unit,
-		top: theme.spacing.unit * 2,
-		margin: 'auto',
-	},
-	searchIcon: {
-	},
+  table: {
+    height: '10px'
+  },
 	searchInput: {
 		borderRadius: '3px',
 		paddingLeft: theme.spacing.unit * 5,
@@ -166,26 +157,28 @@ class DataPage extends React.Component {
   * Handles close event on table.
   * @param: tableName - name of table to close.
   */
-  closeTable = (tableName) => {
-    if (this.props.tables.length === 1) {
-      return;
-    }
-    var copyData;
-    var copyTables;
-    var index;
-    if (tableName === DEFAULT_TABLE_NAME) {
-      copyData = this.props.data;
-      copyTables = this.props.tables;
-      delete copyData[tableName];
-      index = copyTables.indexOf(tableName);
-      copyTables.splice(index, 1);
-      this.setState({currentTables: JSON.parse(JSON.stringify(copyTables)), currentTableData: JSON.parse(JSON.stringify(copyData))});
-    } else {
-      copyTables = JSON.parse(JSON.stringify(this.state.currentTables));
-      index = copyTables.indexOf(tableName);
-      copyTables.splice(index, 1);
-      this.setState({currentTables: JSON.parse(JSON.stringify(copyTables))});
-    }
+  deleteTable = (tableName) => {
+    // if (this.props.tables.length === 1) {
+    //   return;
+    // }
+    // var copyData;
+    // var copyTables;
+    // var index;
+    // if (tableName === DEFAULT_TABLE_NAME) {
+    //   copyData = this.props.data;
+    //   copyTables = this.props.tables;
+    //   delete copyData[tableName];
+    //   index = copyTables.indexOf(tableName);
+    //   copyTables.splice(index, 1);
+    //   this.setState({currentTables: JSON.parse(JSON.stringify(copyTables)), currentTableData: JSON.parse(JSON.stringify(copyData))});
+    // } else {
+    //   copyTables = JSON.parse(JSON.stringify(this.state.currentTables));
+    //   index = copyTables.indexOf(tableName);
+    //   copyTables.splice(index, 1);
+    //   this.setState({currentTables: JSON.parse(JSON.stringify(copyTables))});
+    // }
+    this.props.actions.deleteTable(tableName);
+    this.setState({currentTables: this.props.tables, currentTableData: JSON.parse(JSON.stringify(this.props.data))});
 
   }
 
@@ -194,13 +187,14 @@ class DataPage extends React.Component {
   * Handles create event on table.
   */
   createTable = () => {
-    var copyData = this.props.data;
-    var copyTable = this.props.tables;
-    copyData['Name'] = [];
-    copyTable.push('Name');
-    var currentTables = this.state.currentTables;
-    currentTables.push('Name');
-    this.setState({currentTables: currentTables, currentTableData: JSON.parse(JSON.stringify(copyData))});
+    // var copyData = this.props.data;
+    // var copyTable = this.props.tables;
+    // copyData['Name'] = [];
+    // copyTable.push('Name');
+    // var currentTables = this.state.currentTables;
+    // currentTables.push('Name');
+    this.props.actions.createTable();
+    this.setState({currentTables: this.props.tables, currentTableData: JSON.parse(JSON.stringify(this.props.data))});
   }
 
   /**
@@ -209,14 +203,16 @@ class DataPage extends React.Component {
   * @param: event - the event information
   */
   updateTable = (oldTableName, event) => {
-    if (oldTableName === event.target.value) return;
-    var copy = this.props.data;
-    var valueCopy = copy[oldTableName];
-    copy[event.target.value] = valueCopy;
-    delete copy[oldTableName];
-    var currentTables = this.props.tables;
-    currentTables[currentTables.indexOf(oldTableName)] = event.target.value;
-    this.setState({currentTables: JSON.parse(JSON.stringify(currentTables)), currentTableData: JSON.parse(JSON.stringify(copy))});
+    // if (oldTableName === event.target.value) return;
+    // var copy = this.props.data;
+    // var valueCopy = copy[oldTableName];
+    // copy[event.target.value] = valueCopy;
+    // delete copy[oldTableName];
+    // var currentTables = this.props.tables;
+    // currentTables[currentTables.indexOf(oldTableName)] = event.target.value;
+    // this.setState({currentTables: JSON.parse(JSON.stringify(currentTables)), currentTableData: JSON.parse(JSON.stringify(copy))});
+    this.props.actions.updateTable(oldTableName, event.target.value);
+    this.setState({currentTables: this.props.tables, currentTableData: JSON.parse(JSON.stringify(this.props.data))});
   }
 
   /**
@@ -302,7 +298,7 @@ class DataPage extends React.Component {
 
     return (
 
-      <div>
+      <div style = {{width: '1000px', margin: '0 auto'}} align='center'>
         {<Form
             classes = {classes}
             isAdd = {this.state.isAdd}
@@ -315,26 +311,11 @@ class DataPage extends React.Component {
             handleDialogExit = {this.handleDialogExit}
             handleDeleteConfrim = {this.handleDeleteConfrim}
         />}
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
-          <Grid item md = {12} align = 'center'>
-            <h1> {this.props.title} </h1>
-          </Grid>
 
-        </Grid>
 
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          style = {{paddingBottom: '10px'}}
-        >
-        <Grid item md = {12} align = 'center'>
+          <div style ={{display: 'flex'}}>
+            <span> <h1 style = {{marginRight:'auto'}}> {this.props.title} </h1> </span>
+            <span style = {{marginLeft:'auto', paddingTop: '18px'}}>
             <IconButton>
               <SearchRoundedIcon/>
             </IconButton>
@@ -370,33 +351,23 @@ class DataPage extends React.Component {
               }
               <MenuItem value='Table'>Table</MenuItem>
             </Select>
+            </span>
+          </div>
 
+          {<Table
+            currentTables = {this.state.currentTables}
+            classes = {classes}
+            deleteTable = {this.deleteTable}
+            headers = {this.props.headers}
+            data = {this.state.currentTableData}
+            actionButtons = {actionButtons}
+            handleUpdateDelete = {this.handleUpdateDelete}
+            updateTable = {this.updateTable}
+            handleCreate = {this.handleCreate}
+            createTable = {this.createTable}
+            hasCreateTable = {this.props.hasCreateTable}
+          />}
 
-        </Grid>
-        </Grid>
-
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
-          <Grid item md = {9}>
-              {<Table
-                currentTables = {this.state.currentTables}
-                classes = {classes}
-                closeTable = {this.closeTable}
-                headers = {this.props.headers}
-                data = {this.state.currentTableData}
-                actionButtons = {actionButtons}
-                handleUpdateDelete = {this.handleUpdateDelete}
-                updateTable = {this.updateTable}
-                handleCreate = {this.handleCreate}
-                createTable = {this.createTable}
-                hasCreateTable = {this.props.hasCreateTable}
-              />}
-          </Grid>
-          </Grid>
 
       </div>
 
@@ -405,3 +376,54 @@ class DataPage extends React.Component {
 
 }
 export default withStyles(useStyles)(DataPage);
+
+
+// <Grid
+//   container
+//   direction="row"
+//   justify="center"
+//   alignItems="center"
+// >
+//   <Grid item md = {6} align = 'center'>
+//     <h1> {this.props.title} </h1>
+//   </Grid>
+//   <Grid item md = {6} align = 'center'>
+//       <IconButton>
+//         <SearchRoundedIcon/>
+//       </IconButton>
+//       <InputBase
+//         placeholder="Search"
+//         className={classes.searchInput}
+//         onChange = {event => this.handleSearchEvent(event)}
+//       />
+//       <Select
+//         labelId="demo-controlled-open-select-label"
+//         id="demo-controlled-open-select"
+//         open={this.state.isDropdown}
+//         onClose={() => {this.handleDropdownEvent('close')}}
+//         onOpen={() => {this.handleDropdownEvent('open')}}
+//         value={this.state.currentSearchFilter}
+//         onChange={event => this.handleFilterEvent(event)}
+//         autoWidth={true}
+//         inputProps ={{
+//
+//         }}
+//       >
+//         <MenuItem value="Filter" disabled>
+//           <em>Filter</em>
+//         </MenuItem>
+//         {this.props.headers.map(header => {
+//           if (header.label === 'Actions') return;
+//             return (
+//               <MenuItem value={header.label}>{header.label}</MenuItem>
+//             );
+//
+//         })
+//
+//         }
+//         <MenuItem value='Table'>Table</MenuItem>
+//       </Select>
+//
+//
+//   </Grid>
+// </Grid>

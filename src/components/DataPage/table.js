@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
+import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import Input from '@material-ui/core/Input';
 import IconButton from "@material-ui/core/IconButton";
 
@@ -20,7 +21,7 @@ const popoverMessages = {
   delete: 'Delete',
   encrypt: 'Encrypt',
   addTable: 'Create Table',
-  closeTable: 'Close Table'
+  deleteTable: 'Delete Table'
 };
 
 
@@ -76,10 +77,10 @@ class TableClass extends React.Component {
           return (
             <Paper className={this.props.classes.root} style = {{marginBottom : '20px'}}>
               <div className={this.props.classes.tableWrapper} >
-                <div style={{float:'right', marginRight: '5px', marginTop: '2px'}} onMouseEnter = {event => this.handlePopoverOpen(event, 'closeTable')}
+                <div style={{float:'right', marginRight: '5px', marginTop: '2px'}} onMouseEnter = {event => this.handlePopoverOpen(event, 'deleteTable')}
                     onMouseLeave = {this.handlePopoverClose} onClick = {this.handlePopoverClose}>
                   <IconButton color='inherit'>
-                    <CancelRoundedIcon onClick = {() => this.props.closeTable(table)}
+                    <DeleteRoundedIcon onClick = {() => this.props.deleteTable(table)}
                     />
                   </IconButton>
                 </div>
@@ -92,11 +93,12 @@ class TableClass extends React.Component {
                   onChange = {event => {this.props.updateTable(table, event)}}
                 />
                 </div>
-                <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px',}}>
+                <Table stickyHeader aria-label="sticky table" style = {{paddingBottom: '10px'}} size='small' >
                   <TableHead>
-                    <TableRow>
+                    <TableRow >
                       {this.props.headers.map(column => (
                         <TableCell
+                          size='small'
                           key={column.id}
                           align={column.align}
                           style={{ minWidth: column.minWidth, fontWeight: 'bold'}}
@@ -106,11 +108,11 @@ class TableClass extends React.Component {
                       ))}
                     </TableRow>
                   </TableHead>
-                  <TableBody>
+                  <TableBody className = {this.props.classes.table}>
                   {this.props.data[table].map(rows => {
                      var cells = rows.data.map(row => {
                       return (
-                        <TableCell key ={row}>
+                        <TableCell key ={row} size='small'>
                           {row}
                         </TableCell>
                       );
@@ -118,7 +120,7 @@ class TableClass extends React.Component {
                     return (
                         <TableRow role="checkbox" tabIndex={-1} key={rows.id}>
                           {cells}
-                          <TableCell key = 'actions'>
+                          <TableCell key = 'actions' size='small'>
                           { this.props.actionButtons.map((action, index) => {
                             const name = action.name;
                             return (
