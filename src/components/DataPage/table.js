@@ -1,4 +1,5 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import Grid from '@material-ui/core/Grid';
-import Popover from '@material-ui/core/Popover';
+import Typography from '@material-ui/core/Typography';
 import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
@@ -25,157 +26,86 @@ const popoverMessages = {
 };
 
 
-class TableClass extends React.Component {
+class DataTable extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      popoverMessage: null,
-      isPopoverOpen: null,
-    };
-  }
-
-  /**
-  * Handles Popover Event on open.
-  * @param: event - the event information
-  * @param: action - type of actions that have been invoked (eg. update, delete, create)
-  */
-  handlePopoverOpen = (event, action) => {
-    this.setState({isPopoverOpen: event.currentTarget, popoverMessage: popoverMessages[action]});
-  }
-
-  /**
-  * Handles Popover Event on close.
-  */
-  handlePopoverClose = () => {
-    this.setState({isPopoverOpen: null, popoverMessage: null});
+    this.state = {};
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
-      <div>
-      <Popover
-        id="mouse-over-popover"
-        className={this.props.classes.popover}
-        open={Boolean(this.state.isPopoverOpen)}
-        anchorEl={this.state.isPopoverOpen}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        onClose={this.handlePopoverClose}
-        disableRestoreFocus
-      >
-        {this.state.popoverMessage}
-      </Popover>
-      {
-        this.props.currentTables.map(table => {
-          return (
-            <Paper style = {{marginBottom : '20px'}}>
-              <div className={this.props.classes.tableWrapper} >
-                <div style={{float:'right', marginRight: '5px', marginTop: '2px'}} onMouseEnter = {event => this.handlePopoverOpen(event, 'deleteTable')}
-                    onMouseLeave = {this.handlePopoverClose} onClick = {this.handlePopoverClose}>
-                  <IconButton color='inherit'>
-                    <DeleteRoundedIcon onClick = {() => this.props.deleteTable(table)}
-                    />
-                  </IconButton>
-                </div>
-                <div align='center' style = {{marginTop: '5px', marginBottom: '5px'}}>
-                <Input
-                  value={table}
-                  inputProps={{ style: {textAlign: 'center'} }}
-                  disableUnderline={true}
-                  style={{ width: '220px' }}
-                  onChange = {event => {this.props.updateTable(table, event)}}
-                />
-                </div>
-                <Table stickyHeader aria-label="sticky table" style = {{ width: '850px'}} size='small' align = 'center'>
-                  <TableHead>
-                    <TableRow >
-                      {this.props.headers.map(column => (
-                        <TableCell
-                          size='small'
-                          key={column.id}
-                          align={column.align}
-                          style={{ minWidth: column.minWidth, fontWeight: 'bold'}}
-                          align ='center'
-                        >
-                          {column.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className = {this.props.classes.table}>
-                  {this.props.data[table].map(rows => {
-                     var cells = rows.data.map(row => {
-                      return (
-                        <TableCell key ={row} size='small' align ='center'>
-                          {row}
-                        </TableCell>
-                      );
-                    })
-                    return (
-                        <TableRow role="checkbox" tabIndex={-1} key={rows.id} className = {this.props.classes.tableCell} >
-                          {cells}
-                          <TableCell key = 'actions' size='small' align ='center'>
-                          { this.props.actionButtons.map((action, index) => {
-                            const name = action.name;
-                            return (
-                              <span>
-                                <span style = {{marginRight: '1px'}} onMouseEnter = {event => this.handlePopoverOpen(event, action.name)}
-                                  onMouseLeave = {this.handlePopoverClose}
-                                  onClick = {() => this.props.handleUpdateDelete(name, table, rows.id, rows.data)} >
-                                  {action.icon}
-                                </span>
-                              </span>
-                            );
-                          })}
-                          </TableCell>
-                        </TableRow>
-                    );
-                    })
-                  }
-                  </TableBody>
+      <Paper style = {{marginBottom : '20px'}}>
 
-                </Table>
-                <div align='center' >
-                  <IconButton color='inherit'>
-                    <AddCircleRoundedIcon className = {this.props.classes.addButton} onClick = {() => this.props.handleCreate(table)}
-                      onMouseEnter = {event => this.handlePopoverOpen(event, 'add')} onMouseLeave = {this.handlePopoverClose}/>
-                  </IconButton>
-                </div>
-              </div>
-            </Paper>
-          );
-        })
-      }
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-      >
-        {this.props.hasCreateTable &&
-          <Grid item md = {12} align ='center'>
-              <IconButton color='inherit'>
-                <PlaylistAddRoundedIcon className = {this.props.classes.createNewTableButton}
-                  onMouseEnter = {event => this.handlePopoverOpen(event, 'addTable')} onMouseLeave = {this.handlePopoverClose}
-                  onClick = {() => this.props.createTable()}/>
-              </IconButton>
+        <div style = {{padding: '15px 0px 5px 15px', marginTop: '8px', display: 'flex'}}>
+          <Typography variant='h5'>{this.props.data.name}</Typography>
+          <div style={{marginLeft: 'auto', paddingRight: '24px'}}>
+          {this.props.actionButtons.map((action, index) =>
+            <IconButton key={index} size='small' color='inherit'
+              onClick={this.props.handleAction.bind(this, action.name, this.props.data.id, null, this.props.data.name)}>
+              {action.icon}
+            </IconButton>
+          )}
+          </div>
+        </div>
 
-          </Grid>
-        }
+        <Table size='small' align='center'>
+          
+          <TableHead>
+            <TableRow >
+              {this.props.headers.map((column, index) => (
+                <TableCell size='small' key={index} align ='center'>
+                  {column}
+                </TableCell>
+              ))}
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
 
-      </Grid>
-      </div>
+
+          <TableBody>
+            {this.props.data.rows.map(row =>
+              <TableRow key={row.id}>
+              
+
+              {this.props.headers.map((column, index) =>
+                <TableCell size='small' key={index}>
+                  {row[column]}
+                </TableCell>
+              )}
+              
+              <TableCell size='small' style={{width: '100px'}}>
+              {this.props.actionButtons.map((action, index) =>
+                <IconButton key={index} size='small' color='inherit'
+                  onClick={this.props.handleAction.bind(this, action.name, this.props.data.id, row.id, row)}>
+                  {action.icon}
+                </IconButton>
+              )}
+              </TableCell>
+
+              </TableRow>
+            )}  
+          </TableBody>
+        
+        </Table>
+        <div align='center' >
+          <IconButton color='inherit' onClick={this.props.handleAction.bind(this, 'create', this.props.data.id, null, null)}>
+            <AddCircleRoundedIcon className={classes.addButton} />
+          </IconButton>
+        </div>
+      </Paper>
     );
   }
-
-
 }
 
-export default TableClass;
+const style = theme => ({
+ dialog: {
+   display: 'flex',
+   alignItems: 'center',
+   justifyContent: 'center',
+ }
+});
+
+export default withStyles(style)(DataTable);

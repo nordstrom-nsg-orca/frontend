@@ -25,6 +25,13 @@ class App extends React.Component {
     };
   }
 
+  async componentDidMount() { console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication(); }
+  async componentDidUpdate() {
+    if (!this.state.auth.authenticated) {
+      this.checkAuthentication();
+    }
+  }
+
   async checkAuthentication() {
     const authenticated = await this.props.auth.isAuthenticated();
     if (authenticated && !this.state.auth.user) {
@@ -32,15 +39,12 @@ class App extends React.Component {
       this.setState({
         auth: {
           authenticated: authenticated,
-          user: userinfo
+          user: userinfo,
         }
       });
-
     }
   }
 
-  async componentDidMount() { this.checkAuthentication(); }
-  async componentDidUpdate() { this.checkAuthentication(); }
 
   login() {
     if (!this.state.authenticated){
@@ -60,6 +64,7 @@ class App extends React.Component {
 
   render() {
     return (
+      <div>
     	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
         {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
         {this.state.auth.authenticated && <Route path='/' exact={true} component={Dashboard} />}
@@ -68,6 +73,7 @@ class App extends React.Component {
         <SecureRoute path='/acl' component={ACL} />
         <SecureRoute path='/secret' component={Secret} />
       </Navbar>
+      </div>
     );
   }
 }
