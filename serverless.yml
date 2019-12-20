@@ -11,22 +11,79 @@ provider:
 
 resources:
   Resources:
-    nsgCloudFrontEnd:
+    # nsgCloudFrontEnd:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: nsg-fire-dragon
+    #     AccessControl: PublicReadWrite
+    #     WebsiteConfiguration:
+    #       IndexDocument: index.html
+    #       ErrorDocument: index.html
+    nsgweb:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: nsg-fire-dragon
-        AccessControl: PublicReadWrite
+        BucketName: ${self:custom.domainName}
+        AccessControl: BucketOwnerFullControl
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
 
+    nsgwebCloudDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Enabled: true
+          PriceClass: PriceClass_100
+          Aliases:
+            - ${self:custom.domainName}
+            - !Sub www.${self:custom.domainName}
+          DefaultRootObject: index.html
+          Origins:
+            -
+              DomainName: !Sub ${self:custom.domainName}.${self:custom.webEndpoint}
+              Id: S3Origin
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: http-only
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            AllowedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+               Forward: none
+            # ViewerProtocolPolicy: allow-all
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/5a47ab9f-04ac-405a-b1bc-cf7e45fa589a
+            SslSupportMethod: sni-only
 
+    wwwnsgweb:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Sub www.${self:custom.domainName}
+        AccessControl: BucketOwnerFullControl
+        WebsiteConfiguration:
+          RedirectAllRequestsTo:
+            HostName: !Ref nsgweb
+            Protocol: http
+
+
+custom:
+  domainName: nsg-nonprod.nordstrom.net
+  webEndpoint: s3-website-us-west-2.amazonaws.com
+  # uploads npm run build to S3
+  s3Sync:
+    # - bucketName: nsg-fire-dragon
+    #   localDir: build
+    #   acl: public-read-write
+    - bucketName: ${self:custom.domainName}
+      localDir: build
+      acl: public-read-write
 
 plugins:
   - serverless-s3-sync
-
-custom:
-  s3Sync:
-    - bucketName: nsg-fire-dragon
-      localDir: build
-      acl: public-read-write
