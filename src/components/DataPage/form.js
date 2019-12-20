@@ -1,4 +1,5 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
@@ -15,95 +16,58 @@ class Form extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = {};
 
-    };
   }
 
 
 
   render() {
+    const { classes } = this.props;
+    
     return (
-      <Dialog open={this.props.isAdd || this.props.isEdit || this.props.isDelete} aria-labelledby="form-dialog-title" className = {this.props.classes.dialog} >
+      <Dialog open={(this.props.open)} className={classes.dialog}>
         <DialogContent>
-          <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
+          
           <Grid
             container
             direction="row"
             justify="center"
             alignItems="center"
-            spacing = {5}
-            style = {{marginBottom: '10px'}}
+            spacing={5}
+            style={{marginBottom: '10px'}}
           >
-          {this.props.isAdd &&
-             this.props.headers.map(form => {
-              if (form.label === 'Actions') {
-                return (<div></div>);
-              }
-              const gridSpace = 12 / this.props.headers.length;
-              return (
-                <Grid item md = {6} >
-                  <FormControl>
-                    <InputLabel htmlFor="my-input"> {form.label} </InputLabel>
-                    <Input id={form.label} aria-describedby="my-helper-text" onChange = {event => this.props.handleInput(form.index, event)}/>
-                  </FormControl>
-                </Grid>
-              );
-            })
+
+          {this.props.action !== 'delete' && this.props.headers.map((header, index) =>
+            <Grid item md={6} key={index}>
+              <FormControl>
+                <InputLabel>{header}</InputLabel>
+                <Input onChange={event => this.props.handleInput(header, event)}
+                    value={this.props.data? this.props.data[header] : ''}/>
+              </FormControl>
+            </Grid>
+          )}
+
+          {this.props.action === 'delete' &&
+            <Grid item md={12}>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to delete this?
+                </DialogContentText>
+              </DialogContent>
+            </Grid>
           }
-
-          {this.props.isEdit &&
-             this.props.headers.map(form => {
-               if (form.label === 'Actions') {
-                 return (<div></div>);
-               }
-               const gridSpace = 12 / this.props.headers.length;
-              return (
-                <Grid item md = {6} >
-                  <FormControl>
-                    <InputLabel htmlFor="my-input"> {form.label} </InputLabel>
-                    <Input id={form.label} aria-describedby="my-helper-text" onChange = {event => this.props.handleInput(form.index, event)}
-                        value = {this.props.currentInputData[form.index]}/>
-                  </FormControl>
-                </Grid>
-              );
-            })
-          }
-
-          {this.props.isDelete &&
-              <Grid item md = {12} >
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-slide-description">
-                    Are you sure you want to delete this?
-                  </DialogContentText>
-                </DialogContent>
-              </Grid>
-          }
-
-
 
           </Grid>
         </DialogContent>
 
         <DialogActions >
-          <Button onClick={this.props.handleDialogExit} color="primary">
+          <Button onClick={this.props.handleFormExit.bind(this, 'cancel')} color="primary">
             Cancel
           </Button>
-          { this.props.isAdd &&
-            <Button onClick={() => this.props.handleDialogExit()} color="primary">
-              Save
-            </Button>
-          }
-          { this.props.isEdit &&
-            <Button onClick={() => this.props.handleDialogExit()} color="primary">
-              Update
-            </Button>
-          }
-          { this.props.isDelete &&
-            <Button onClick={() => this.props.handleDeleteConfrim()} color="primary">
-              Delete
-            </Button>
-          }
+          <Button onClick={this.props.handleFormExit.bind(this,this.props.action)} color="primary">
+              {this.props.action}
+          </Button>
         </DialogActions>
 
       </Dialog>
@@ -111,5 +75,12 @@ class Form extends React.Component {
   }
 
 }
+const style = theme => ({
+ dialog: {
+   display: 'flex',
+   alignItems: 'center',
+   justifyContent: 'center',
+ }
+});
 
-export default Form;
+export default withStyles(style)(Form);
