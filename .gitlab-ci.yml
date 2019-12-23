@@ -20,7 +20,6 @@ build-stage:
   script:
     - npm install serverless
     - npm install
-    - npm install serverless-s3-sync
     - CI=false npm run build
   artifacts:
     expire_in: 1 hrs
@@ -32,6 +31,7 @@ deploy-stage:
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   script:
     - creds-helper -aws
+    - npm install serverless-s3-sync
     - npx sls deploy
   dependencies:
     - build-stage
