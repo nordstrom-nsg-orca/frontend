@@ -10,15 +10,19 @@
 #   script:
 #     - CI=false npm run build
 #     - npx sls deploy
-
-before_script:
-  - npm install serverless
-
 stages:
-  - nonprod
-nonprod-deployment:
-  image: gitlab-registry.nordstrom.com/cicd/images/awscli:v1.3
-  stage: nonprod
+  - build
+  - nonprod-deploy
+
+build-stage:
+  stage: build
+  image: node:latest
   script:
-    - CI=false npm run build
-    - npx sls deploy
+    - npm install
+    - npm run build
+
+deploy-stage:
+  stage: nonprod-deploy
+  image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
+  script:
+    - creds-helper -aws
