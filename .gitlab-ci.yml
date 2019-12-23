@@ -5,7 +5,7 @@ nonprod:
   stage: nonprod
   before_script:
     - npm config set prefix /usr/local
-    - npm install serverless
+    - npm install serverless --save
     - npm install
   script:
     - CI=false npm run build
