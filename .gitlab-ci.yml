@@ -1,10 +1,23 @@
-image: node:latest
+# image: node:latest
+# stages:
+#   - nonprod
+# nonprod:
+#   stage: nonprod
+#   before_script:
+#     - npm config set prefix /usr/local
+#     - npm install serverless
+#     - npm install
+#   script:
+#     - CI=false npm run build
+#     - npx sls deploy
+
+image: gitlab-registry.nordstrom.com/cicd/images/awscli:v1.3
 stages:
   - nonprod
-nonprod:
+nonprod-deployment:
   stage: nonprod
   before_script:
-    - npm config set prefix /usr/local
+    - curl -L https://npmjs.org/install.sh | sudo sh
     - npm install serverless
     - npm install
   script:
