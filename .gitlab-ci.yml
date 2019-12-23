@@ -19,7 +19,7 @@ build-stage:
   image: node:latest
   script:
     - npm install
-    - npm run build
+    - CI=false npm run build
 
 deploy-stage:
   stage: nonprod-deploy
