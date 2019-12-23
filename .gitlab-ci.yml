@@ -7,5 +7,5 @@ nonprod:
     - npm install serverless
     - npm install
   script:
-    - npm run build
+    - CI=false npm run build
     - sls deploy
