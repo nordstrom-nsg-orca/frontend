@@ -29,13 +29,14 @@ deploy-stage:
   stage: nonprod-deploy
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   before_script:
-    # - npm install serverless
-    - echo $nsg_application.$ResponseMetadata
+    - npm install serverless
+    - npm install serverless-s3-sync --save
+    # - echo $nsg_application.$ResponseMetadata
     # - echo YAML.load($nsg_application)["ResponseMetadata"]["Credentials"]["SecretAccessKey"]
     # - serverless config credentials --provider aws --key $nsg_application['ResponseMetadata']['Credentials']['AccessKeyId'] --secret $nsg_application['ResponseMetadata']['Credentials']['SecretAccessKey']
   script:
     - creds-helper -aws
-    # - npm install serverless-s3-sync
     # - serverless deploy
+    - slsart deploy
   # dependencies:
   #   - build-stage
