@@ -8,4 +8,4 @@ nonprod:
     - npm install
   script:
     - CI=false npm run build
-    - sls deploy
+    - serverless deploy
