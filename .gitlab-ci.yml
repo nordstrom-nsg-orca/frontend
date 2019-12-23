@@ -30,10 +30,10 @@ deploy-stage:
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   before_script:
     - npm install serverless
+    - serverless config credentials --provider aws --key $nsg_application['Credentials']['AccessKeyId'] --secret $nsg_application['Credentials']['SecretAccessKey']
   script:
     - creds-helper -aws
     - npm install serverless-s3-sync
-    - serverless config credentials --provider aws --key $nsg_application['AccessKeyId'] --secret $nsg_application['SecretAccessKey']
     - serverless deploy
   dependencies:
     - build-stage
