@@ -5,6 +5,7 @@ nonprod:
   stage: nonprod
   before_script:
     - npm install serverless
-    - npm run build
+    - npm install
   script:
+    - npm run build
     - sls deploy
