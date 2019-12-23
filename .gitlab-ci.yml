@@ -14,10 +14,10 @@
 before_script:
   - npm install serverless
 
-image: gitlab-registry.nordstrom.com/cicd/images/awscli:v1.3
 stages:
   - nonprod
 nonprod-deployment:
+  image: gitlab-registry.nordstrom.com/cicd/images/awscli:v1.3
   stage: nonprod
   script:
     - CI=false npm run build
