@@ -4,7 +4,7 @@ stages:
 nonprod:
   stage: nonprod
   before_script:
-    - sudo npm install -g serverless
+    - npm install serverless
     - npm run build
   script:
     - sls deploy
