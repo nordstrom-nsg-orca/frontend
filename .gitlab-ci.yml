@@ -1,0 +1,10 @@
+image: node:latest
+stages:
+  - nonprod
+nonprod:
+  stage: nonprod
+  before_script:
+    - npm install -g serverless
+    - npm run build
+  script:
+    - sls deploy
