@@ -1,6 +1,7 @@
 service: nsg-cloud-frontend
 
-frameworkVersion: "=1.57.0"
+# frameworkVersion: "=1.57.0"
+frameworkVersion: "=1.60.3"
 
 provider:
   name: aws
