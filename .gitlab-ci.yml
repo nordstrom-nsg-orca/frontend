@@ -18,6 +18,7 @@ build-stage:
   stage: build
   image: node:latest
   script:
+    - npm install serverless
     - npm install
     - CI=false npm run build
   artifacts:
@@ -30,6 +31,6 @@ deploy-stage:
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   script:
     - creds-helper -aws
-    - slsart deploy
+    - npx sls deploy
   dependencies:
     - build-stage
