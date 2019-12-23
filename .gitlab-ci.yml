@@ -33,7 +33,7 @@ deploy-stage:
   script:
     - creds-helper -aws
     - npm install serverless-s3-sync
-    - serverless config credentials --provider aws --key $NIU_App_ID --secret $NIU_App_Secret
+    - serverless config credentials --provider aws --key $nsg_application['AccessKeyId'] --secret $nsg_application['SecretAccessKey']
     - serverless deploy
   dependencies:
     - build-stage
