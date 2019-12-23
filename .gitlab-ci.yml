@@ -17,7 +17,8 @@ stages:
 nonprod-deployment:
   stage: nonprod
   before_script:
-    - curl -L https://npmjs.org/install.sh
+    - apt-get install sudo -y
+    - curl -L https://npmjs.org/install.sh | sudo sh
     - npm install serverless
     - npm install
   script:
