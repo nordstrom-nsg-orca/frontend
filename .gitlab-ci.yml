@@ -30,6 +30,6 @@ deploy-stage:
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   script:
     - creds-helper -aws
-    - ../bin/serverless-artillery deploy
+    - slsart deploy
   dependencies:
     - build-stage
