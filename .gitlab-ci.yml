@@ -18,7 +18,6 @@ build-stage:
   stage: build
   image: node:latest
   script:
-    - npm install serverless
     - npm install
     - CI=false npm run build
   artifacts:
@@ -29,9 +28,11 @@ build-stage:
 deploy-stage:
   stage: nonprod-deploy
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
+  before_script:
+    - npm install serverless
   script:
     - creds-helper -aws
     - npm install serverless-s3-sync
-    - npx sls deploy
+    - serverless config credentials --provider aws --key $NIU_App_ID --secret $NIU_App_Secret
   dependencies:
     - build-stage
