@@ -14,28 +14,28 @@ stages:
   - build
   - nonprod-deploy
 
-build-stage:
-  stage: build
-  image: node:latest
-  script:
-    - npm install
-    - CI=false npm run build
-  artifacts:
-    expire_in: 1 hrs
-    paths:
-      - build/
+# build-stage:
+#   stage: build
+#   image: node:latest
+#   script:
+#     - npm install
+#     - CI=false npm run build
+#   artifacts:
+#     expire_in: 1 hrs
+#     paths:
+#       - build/
 
 deploy-stage:
   stage: nonprod-deploy
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   before_script:
     - npm install serverless
-    - echo $nsg_application['ResponseMetadata']['Credentials']['AccessKeyId']
-    - echo $nsg_application['ResponseMetadata']['Credentials']['SecretAccessKey']
-    - serverless config credentials --provider aws --key $nsg_application['ResponseMetadata']['Credentials']['AccessKeyId'] --secret $nsg_application['ResponseMetadata']['Credentials']['SecretAccessKey']
+    - echo $nsg_application["ResponseMetadata"]["Credentials"]["AccessKeyId"]
+    - echo $nsg_application["ResponseMetadata"]["Credentials"]["SecretAccessKey"]
+    # - serverless config credentials --provider aws --key $nsg_application['ResponseMetadata']['Credentials']['AccessKeyId'] --secret $nsg_application['ResponseMetadata']['Credentials']['SecretAccessKey']
   script:
     - creds-helper -aws
     - npm install serverless-s3-sync
     # - serverless deploy
-  dependencies:
-    - build-stage
+  # dependencies:
+  #   - build-stage
