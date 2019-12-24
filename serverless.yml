@@ -1,6 +1,7 @@
 service: nsg-cloud-frontend
 
-frameworkVersion: "=1.57.0"
+frameworkVersion: "=1.54.0" # for CI job
+# frameworkVersion: "=1.60.3"
 
 provider:
   name: aws
@@ -36,7 +37,6 @@ resources:
           PriceClass: PriceClass_100
           Aliases:
             - ${self:custom.domainName}
-            - !Sub www.${self:custom.domainName}
           DefaultRootObject: index.html
           Origins:
             -
