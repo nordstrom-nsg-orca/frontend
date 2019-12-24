@@ -16,15 +16,12 @@ build-stage:
 
 deploy-stage:
   stage: nonprod-deploy
-  image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
+  image: gitlab-registry.nordstrom.com/cicd/images/awscli:v1.3
   before_script:
     - npm install serverless
     - npm install serverless-s3-sync --save
-    # - serverless config credentials --provider aws --key ASIAQVYBT6QENZPUWUK3 --secret bztNl5qwv9rpg3J9V0hAIHFWoMKoDvZZG8AV7OgG
-    # - serverless config credentials --provider aws --key $nsg_application['ResponseMetadata']['Credentials']['AccessKeyId'] --secret $nsg_application['ResponseMetadata']['Credentials']['SecretAccessKey']
   script:
     - creds-helper -aws
     - AWS_PROFILE=arnawsiam046711174152rolensgNIUapplication serverless deploy
-    # - slsart deploy
   dependencies:
     - build-stage
