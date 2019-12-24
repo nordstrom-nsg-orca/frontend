@@ -16,7 +16,7 @@ build-stage:
 
 deploy-stage:
   stage: nonprod-deploy
-  image: gitlab-registry.nordstrom.com/cicd/images/awscli:v1.3
+  image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   before_script:
     - npm install serverless
     - npm install serverless-s3-sync --save
