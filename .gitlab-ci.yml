@@ -22,11 +22,11 @@ deploy-stage:
     - npm install serverless-s3-sync --save
     # - echo $nsg_application.$ResponseMetadata
     # - echo YAML.load($nsg_application)["ResponseMetadata"]["Credentials"]["SecretAccessKey"]
-    - serverless config credentials --provider aws --key ASIAQVYBT6QENZPUWUK3 --secret bztNl5qwv9rpg3J9V0hAIHFWoMKoDvZZG8AV7OgG
+    # - serverless config credentials --provider aws --key ASIAQVYBT6QENZPUWUK3 --secret bztNl5qwv9rpg3J9V0hAIHFWoMKoDvZZG8AV7OgG
     # - serverless config credentials --provider aws --key $nsg_application['ResponseMetadata']['Credentials']['AccessKeyId'] --secret $nsg_application['ResponseMetadata']['Credentials']['SecretAccessKey']
   script:
     - creds-helper -aws
-    - serverless deploy
+    - AWS_PROFILE=arnawsiam046711174152rolensgNIUapplication serverless deploy
     # - slsart deploy
   dependencies:
     - build-stage
