@@ -34,6 +34,7 @@ resources:
       Properties:
         DistributionConfig:
           Enabled: true
+          Comment: "testing redeployment"
           PriceClass: PriceClass_100
           Aliases:
             - ${self:custom.domainName}
@@ -46,17 +47,34 @@ resources:
                 HTTPPort: 80
                 HTTPSPort: 443
                 OriginProtocolPolicy: http-only
+          CacheBehaviors:
+            -
+              TargetOriginId: S3Origin
+              AllowedMethods:
+                - GET
+                - HEAD
+              ForwardedValues:
+                QueryString: false
+                Cookies:
+                 Forward: none
+              DefaultTTL: 60
+              MinTTL: 60
+              MaxTTL: 100
+              PathPattern: '/*'
+              ViewerProtocolPolicy: redirect-to-https
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
             AllowedMethods:
               - GET
               - HEAD
             Compress: true
+            DefaultTTL: 60
+            MinTTL: 60
+            MaxTTL: 100
             ForwardedValues:
               QueryString: false
               Cookies:
                Forward: none
-            # ViewerProtocolPolicy: allow-all
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate:
             AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/5a47ab9f-04ac-405a-b1bc-cf7e45fa589a
