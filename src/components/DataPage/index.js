@@ -44,6 +44,12 @@ class DataPage extends React.Component {
       this.props.actions.delete(this.state.formData);
     else if (action === 'create')
       this.props.actions.create(this.state.formData, this.state.currentTableName);
+    if (action === 'updateTable') {
+      this.props.actions.updateTable(this.state.formData);
+    } else if (action === 'deleteTable')
+      this.props.actions.deleteTable(this.state.formData);
+    else if (action === 'createTable')
+      this.props.actions.createTable(this.state.formData);
 
     this.setState({
       // formAction: null,
@@ -60,12 +66,16 @@ class DataPage extends React.Component {
       data = {};
       for (let i in this.props.headers)
         data[this.props.headers[i]] = '';
+    } else if (action === 'createTable') {
+      data = {};
+      for (let i in this.props.parentheaders)
+        data[this.props.parentheaders[i]] = '';
     }
-    console.log(data);
+    let headers = (action.includes('Table'))? this.props.parentheaders : this.props.headers;
     this.setState({
       formOpen: true,
       formAction: action,
-      formHeaders: this.props.headers,
+      formHeaders: headers,
       formData: data,
       currentID: id,
       currentTableName: tableId
@@ -205,7 +215,7 @@ class DataPage extends React.Component {
         )}
 
         <Grid item md = {12} align ='center'>
-            <IconButton color='inherit' onClick={this.props.createTable}>
+            <IconButton color='inherit' onClick={this.handleAction.bind(this,'createTable')}>
               <PlaylistAddRoundedIcon className={this.props.classes.createNewTableButton}/>
             </IconButton>
 
