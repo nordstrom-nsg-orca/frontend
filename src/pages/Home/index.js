@@ -1,15 +1,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { withAuth } from '@okta/okta-react';
-import { Redirect } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 class Home extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
   }

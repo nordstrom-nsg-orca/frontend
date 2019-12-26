@@ -15,7 +15,12 @@ class ACLList extends React.Component {
   }
 
   loadData = async () => {
-    const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`)
+    console.log('LOADDATA');
+    const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`, {
+      headers: {
+        Authorization: `Bearer ${this.props.token}`
+      }
+    })
     const json = await resp.json();
     this.setState({
       data: json[0].results.data,
@@ -29,6 +34,9 @@ class ACLList extends React.Component {
     delete data['id'];
     const resp = await fetch(url, {
       method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this.props.token}`
+      },
       body: JSON.stringify(data)
     });
     if (resp.ok)
@@ -38,7 +46,10 @@ class ACLList extends React.Component {
   delete = async (data) => {
     let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/${data.id}`;
     const resp = await fetch(url, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${this.props.token}`
+      }
     });
     if (resp.ok)
       this.loadData(); 
@@ -49,7 +60,10 @@ class ACLList extends React.Component {
     data['list_id'] = id;
     const resp = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${this.props.token}`
+      }
     });
     console.log(resp);
     if (resp.ok)
@@ -61,7 +75,10 @@ class ACLList extends React.Component {
     delete data['id'];
     const resp = await fetch(url, {
       method: 'PUT',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${this.props.token}`
+      }
     });
     if (resp.ok)
       this.loadData();
@@ -70,17 +87,24 @@ class ACLList extends React.Component {
   deleteTable = async (data) => {
     let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/${data.id}`;
     const resp = await fetch(url, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${this.props.token}`
+      }
     });
     if (resp.ok)
       this.loadData(); 
   }
 
-  createTable = async (data, id) => {
+  createTable = async (data) => {
+    console.log('hey');
     let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/`;
     const resp = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${this.props.token}`
+      }
     });
     if (resp.ok)
       this.loadData(); 

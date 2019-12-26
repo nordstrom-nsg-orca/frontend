@@ -36,10 +36,12 @@ class App extends React.Component {
     const authenticated = await this.props.auth.isAuthenticated();
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
+      const token = await this.props.auth.getAccessToken();
       this.setState({
         auth: {
           authenticated: authenticated,
           user: userinfo,
+          token: token
         }
       });
     }
@@ -57,7 +59,8 @@ class App extends React.Component {
     this.setState({
       auth: {
         authenticated: false,
-        user: null
+        user: null,
+        token: null
       }
     });
   }
@@ -67,11 +70,15 @@ class App extends React.Component {
       <div>
     	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
         {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
-        {this.state.auth.authenticated && <Route path='/' exact={true} component={Dashboard} />}
-        <Route path='/implicit/callback' component={ImplicitCallback} />
-        <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
-        <SecureRoute path='/acl' component={ACL} />
-        <SecureRoute path='/secret' component={Secret} />
+        {this.state.auth.authenticated &&
+          <div>
+            <Route path='/' exact={true} component={Dashboard} />
+            <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.token} />} />
+            <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
+            <SecureRoute path='/secret' component={Secret} />
+          </div>
+        }
+        <Route path='/implicit/callback' component={ImplicitCallback} />       
       </Navbar>
       </div>
     );

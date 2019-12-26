@@ -7,24 +7,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
-import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
-import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
-import Input from '@material-ui/core/Input';
 import IconButton from "@material-ui/core/IconButton";
-
-
-const popoverMessages = {
-  add: 'Create',
-  update: 'Edit',
-  delete: 'Delete',
-  encrypt: 'Encrypt',
-  addTable: 'Create Table',
-  deleteTable: 'Delete Table'
-};
-
 
 class DataTable extends React.Component {
 
@@ -44,7 +28,7 @@ class DataTable extends React.Component {
           <div style={{marginLeft: 'auto', paddingRight: '24px'}}>
           {this.props.actionButtons.map((action, index) =>
             <IconButton key={index} size='small' color='inherit'
-              onClick={this.props.handleAction.bind(this, action.name, this.props.data.id, null, this.props.data.name)}>
+              onClick={this.props.handleAction.bind(this, `${action.name}Table`, this.props.data.id, null, {'name':this.props.data.name,'id':this.props.data.id})}>
               {action.icon}
             </IconButton>
           )}
