@@ -27,7 +27,7 @@ deploy-stage:
     - npm install serverless-s3-sync --save
   script:
     - creds-helper -aws
-    - AWS_PROFILE=arnawsiam046711174152rolensgNIUapplication serverless deploy
+    - AWS_PROFILE=arnawsiam046711174152rolensgcirole serverless deploy
   dependencies:
     - build-stage
   only:
