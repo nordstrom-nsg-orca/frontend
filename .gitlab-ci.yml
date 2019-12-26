@@ -6,6 +6,9 @@ stages:
 build-stage:
   stage: build
   image: node:latest
+  before_script:
+    - chmod +x setup_env.sh
+    - ./setup_env.sh
   script:
     - npm install
     - CI=false npm run build
