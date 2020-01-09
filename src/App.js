@@ -37,11 +37,19 @@ class App extends React.Component {
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
       const token = await this.props.auth.getAccessToken();
+      console.log('Retrieving api key...');
+      const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/retrieveKey`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+      const json = await resp.json();
       this.setState({
         auth: {
           authenticated: authenticated,
           user: userinfo,
-          token: token
+          token: token,
+          apiKey: json.apiKey
         }
       });
     }
@@ -73,12 +81,12 @@ class App extends React.Component {
         {this.state.auth.authenticated &&
           <div>
             <Route path='/' exact={true} component={Dashboard} />
-            <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.token} />} />
+            <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
             <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
             <SecureRoute path='/secret' component={Secret} />
           </div>
         }
-        <Route path='/implicit/callback' component={ImplicitCallback} />       
+        <Route path='/implicit/callback' component={ImplicitCallback} />
       </Navbar>
       </div>
     );

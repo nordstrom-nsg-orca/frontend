@@ -18,7 +18,7 @@ class Topbar extends React.Component {
   }
 
   handleMenu = (e) => {
-    console.log(this.props.auth);
+    // console.log(this.props.auth);
     if (this.props.auth.user == null) {
       this.props.login();
       return;
@@ -43,13 +43,16 @@ class Topbar extends React.Component {
 
   render() {
     const { classes } = this.props;
-
+    let link;
+    if (this.props.auth.authenticated) {
+      link = '/dashboard';
+    } else link = '/';
     return (
       <div className={classes.root}>
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            <Link to="/dashboard">
+            <Link to={link}>
               <img className={classes.logo} src="/images/logo.svg" alt="NSG_LOGO"/>
             </Link>
 
