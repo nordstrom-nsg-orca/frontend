@@ -6,27 +6,34 @@ class ACLList extends React.Component {
     super(props);
     this.state = {
       data:  [],
-      headers: []
+      headers: [],
+      error: false,
     };
   }
 
   async componentDidMount() {
-    this.loadData();
+    this.loadData()
   }
 
   loadData = async () => {
     console.log('LOADDATA');
     const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`, {
       headers: {
-        Authorization: `Bearer ${this.props.token}`
+        'x-api-key': `${this.props.apiKey}`
       }
-    })
-    const json = await resp.json();
-    this.setState({
-      data: json[0].results.data,
-      headers: json[0].results.headers,
-      parentheaders: json[0].results.parentheaders
     });
+    const json = await resp.json();
+    if (resp.status !== 200) {
+      console.log(json.msg);
+      this.setState({error: true});
+    } else {
+      this.setState({
+        data: json[0].results.data,
+        headers: json[0].results.headers,
+        parentheaders: json[0].results.parentheaders
+      });
+    }
+
   }
 
   update = async (data) => {
@@ -35,7 +42,7 @@ class ACLList extends React.Component {
     const resp = await fetch(url, {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${this.props.token}`
+        'x-api-key': `${this.props.apiKey}`
       },
       body: JSON.stringify(data)
     });
@@ -48,11 +55,11 @@ class ACLList extends React.Component {
     const resp = await fetch(url, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${this.props.token}`
+        'x-api-key': `${this.props.apiKey}`
       }
     });
     if (resp.ok)
-      this.loadData(); 
+      this.loadData();
   }
 
   create = async (data, id) => {
@@ -62,12 +69,12 @@ class ACLList extends React.Component {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
-        Authorization: `Bearer ${this.props.token}`
+        'x-api-key': `${this.props.apiKey}`
       }
     });
     console.log(resp);
     if (resp.ok)
-      this.loadData(); 
+      this.loadData();
   }
 
   updateTable = async (data) => {
@@ -77,7 +84,7 @@ class ACLList extends React.Component {
       method: 'PUT',
       body: JSON.stringify(data),
       headers: {
-        Authorization: `Bearer ${this.props.token}`
+        'x-api-key': `${this.props.apiKey}`
       }
     });
     if (resp.ok)
@@ -89,11 +96,11 @@ class ACLList extends React.Component {
     const resp = await fetch(url, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${this.props.token}`
+        'x-api-key': `${this.props.apiKey}`
       }
     });
     if (resp.ok)
-      this.loadData(); 
+      this.loadData();
   }
 
   createTable = async (data) => {
@@ -103,11 +110,11 @@ class ACLList extends React.Component {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
-        Authorization: `Bearer ${this.props.token}`
+        'x-api-key': `${this.props.apiKey}`
       }
     });
     if (resp.ok)
-      this.loadData(); 
+      this.loadData();
   }
 
 
@@ -122,17 +129,26 @@ class ACLList extends React.Component {
       'deleteTable': this.deleteTable,
       'updateTable': this.updateTable,
     };
-    
+
     return (
       <div>
-        <DataPage
-          title='ACL Management'
-          headers={this.state.headers}
-          parentheaders={this.state.parentheaders}
-          data={this.state.data}
-          tables={true}
-          actions={actions}
-        />
+        {!this.state.error &&
+          <DataPage
+            title='ACL Management'
+            headers={this.state.headers}
+            parentheaders={this.state.parentheaders}
+            data={this.state.data}
+            tables={true}
+            actions={actions}
+          />
+        }
+        { this.state.error &&
+          <div align = 'center' style={{fontSize: '1.5em'}}>
+
+            Sorry, something went wrong. We are looking into it.
+
+          </div>
+        }
       </div>
 
     );
