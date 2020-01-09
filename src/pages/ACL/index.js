@@ -17,104 +17,133 @@ class ACLList extends React.Component {
 
   loadData = async () => {
     console.log('LOADDATA');
-    const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`, {
-      headers: {
-        'x-api-key': `${this.props.apiKey}`
-      }
-    });
-    const json = await resp.json();
-    if (resp.status !== 200) {
-      console.log(json.msg);
-      this.setState({error: true});
-    } else {
-      this.setState({
-        data: json[0].results.data,
-        headers: json[0].results.headers,
-        parentheaders: json[0].results.parentheaders
+    try {
+        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`, {
+        headers: {
+          'x-api-key': `${this.props.apiKey}`
+        }
       });
+      const json = await resp.json();
+      if (resp.status !== 200) {
+        console.log(json.msg);
+        this.setState({error: true});
+      } else {
+        this.setState({
+          data: json[0].results.data,
+          headers: json[0].results.headers,
+          parentheaders: json[0].results.parentheaders
+        });
+      }
+    } catch (err) {
+      if (err) this.setState({error: true});
     }
 
   }
 
   update = async (data) => {
-    let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/${data.id}`;
-    delete data['id'];
-    const resp = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'x-api-key': `${this.props.apiKey}`
-      },
-      body: JSON.stringify(data)
-    });
-    if (resp.ok)
-      this.loadData();
+    try {
+      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/${data.id}`;
+      delete data['id'];
+      const resp = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'x-api-key': `${this.props.apiKey}`
+        },
+        body: JSON.stringify(data)
+      });
+      if (resp.ok)
+        this.loadData();
+    } catch (err) {
+      if (err) this.setState({error: true});
+    }
+
   }
 
   delete = async (data) => {
-    let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/${data.id}`;
-    const resp = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'x-api-key': `${this.props.apiKey}`
-      }
-    });
-    if (resp.ok)
-      this.loadData();
+    try {
+      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/${data.id}`;
+      const resp = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'x-api-key': `${this.props.apiKey}`
+        }
+      });
+      if (resp.ok)
+        this.loadData();
+    } catch(err) {
+      if(err) this.setState({error: true});
+    }
+
   }
 
   create = async (data, id) => {
-    let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/`;
-    data['list_id'] = id;
-    const resp = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'x-api-key': `${this.props.apiKey}`
-      }
-    });
-    console.log(resp);
-    if (resp.ok)
-      this.loadData();
+    try {
+      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/`;
+      data['list_id'] = id;
+      const resp = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'x-api-key': `${this.props.apiKey}`
+        }
+      });
+      console.log(resp);
+      if (resp.ok)
+        this.loadData();
+    } catch(err) {
+      if(err) this.setState({error: true});
+    }
   }
 
   updateTable = async (data) => {
-    let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/${data.id}`;
-    delete data['id'];
-    const resp = await fetch(url, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-      headers: {
-        'x-api-key': `${this.props.apiKey}`
-      }
-    });
-    if (resp.ok)
-      this.loadData();
+    try {
+      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/${data.id}`;
+      delete data['id'];
+      const resp = await fetch(url, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+          'x-api-key': `${this.props.apiKey}`
+        }
+      });
+      if (resp.ok)
+        this.loadData();
+    } catch(err) {
+      if(err) this.setState({error: true});
+    }
   }
 
   deleteTable = async (data) => {
-    let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/${data.id}`;
-    const resp = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'x-api-key': `${this.props.apiKey}`
-      }
-    });
-    if (resp.ok)
-      this.loadData();
+    try {
+      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/${data.id}`;
+      const resp = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'x-api-key': `${this.props.apiKey}`
+        }
+      });
+      if (resp.ok)
+        this.loadData();
+    } catch(err) {
+      if(err) this.setState({error: true});
+    }
   }
 
   createTable = async (data) => {
-    console.log('hey');
-    let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/`;
-    const resp = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'x-api-key': `${this.props.apiKey}`
-      }
-    });
-    if (resp.ok)
-      this.loadData();
+    try {
+      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'x-api-key': `${this.props.apiKey}`
+        }
+      });
+      if (resp.ok)
+        this.loadData();
+    } catch(err) {
+      if(err) this.setState({error: true});
+    }
   }
 
 
