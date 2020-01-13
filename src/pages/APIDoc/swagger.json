@@ -1,0 +1,171 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "NSG Database API",
+    "description": "This is NSG endpoints to interact with ACLs data",
+    "version": "0.1"
+  },
+  "host": "girm9btzs7.execute-api.us-west-2.amazonaws.com",
+  "basePath": "/nonprod",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/api/{table}": {
+      "get": {
+        "summary": "Returns the rows of the specified table",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "table",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Table name to query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          },
+          "500": {
+            "description": "Database error"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Creates a table in the database with the specified name",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "table",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Table name to create"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          },
+          "500": {
+            "description": "Database error"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+
+    "/api/{table}/{id}": {
+      "delete": {
+        "summary": "Delete data in the database",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "table",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Table name to delete"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID of the data to be deleted"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          },
+          "500": {
+            "description": "Database error"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+
+      },
+      "put": {
+        "summary": "Update data in the database",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "table",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Table name to update"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID of the data to be updated"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          },
+          "500": {
+            "description": "Database error"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    }
+
+  },
+
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "x-api-key",
+      "in": "header"
+    }
+  }
+}

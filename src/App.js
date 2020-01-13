@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ACL from './pages/ACL';
 import Secret from './pages/Secret';
+import APIDoc from './pages/APIDoc';
+
 
 
 import './App.css';
@@ -21,15 +23,22 @@ class App extends React.Component {
       auth: {
         user: null,
         authenticated: false,
-      }
+      },
+      isAPIDocPath: false,
     };
   }
 
-  async componentDidMount() { console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication(); }
+  async componentDidMount() {
+    console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication();
+    if (window.location.href === window.location.origin + '/api/doc') {
+      this.setState({isAPIDocPath: true});
+    } else this.setState({isAPIDocPath: false});
+  }
   async componentDidUpdate() {
     if (!this.state.auth.authenticated) {
       this.checkAuthentication();
     }
+
   }
 
   async checkAuthentication() {
@@ -76,19 +85,29 @@ class App extends React.Component {
   render() {
     return (
       <div>
-    	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
-        {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
-        {this.state.auth.authenticated &&
+        { (this.state.isAPIDocPath) &&
+          <Route path='/api/doc' component={APIDoc}/>
+        }
+        { !this.state.isAPIDocPath  &&
           <div>
-            <Route path='/' exact={true} component={Dashboard} />
-            <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
-            <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
-            <SecureRoute path='/secret' component={Secret} />
+        	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
+            {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
+            {this.state.auth.authenticated &&
+              <div>
+                <Route path='/' exact={true} component={Dashboard} />
+                <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
+                <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
+                <SecureRoute path='/secret' component={Secret} />
+
+              </div>
+            }
+            <Route path='/implicit/callback' component={ImplicitCallback} />
+          </Navbar>
           </div>
         }
-        <Route path='/implicit/callback' component={ImplicitCallback} />
-      </Navbar>
+
       </div>
+
     );
   }
 }
