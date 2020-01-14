@@ -1,6 +1,6 @@
 service: nsg-cloud-frontend
 
-frameworkVersion: "=1.54.0" # for CI job
+frameworkVersion: ">=1.54.0" # for CI job
 # frameworkVersion: "=1.60.3"
 
 provider:
@@ -12,14 +12,6 @@ provider:
 
 resources:
   Resources:
-    # nsgCloudFrontEnd:
-    #   Type: AWS::S3::Bucket
-    #   Properties:
-    #     BucketName: nsg-fire-dragon
-    #     AccessControl: PublicReadWrite
-    #     WebsiteConfiguration:
-    #       IndexDocument: index.html
-    #       ErrorDocument: index.html
     nsgweb:
       Type: AWS::S3::Bucket
       Properties:
@@ -47,7 +39,44 @@ resources:
                 HTTPPort: 80
                 HTTPSPort: 443
                 OriginProtocolPolicy: http-only
+            # added this here
+            -
+              DomainName: girm9btzs7.execute-api.us-west-2.amazonaws.com
+              Id: APIGatewayOrigin
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
           CacheBehaviors:
+            # added this here
+            -
+              TargetOriginId: APIGatewayOrigin
+              DefaultTTL: 60
+              MinTTL: 60
+              MaxTTL: 100
+              PathPattern: '/nonprod/api/*'
+              ViewerProtocolPolicy: https-only
+              AllowedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+                - PUT
+                - PATCH
+                - POST
+                - DELETE
+              CachedMethods: #cache only on get requests
+                - GET
+                - HEAD
+                - OPTIONS
+              Compress: true
+              ForwardedValues:
+                Headers: #define explicit headers, since API Gateway doesn't work otherwise
+                  - Accept-*
+                  - Referer
+                  - Authorization
+                  - Content-Type
+                  - Origin
+                QueryString: true
             -
               TargetOriginId: S3Origin
               AllowedMethods:
@@ -62,6 +91,7 @@ resources:
               MaxTTL: 100
               PathPattern: '/*'
               ViewerProtocolPolicy: redirect-to-https
+
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
             AllowedMethods:
@@ -72,9 +102,7 @@ resources:
             MinTTL: 60
             MaxTTL: 100
             ForwardedValues:
-              QueryString: false
-              Cookies:
-               Forward: none
+              QueryString: true
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate:
             AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/5a47ab9f-04ac-405a-b1bc-cf7e45fa589a
@@ -96,9 +124,6 @@ custom:
   webEndpoint: s3-website-us-west-2.amazonaws.com
   # uploads npm run build to S3
   s3Sync:
-    # - bucketName: nsg-fire-dragon
-    #   localDir: build
-    #   acl: public-read-write
     - bucketName: ${self:custom.domainName}
       localDir: build
       acl: public-read-write
