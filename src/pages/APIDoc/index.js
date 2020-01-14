@@ -25,4 +25,3 @@ class APIDoc extends React.Component {
 }
 
 export default APIDoc;
-// https://girm9btzs7.execute-api.us-west-2.amazonaws.com/nonprod
