@@ -10,7 +10,6 @@ class APIDoc extends React.Component {
     };
   }
   componentDidMount() {
-    // console.log(JSON.stringify(swagger));
 
   }
 

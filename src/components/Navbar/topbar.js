@@ -7,7 +7,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 class Topbar extends React.Component {
   constructor(props) {
@@ -56,9 +58,21 @@ class Topbar extends React.Component {
               <img className={classes.logo} src="/images/logo.svg" alt="NSG_LOGO"/>
             </Link>
 
-            <Button color="inherit" className={classes.user} onClick={this.handleMenu}>
-              {this.props.auth.user != null? this.props.auth.user.name : "Login"}
-            </Button>
+            <div className={classes.user} >
+              {this.props.auth.user != null &&
+                <Link to="/api/doc" target='_blank'>
+                  <Tooltip title="API Documentation" placement="down">
+                    <IconButton tooltip="API Documentation" style = {{color: "white"}}>
+                        <DescriptionRoundedIcon/>
+                    </IconButton>
+                  </Tooltip>
+                </Link>
+              }
+              <Button color="inherit" onClick={this.handleMenu}>
+                {this.props.auth.user != null? this.props.auth.user.name : "Login"}
+              </Button>
+            </div>
+
 
             <Menu anchorEl={this.state.userAnchor} keepMounted className={classes.menu}
               open={Boolean(this.state.userAnchor)} onClose={this.handleCloseMenu}>
@@ -91,6 +105,9 @@ const styles = theme => ({
   },
   user: {
     marginLeft: 'auto',
+  },
+  docLogo: {
+    marginLeft: '80%'
   }
 });
 

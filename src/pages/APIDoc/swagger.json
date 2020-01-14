@@ -5,7 +5,7 @@
     "description": "This is NSG endpoints to interact with ACLs data",
     "version": "0.1"
   },
-  "host": "girm9btzs7.execute-api.us-west-2.amazonaws.com",
+  "host": "nsg-nonprod.nordstrom.net",
   "basePath": "/nonprod",
   "schemes": [
     "https"

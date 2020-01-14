@@ -53,7 +53,6 @@ class App extends React.Component {
             Authorization: `Bearer ${token}`
           },
         });
-        console.log(resp);
         const json = await resp.json();
         this.setState({
           auth: {
