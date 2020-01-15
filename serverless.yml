@@ -51,9 +51,9 @@ resources:
             # added this here
             -
               TargetOriginId: APIGatewayOrigin
-              DefaultTTL: 60
-              MinTTL: 60
-              MaxTTL: 100
+              DefaultTTL: 0
+              MinTTL: 0
+              MaxTTL: 0
               PathPattern: '/nonprod/api/*'
               ViewerProtocolPolicy: https-only
               AllowedMethods:
