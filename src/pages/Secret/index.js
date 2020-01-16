@@ -147,7 +147,7 @@ class Secret extends React.Component {
       'deleteTable': this.deleteTable,
       'updateTable': this.updateTable,
     };
-    // const tables = ['API Keys'];
+
     return (
       <div>
         <DataPage

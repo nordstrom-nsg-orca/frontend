@@ -20,7 +20,7 @@ class ACLList extends React.Component {
     try {
         const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`, {
         headers: {
-          'x-api-key': `${this.props.apiKey}`
+          // 'x-api-key': `${this.props.apiKey}`
         }
       });
       const json = await resp.json();
@@ -35,6 +35,15 @@ class ACLList extends React.Component {
         });
       }
     } catch (err) {
+
+      // const resp = await fetch("https://hooks.slack.com/services/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", {
+      //   method: 'POST',
+      //   body: JSON.stringify({
+      //     "text": "Hello World! Testing"
+      //   })
+      // });
+      // console.log(resp);
+      console.log(err);
       if (err) this.setState({error: true});
     }
 

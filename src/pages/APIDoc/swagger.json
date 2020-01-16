@@ -3,7 +3,11 @@
   "info": {
     "title": "NSG Database API",
     "description": "This is NSG endpoints to interact with ACLs data",
-    "version": "0.1"
+    "version": "0.1",
+    "contact": {
+      "name": "Developers",
+      "email": "developers@amazing.com"
+    }
   },
   "host": "nsg-nonprod.nordstrom.net",
   "basePath": "/nonprod",

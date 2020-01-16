@@ -8,8 +8,6 @@ provider:
   stage: nonprod
   region: us-west-2
 
-
-
 resources:
   Resources:
     nsgweb:
@@ -89,7 +87,7 @@ resources:
               DefaultTTL: 60
               MinTTL: 60
               MaxTTL: 100
-              PathPattern: '/*'
+              PathPattern: '/' ## change from /* to /
               ViewerProtocolPolicy: redirect-to-https
 
           DefaultCacheBehavior:
