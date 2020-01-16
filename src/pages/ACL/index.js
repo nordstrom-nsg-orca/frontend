@@ -20,7 +20,7 @@ class ACLList extends React.Component {
     try {
         const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`, {
         headers: {
-          // 'x-api-key': `${this.props.apiKey}`
+          'x-api-key': `${this.props.apiKey}`
         }
       });
       const json = await resp.json();
@@ -43,7 +43,7 @@ class ACLList extends React.Component {
       //   })
       // });
       // console.log(resp);
-      console.log(err);
+      // console.log(err);
       if (err) this.setState({error: true});
     }
 
