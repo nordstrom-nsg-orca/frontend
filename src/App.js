@@ -24,15 +24,11 @@ class App extends React.Component {
         user: null,
         authenticated: false,
       },
-      isAPIDocPath: false,
     };
   }
 
   async componentDidMount() {
     console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication();
-    if (window.location.href === window.location.origin + '/api/doc') {
-      this.setState({isAPIDocPath: true});
-    } else this.setState({isAPIDocPath: false});
   }
   async componentDidUpdate() {
     if (!this.state.auth.authenticated) {
@@ -90,10 +86,8 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        { (this.state.isAPIDocPath) &&
           <Route path='/api/doc' component={APIDoc}/>
-        }
-        { !this.state.isAPIDocPath  &&
+         { window.location.href !== window.location.origin + '/api/doc' &&
           <div>
         	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
             {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
@@ -109,7 +103,7 @@ class App extends React.Component {
             <Route path='/implicit/callback' component={ImplicitCallback} />
           </Navbar>
           </div>
-        }
+          }
 
       </div>
 
