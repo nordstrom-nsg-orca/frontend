@@ -106,9 +106,6 @@ const styles = theme => ({
   user: {
     marginLeft: 'auto',
   },
-  docLogo: {
-    marginLeft: '80%'
-  }
 });
 
 export default withStyles(styles)(Topbar);
