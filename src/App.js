@@ -87,7 +87,7 @@ class App extends React.Component {
     return (
       <div>
           <Route path='/api/doc' component={APIDoc}/>
-         { window.location.href !== window.location.origin + '/api/doc' &&
+         { window.location.pathname !== '/api/doc' &&
           <div>
         	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
             {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
