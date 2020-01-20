@@ -14,7 +14,8 @@
     "react-native-dotenv": "^0.2.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
-    "serverless-s3-sync": "^1.9.2"
+    "serverless-s3-sync": "^1.9.2",
+    "swagger-ui-react": "^3.24.3"
   },
   "scripts": {
     "start": "cross-env REACT_APP_VERSION=0.1.0 react-scripts start",

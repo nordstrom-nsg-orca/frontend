@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ACL from './pages/ACL';
 import Secret from './pages/Secret';
+import APIDoc from './pages/APIDoc';
+
 
 
 import './App.css';
@@ -21,15 +23,18 @@ class App extends React.Component {
       auth: {
         user: null,
         authenticated: false,
-      }
+      },
     };
   }
 
-  async componentDidMount() { console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication(); }
+  async componentDidMount() {
+    console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication();
+  }
   async componentDidUpdate() {
     if (!this.state.auth.authenticated) {
       this.checkAuthentication();
     }
+
   }
 
   async checkAuthentication() {
@@ -38,20 +43,25 @@ class App extends React.Component {
       const userinfo = await this.props.auth.getUser();
       const token = await this.props.auth.getAccessToken();
       console.log('Retrieving api key...');
-      const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/retrieveKey`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-      });
-      const json = await resp.json();
-      this.setState({
-        auth: {
-          authenticated: authenticated,
-          user: userinfo,
-          token: token,
-          apiKey: json.apiKey
-        }
-      });
+      try {
+        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/retrieveKey`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        });
+        const json = await resp.json();
+        this.setState({
+          auth: {
+            authenticated: authenticated,
+            user: userinfo,
+            token: token,
+            apiKey: json.apiKey
+          }
+        });
+      } catch(err) {
+        console.log(err);
+      }
+
     }
   }
 
@@ -76,19 +86,27 @@ class App extends React.Component {
   render() {
     return (
       <div>
-    	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
-        {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
-        {this.state.auth.authenticated &&
+          <Route path='/api/doc' component={APIDoc}/>
+         { window.location.pathname !== '/api/doc' &&
           <div>
-            <Route path='/' exact={true} component={Dashboard} />
-            <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
-            <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
-            <SecureRoute path='/secret' component={Secret} />
+        	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
+            {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
+            {this.state.auth.authenticated &&
+              <div>
+                <Route path='/' exact={true} component={Dashboard} />
+                <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
+                <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
+                <SecureRoute path='/secret' component={Secret} />
+
+              </div>
+            }
+            <Route path='/implicit/callback' component={ImplicitCallback} />
+          </Navbar>
           </div>
-        }
-        <Route path='/implicit/callback' component={ImplicitCallback} />
-      </Navbar>
+          }
+
       </div>
+
     );
   }
 }

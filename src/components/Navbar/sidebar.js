@@ -27,11 +27,11 @@ const pages = [
     "text": "Edit ACLs",
     "icon": <ViewHeadlineIcon />
   },
-  {
-    "url": "/secret",
-    "text": "Secret Management",
-    "icon": <EnhancedEncryptionRoundedIcon />
-  },
+  // {
+  //   "url": "/secret",
+  //   "text": "Secret Management",
+  //   "icon": <EnhancedEncryptionRoundedIcon />
+  // },
 ]
 
 
