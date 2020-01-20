@@ -16,8 +16,8 @@ build-stage:
     expire_in: 1 hrs
     paths:
       - build/
-  # only:
-  #   - master
+  only:
+    - master
 
 deploy-stage:
   stage: nonprod-deploy
@@ -30,5 +30,5 @@ deploy-stage:
     - AWS_PROFILE=arnawsiam046711174152rolensgcirole serverless deploy
   dependencies:
     - build-stage
-  # only:
-  #   - master
+  only:
+    - master

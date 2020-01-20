@@ -10,7 +10,7 @@
     }
   },
   "host": "nsg-nonprod.nordstrom.net",
-  "basePath": "/nonprod",
+  "basePath": "",
   "schemes": [
     "https"
   ],

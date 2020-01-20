@@ -46,7 +46,6 @@ class ACLList extends React.Component {
               ]
             }
           ],
-
         }
         var response = await postToSlack(data);
         this.setState({error: true});

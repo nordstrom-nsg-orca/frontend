@@ -52,7 +52,7 @@ resources:
               DefaultTTL: 0
               MinTTL: 0
               MaxTTL: 0
-              PathPattern: '/nonprod/api/*'
+              PathPattern: '/api/*'
               ViewerProtocolPolicy: https-only
               AllowedMethods:
                 - GET
