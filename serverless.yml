@@ -47,6 +47,20 @@ resources:
                 HTTPSPort: 443
                 OriginProtocolPolicy: https-only
           CacheBehaviors:
+            -
+              TargetOriginId: S3Origin
+              AllowedMethods:
+                - GET
+                - HEAD
+              ForwardedValues:
+                QueryString: false
+                Cookies:
+                 Forward: none
+              DefaultTTL: 60
+              MinTTL: 60
+              MaxTTL: 100
+              PathPattern: '/api/doc' ## change from /* to /
+              ViewerProtocolPolicy: redirect-to-https
             # added this here
             -
               TargetOriginId: APIGatewayOrigin
