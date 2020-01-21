@@ -65,6 +65,7 @@ class Sidebar extends React.Component {
             [classes.drawerClose]: !this.state.open,
           }),
         }}
+        classes = {{ paper: classes.paper }}
         open={this.state.open}
       >
         <div className={classes.toolbar} />
@@ -117,6 +118,11 @@ const styles = theme => ({
   toolbar: {
     ...theme.mixins.toolbar,
   },
+
+  // testing theme
+  paper: {
+    background: 'white'
+  }
 });
 
 export default withStyles(styles)(Sidebar);

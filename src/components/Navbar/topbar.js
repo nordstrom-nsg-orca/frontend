@@ -76,7 +76,9 @@ class Topbar extends React.Component {
 
             <Menu anchorEl={this.state.userAnchor} keepMounted className={classes.menu}
               open={Boolean(this.state.userAnchor)} onClose={this.handleCloseMenu}>
-              <MenuItem>Settings</MenuItem>
+              <MenuItem>
+                <Link to="/settings" style={{ textDecoration: 'none', color: 'inherit'}} > Settings </Link>
+              </MenuItem>
               <MenuItem onClick={this.logout}>Logout</MenuItem>
             </Menu>
           </Toolbar>

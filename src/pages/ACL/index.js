@@ -20,7 +20,7 @@ class ACLList extends React.Component {
   loadData = async () => {
     console.log('LOADDATA');
     try {
-        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/acl_view_json`, {
+        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/table/acl_view_json`, {
         headers: {
           'x-api-key': `${this.props.apiKey}`
         }
@@ -118,7 +118,7 @@ class ACLList extends React.Component {
 
   create = async (data, id) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/access_item/`;
       data['list_id'] = id;
       const resp = await fetch(url, {
         method: 'POST',
