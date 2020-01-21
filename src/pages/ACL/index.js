@@ -19,9 +19,8 @@ class ACLList extends React.Component {
 
   loadData = async () => {
     console.log('LOADDATA');
-
     try {
-        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/acl_view_json`, {
+        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/acl_view_json`, {
         headers: {
           'x-api-key': `${this.props.apiKey}`
         }
@@ -83,7 +82,7 @@ class ACLList extends React.Component {
 
   update = async (data) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/${data.id}`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/access_item/${data.id}`;
       delete data['id'];
       const resp = await fetch(url, {
         method: 'PUT',
@@ -102,7 +101,7 @@ class ACLList extends React.Component {
 
   delete = async (data) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_item/${data.id}`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/access_item/${data.id}`;
       const resp = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -174,7 +173,7 @@ class ACLList extends React.Component {
 
   updateTable = async (data) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/${data.id}`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/access_list/${data.id}`;
       delete data['id'];
       const resp = await fetch(url, {
         method: 'PUT',
@@ -192,7 +191,7 @@ class ACLList extends React.Component {
 
   deleteTable = async (data) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/${data.id}`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/access_list/${data.id}`;
       const resp = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -208,7 +207,7 @@ class ACLList extends React.Component {
 
   createTable = async (data) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/access_list/`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/access_list/`;
       const resp = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),

@@ -44,7 +44,7 @@ class App extends React.Component {
       const token = await this.props.auth.getAccessToken();
       console.log('Retrieving api key...');
       try {
-        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/retrieveKey`, {
+        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/retrieveKey`, {
           headers: {
             Authorization: `Bearer ${token}`
           },

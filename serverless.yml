@@ -24,7 +24,7 @@ resources:
       Properties:
         DistributionConfig:
           Enabled: true
-          Comment: "testing redeployment"
+          Comment: "Changed API subdomain"
           PriceClass: PriceClass_100
           Aliases:
             - ${self:custom.domainName}
@@ -40,6 +40,7 @@ resources:
             # added this here
             -
               DomainName: girm9btzs7.execute-api.us-west-2.amazonaws.com
+              OriginPath: /nonprod
               Id: APIGatewayOrigin
               CustomOriginConfig:
                 HTTPPort: 80
