@@ -5,7 +5,7 @@ frameworkVersion: ">=1.54.0" # for CI job
 
 provider:
   name: aws
-  stage: nonprod
+  stage: ${opt:stage, 'nonprod'}
   region: us-west-2
 
 resources:
@@ -24,7 +24,7 @@ resources:
       Properties:
         DistributionConfig:
           Enabled: true
-          Comment: "testing redeployment"
+          Comment: "Changed API subdomain"
           PriceClass: PriceClass_100
           Aliases:
             - ${self:custom.domainName}
@@ -39,13 +39,28 @@ resources:
                 OriginProtocolPolicy: http-only
             # added this here
             -
-              DomainName: girm9btzs7.execute-api.us-west-2.amazonaws.com
+              DomainName: { 'Fn::ImportValue': 'ApiUrl' }
+              OriginPath: /${self:provider.stage}
               Id: APIGatewayOrigin
               CustomOriginConfig:
                 HTTPPort: 80
                 HTTPSPort: 443
                 OriginProtocolPolicy: https-only
           CacheBehaviors:
+            -
+              TargetOriginId: S3Origin
+              AllowedMethods:
+                - GET
+                - HEAD
+              ForwardedValues:
+                QueryString: false
+                Cookies:
+                 Forward: none
+              DefaultTTL: 60
+              MinTTL: 60
+              MaxTTL: 100
+              PathPattern: '/api/doc' ## change from /* to /
+              ViewerProtocolPolicy: redirect-to-https
             # added this here
             -
               TargetOriginId: APIGatewayOrigin
