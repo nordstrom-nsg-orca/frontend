@@ -2,13 +2,11 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
-import Grid from '@material-ui/core/Grid';
 import InputBase from '@material-ui/core/InputBase';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
-import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
-import IconButton from "@material-ui/core/IconButton";
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+// import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
+// import IconButton from "@material-ui/core/IconButton";
+// import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Form from './form.js';
 import Table from './table.js';
@@ -21,12 +19,8 @@ class DataPage extends React.Component {
       formAction: null,
       formOpen: false,
       formHeaders: [],
-      formData: null,
-      isDropdown: false,
-      searchFilter: 'All',
-      currentSearchPhrase: null,
+      formData: null
     };
-
     this.actionButtons = [
       {name: 'update', icon: <CreateRoundedIcon style={{fontSize: '20px'}} />},
       {name: 'delete', icon: <DeleteRoundedIcon style={{fontSize: '20px'}} />},
@@ -44,12 +38,6 @@ class DataPage extends React.Component {
       this.props.actions.delete(this.state.formData);
     else if (action === 'create')
       this.props.actions.create(this.state.formData, this.state.currentTableName);
-    if (action === 'updateTable') {
-      this.props.actions.updateTable(this.state.formData);
-    } else if (action === 'deleteTable')
-      this.props.actions.deleteTable(this.state.formData);
-    else if (action === 'createTable')
-      this.props.actions.createTable(this.state.formData);
 
     this.setState({
       // formAction: null,
@@ -94,66 +82,6 @@ class DataPage extends React.Component {
 
   }
 
-  dropdownChange = (action) => {
-    if (action === 'open') this.setState({isDropdown: true});
-    else if (action === 'close') this.setState({isDropdown: false});
-  }
-
-  selectChange = (event) => {
-    this.setState({searchFilter: event.target.value});
-  }
-
-  handleSearchEvent= (event) => {
-    var phrase = event.target.value;
-    if (phrase === '') {
-      phrase = null;
-      this.setState({currentTableData: JSON.parse(JSON.stringify(this.props.data)), currentTables: JSON.parse(JSON.stringify(this.props.tables))});
-      return;
-    }
-    var currentSearchFilter = this.state.currentSearchFilter;
-    var currentTableData = {};
-    var currentTables = new Set();
-    var copyData;
-    if (currentSearchFilter === 'Table') {
-      copyData = JSON.parse(JSON.stringify(this.props.data));
-      for (var name in copyData) {
-        if (name.toLowerCase().includes(phrase)) {
-          currentTableData[name] = copyData[name];
-          currentTables.add(name);
-        }
-      }
-
-    } else {
-      var index;
-      this.props.headers.map(header => {
-        if (header.label === currentSearchFilter) index = header.index;
-      });
-      copyData = JSON.parse(JSON.stringify(this.props.data));
-      for (var name in copyData) {
-        copyData[name].map(value => {
-          if (value.data[index].toLowerCase().includes(phrase)) {
-            if (name in currentTableData) {
-              var copy = currentTableData[name];
-              copy.push(value);
-              currentTableData[name] = copy;
-
-            } else {
-              currentTableData[name] = [value];
-            }
-            currentTables.add(name);
-          }
-        });
-      }
-
-    }
-
-    if (Object.entries(currentTableData).length > 0 && currentTableData.constructor === Object) {
-      this.setState({currentTableData: currentTableData, currentTables: Array.from(currentTables)});
-    }
-    this.setState({currentSearchPhrase: phrase});
-  }
-
-
   render() {
     const { classes } = this.props;
 
@@ -180,25 +108,8 @@ class DataPage extends React.Component {
             <InputBase
               placeholder="Search"
               className={classes.searchInput}
-              onChange = {this.searchChange}
+              onChange = {this.props.handleSearch}
             />
-            <Select
-              open={this.state.isDropdown}
-              onClose={this.dropdownChange.bind(this, 'close')}
-              onOpen={this.dropdownChange.bind(this, 'open')}
-              value={this.state.searchFilter}
-              onChange={event => this.selectChange(event)}
-              autoWidth={true}
-              className={classes.select}
-            >
-              <MenuItem className={classes.menuItem} value="All">
-                All
-              </MenuItem>
-              {this.props.headers.map((header, index) =>
-                <MenuItem key={index} className={classes.menuItem} value={header}>{header}</MenuItem>
-              )}
-              <MenuItem className={classes.menuItem} value='Table'>Table</MenuItem>
-            </Select>
           </div>
         </div>
 
@@ -213,20 +124,9 @@ class DataPage extends React.Component {
             handleCreate={this.handleCreate}
           />
         )}
-
-        <Grid item md = {12} align ='center'>
-            <IconButton color='inherit' onClick={this.handleAction.bind(this,'createTable')}>
-              <PlaylistAddRoundedIcon className={this.props.classes.createNewTableButton}/>
-            </IconButton>
-
-        </Grid>
-
-
       </div>
-
     );
   }
-
 }
 
 
