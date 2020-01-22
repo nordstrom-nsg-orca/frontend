@@ -25,14 +25,6 @@ class DataTable extends React.Component {
 
         <div style = {{padding: '15px 0px 5px 15px', marginTop: '8px', display: 'flex'}}>
           <Typography variant='h5'>{this.props.data.name}</Typography>
-          <div style={{marginLeft: 'auto', paddingRight: '24px'}}>
-          {this.props.actionButtons.map((action, index) =>
-            <IconButton key={index} size='small' color='inherit'
-              onClick={this.props.handleAction.bind(this, `${action.name}Table`, this.props.data.id, null, {'name':this.props.data.name,'id':this.props.data.id})}>
-              {action.icon}
-            </IconButton>
-          )}
-          </div>
         </div>
 
         <Table size='small' align='center'>
