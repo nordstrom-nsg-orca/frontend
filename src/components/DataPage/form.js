@@ -23,11 +23,11 @@ class Form extends React.Component {
 
   render() {
     const { classes } = this.props;
-    
+
     return (
       <Dialog open={(this.props.open)} className={classes.dialog}>
         <DialogContent>
-          
+
           <Grid
             container
             direction="row"
@@ -74,12 +74,5 @@ class Form extends React.Component {
   }
 
 }
-const style = theme => ({
- dialog: {
-   display: 'flex',
-   alignItems: 'center',
-   justifyContent: 'center',
- }
-});
 
-export default withStyles(style)(Form);
+export default Form;

@@ -28,7 +28,7 @@ class DataTable extends React.Component {
         </div>
 
         <Table size='small' align='center'>
-          
+
           <TableHead>
             <TableRow >
               {this.props.headers.map((column, index) => (
@@ -44,14 +44,14 @@ class DataTable extends React.Component {
           <TableBody>
             {this.props.data.rows.map(row =>
               <TableRow key={row.id}>
-              
+
 
               {this.props.headers.map((column, index) =>
                 <TableCell size='small' key={index}>
                   {row[column]}
                 </TableCell>
               )}
-              
+
               <TableCell size='small' style={{width: '100px'}}>
               {this.props.actionButtons.map((action, index) =>
                 <IconButton key={index} size='small' color='inherit'
@@ -62,9 +62,9 @@ class DataTable extends React.Component {
               </TableCell>
 
               </TableRow>
-            )}  
+            )}
           </TableBody>
-        
+
         </Table>
         <div align='center' >
           <IconButton color='inherit' onClick={this.props.handleAction.bind(this, 'create', this.props.data.id, null, null)}>
@@ -76,12 +76,5 @@ class DataTable extends React.Component {
   }
 }
 
-const style = theme => ({
- dialog: {
-   display: 'flex',
-   alignItems: 'center',
-   justifyContent: 'center',
- }
-});
 
-export default withStyles(style)(DataTable);
+export default DataTable;

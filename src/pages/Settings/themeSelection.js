@@ -1,5 +1,4 @@
 import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -8,7 +7,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
 
 class ThemeSelection extends React.Component {
 
@@ -56,16 +54,8 @@ class ThemeSelection extends React.Component {
 
 }
 
-const useStyles = theme => ({
-  root: {
-    width: '100%',
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightBold,
-  },
-});
 
 
 
-export default withStyles(useStyles)(ThemeSelection);
+
+export default ThemeSelection;

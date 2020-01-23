@@ -46,7 +46,17 @@ const style = theme => ({
     ...theme.mixins.toolbar,
   },
   paper: {
-    background: 'white'
+    background: theme.background,
+    color: theme.color
+  },
+  leftIcon: {
+    width: '100%',
+    borderRadius:'0',
+    color: theme.color
+  },
+  sideBarLink: {
+    textDecoration: 'none',
+    color: theme.color
   },
   // topbar
   appBar: {

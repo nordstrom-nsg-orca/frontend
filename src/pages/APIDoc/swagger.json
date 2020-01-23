@@ -21,7 +21,7 @@
     }
   ],
   "paths": {
-    "/api/{table}": {
+    "/api/table/{table}": {
       "get": {
         "summary": "Returns the rows of the specified table",
         "parameters": [
@@ -89,7 +89,7 @@
       }
     },
 
-    "/api/{table}/{id}": {
+    "/api/table/{table}/{id}": {
       "delete": {
         "summary": "Delete data in the database",
         "parameters": [
