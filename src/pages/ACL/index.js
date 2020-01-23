@@ -18,7 +18,7 @@ class ACLList extends React.Component {
 
   loadData = async () => {
     try {
-      const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/api/table/acl_view_json`, {
+      const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/table/acl_view_json`, {
         headers: { 'x-api-key': `${this.props.apiKey}` }
       });
       const json = await resp.json();
@@ -77,7 +77,7 @@ class ACLList extends React.Component {
 
   update = async (data) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/table/access_item/${data.id}`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/table/access_item/${data.id}`;
       delete data['id'];
       const resp = await fetch(url, {
         method: 'PUT',
@@ -91,7 +91,7 @@ class ACLList extends React.Component {
 
   delete = async (data) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/table/access_item/${data.id}`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/table/access_item/${data.id}`;
       const resp = await fetch(url, {
         method: 'DELETE',
         headers: { 'x-api-key': `${this.props.apiKey}` }
@@ -105,7 +105,7 @@ class ACLList extends React.Component {
 
   create = async (data, id) => {
     try {
-      let url = `${process.env.REACT_APP_DB_API_URL}/api/table/access_item/`;
+      let url = `${process.env.REACT_APP_DB_API_URL}/table/access_item/`;
       data['list_id'] = id;
       const resp = await fetch(url, {
         method: 'POST',
