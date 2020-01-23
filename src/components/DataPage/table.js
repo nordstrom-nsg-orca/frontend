@@ -32,11 +32,11 @@ class DataTable extends React.Component {
           <TableHead>
             <TableRow >
               {this.props.headers.map((column, index) => (
-                <TableCell size='small' key={index} align ='center'>
-                  {column}
+                <TableCell size='small' key={index}>
+                  <b>{column.toUpperCase()}</b>
                 </TableCell>
               ))}
-              <TableCell>Actions</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
 
