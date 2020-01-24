@@ -1,6 +1,7 @@
 import React from 'react';
 import DataPage from '../../components/DataPage';
 import { postToSlack } from '../../util/reporter.js'
+import { api } from '../../util/api.js'
 import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded';
 
 class ACLList extends React.Component {
@@ -17,31 +18,36 @@ class ACLList extends React.Component {
   async componentDidMount() { this.loadData() }
 
   loadData = async () => {
+    await api('/table/acl_view_json', {
+      method: 'GET',
+      token: this.props.token
+    });
+    
     console.log('LOADDATA');
-    try {
-        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/table/acl_view_json`, {
-        headers: {
-          'x-api-key': `${this.props.apiKey}`
-        }
-      });
-      const json = await resp.json();
-      if (resp.status !== 200) {
-        const message = `ErrorMessage:* ${resp.statusText}\n*ErrorCode:* ${resp.status}`;
-        await postToSlack(window.location, message);
-        this.setState({ error: true });
-      } else {
-        this.setState({
-          data: json[0].results.data,
-          displayData: json[0].results.data,
-          headers: json[0].results.headers,
-          parentheaders: json[0].results.parentheaders
-        });
-      }
-    } catch (err) {
-      const message = `ErrorMessage:* ${err}\n*Function:* loadData()`
-      await postToSlack(window.location, message);
-      this.setState({ error: true });
-    }
+    // try {
+    //     const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/table/acl_view_json`, {
+    //     headers: {
+    //       'x-api-key': `${this.props.token}`
+    //     }
+    //   });
+    //   const json = await resp.json();
+    //   if (resp.status !== 200) {
+    //     const message = `ErrorMessage:* ${resp.statusText}\n*ErrorCode:* ${resp.status}`;
+    //     await postToSlack(window.location, message);
+    //     this.setState({ error: true });
+    //   } else {
+    //     this.setState({
+    //       data: json[0].results.data,
+    //       displayData: json[0].results.data,
+    //       headers: json[0].results.headers,
+    //       parentheaders: json[0].results.parentheaders
+    //     });
+    //   }
+    // } catch (err) {
+    //   const message = `ErrorMessage:* ${err}\n*Function:* loadData()`
+    //   await postToSlack(window.location, message);
+    //   this.setState({ error: true });
+    // }
   }
 
   handleSearch = (event) => {
