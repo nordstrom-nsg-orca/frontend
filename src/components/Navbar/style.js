@@ -5,6 +5,7 @@ const drawerWidth = 240;
 const style = theme => ({
   root: {
     display: 'flex',
+    overflowY: 'auto'
   },
   toolbar: {
     display: 'flex',
