@@ -31,7 +31,7 @@ class ACLList extends React.Component {
         this.setState({ error: true });
       } else {
         this.setState({
-          data: json[0].results.data,
+          data: json[0].results.data === null ? []: json[0].results.data,
           displayData: json[0].results.data,
           headers: json[0].results.headers,
           parentheaders: json[0].results.parentheaders
@@ -61,10 +61,10 @@ class ACLList extends React.Component {
           let remove = true;
           for (let h = 0; h < this.state.headers.length; h++) {
             const header = this.state.headers[h];
-            const value = this.state.data[i]['rows'][j][header];
+            const value = this.state.data[i]['rows'][j][header].toLowerCase();
 
             // if any of the values match the search, don't delete
-            if (value.search(search) > -1) remove = false;
+            if (value.search(search.toLowerCase()) > -1) remove = false;
           }
           if (remove) searchResults[i]['rows'].splice(j,1);
         }

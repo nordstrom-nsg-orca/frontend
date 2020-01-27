@@ -21,7 +21,7 @@ class ThemeSelection extends React.Component {
 
     return (
       <div className={classes.root}>
-        <ExpansionPanel>
+        <ExpansionPanel className={classes.expansion}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"

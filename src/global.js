@@ -1,11 +1,13 @@
 const lightTheme = {
-  background: 'white',
-  color: 'black',
+  bodyBackground: '#fafafa',
+  background: '#fff',
+  color: '#1F1F1F',
 };
 
 const darkTheme = {
-  background: '#323232',
-  color: 'white',
+  bodyBackground: '#303030',
+  background: '#424242',
+  color: '#fff',
 };
 
 export {lightTheme, darkTheme};

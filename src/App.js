@@ -103,14 +103,14 @@ class App extends React.Component {
       minHeight: '100vh',
       margin: '0 auto',
       padding: '0',
-      background: theme.background,
+      background: theme.bodyBackground,
       color: theme.color
     };
     return (
-      <div style={main}>
+      <div>
           <Route path='/api/doc' component={APIDoc}/>
          { window.location.pathname !== '/api/doc' &&
-            <div >
+            <div style={main}>
               <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
               	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
                   {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}

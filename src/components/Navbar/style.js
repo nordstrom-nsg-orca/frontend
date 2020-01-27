@@ -62,7 +62,7 @@ const style = theme => ({
   // topbar
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: '#323232'
+    backgroundColor: '#424242'
   },
   logo: {
     height: '90px',
