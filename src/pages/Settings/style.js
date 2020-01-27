@@ -12,7 +12,10 @@ const style = theme => ({
   },
   expansion: {
     background: theme.background,
-    color: theme.color
+    color: theme.color,
+  },
+  form: {
+    paddingLeft: '10px'
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),

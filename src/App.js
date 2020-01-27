@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { ImplicitCallback, SecureRoute, withAuth } from '@okta/okta-react';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, withStyles } from '@material-ui/core/styles';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
@@ -9,7 +9,7 @@ import ACL from './pages/ACL';
 import Secret from './pages/Secret';
 import APIDoc from './pages/APIDoc';
 import Settings from './pages/Settings';
-import {lightTheme, darkTheme} from './global.js';
+import { lightTheme, darkTheme, style } from './global.js';
 
 import './App.css';
 
@@ -30,10 +30,11 @@ class App extends React.Component {
     this.changeTheme = this.changeTheme.bind(this);
   }
 
-   async componentDidMount() {
+  async componentDidMount() {
     console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication();
+    console.log(this.props);
   }
-   async componentDidUpdate() {
+  async componentDidUpdate() {
     if (!this.state.auth.authenticated) {
       this.checkAuthentication();
     }
@@ -41,8 +42,8 @@ class App extends React.Component {
 
   changeTheme(event, label) {
     if (label === 'light' && !this.state.light) {
-      this.setState({light: event.target.checked, dark: !event.target.checked});
-    } else this.setState({dark: event.target.checked, light: !event.target.checked});
+      this.setState({light: event.target.checked});
+    } else this.setState({light: !event.target.checked});
 
   }
 
@@ -94,10 +95,8 @@ class App extends React.Component {
   }
 
   render() {
-    let theme;
-    if (this.state.light) {
-      theme = lightTheme;
-    } else theme = darkTheme;
+    const theme = this.state.light ? lightTheme: darkTheme;
+    const { classes } = this.props;
     const main = {
       width: '100%',
       minHeight: '100vh',
@@ -110,23 +109,25 @@ class App extends React.Component {
       <div>
           <Route path='/api/doc' component={APIDoc}/>
          { window.location.pathname !== '/api/doc' &&
-            <div style={main}>
-              <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
-              	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
-                  {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
-                  {this.state.auth.authenticated &&
-                    <div>
-                      <Route path='/' exact={true} component={Dashboard} />
-                      <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
-                      <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
-                      <SecureRoute path='/secret' component={Secret} />
-                      <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}  />
-                    </div>
-                  }
-                  <Route path='/implicit/callback' component={ImplicitCallback} />
-                </Navbar>
-              </ThemeProvider>
-            </div>
+            <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
+              <div style={main}>
+
+                	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
+                    {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
+                    {this.state.auth.authenticated &&
+                      <div>
+                        <Route path='/' exact={true} component={Dashboard} />
+                        <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
+                        <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
+                        <SecureRoute path='/secret' component={Secret} />
+                        <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}  />
+                      </div>
+                    }
+                    <Route path='/implicit/callback' component={ImplicitCallback} />
+                  </Navbar>
+
+              </div>
+            </ThemeProvider>
           }
 
       </div>
@@ -135,4 +136,4 @@ class App extends React.Component {
   }
 }
 
-export default withAuth(App);
+export default withAuth(withStyles(style)(App));

@@ -10,4 +10,15 @@ const darkTheme = {
   color: '#fff',
 };
 
-export {lightTheme, darkTheme};
+const style = theme => ({
+  root: {
+    width: '100%',
+    minHeight: '100vh',
+    margin: '0 auto',
+    padding: '0',
+    backgroundColor: theme.bodyBackground,
+    color: theme.color
+  }
+});
+
+export { lightTheme, darkTheme, style };

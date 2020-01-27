@@ -7,6 +7,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Paper from '@material-ui/core/Paper';
 
 class ThemeSelection extends React.Component {
 
@@ -21,34 +22,25 @@ class ThemeSelection extends React.Component {
     const checkBoxColor = this.props.light === true ? "#424242": "#fff";
     return (
       <div className={classes.root}>
-        <ExpansionPanel className={classes.expansion}>
-          <ExpansionPanelSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography className={classes.heading}> Theme </Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <FormGroup col>
-              <FormControlLabel
-                control={
-                  <Checkbox checked={!this.props.light} onChange={event => this.props.changeTheme(event, 'dark')} value='dark'
-                    style={{color: checkBoxColor}}/>
-                }
-                label="Dark"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox checked={this.props.light} onChange={event => this.props.changeTheme(event, 'light')} value='light'
-                    style={{color: checkBoxColor}}/>
-                }
-                label="Light"
-              />
+        <Paper className={classes.expansion}>
+          <FormGroup row className={classes.form}>
+            <FormControlLabel
+              control={
+                <Checkbox checked={!this.props.light} onChange={event => this.props.changeTheme(event, 'dark')} value='dark'
+                  style={{color: checkBoxColor}}/>
+              }
+              label="Dark"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox checked={this.props.light} onChange={event => this.props.changeTheme(event, 'light')} value='light'
+                  style={{color: checkBoxColor}}/>
+              }
+              label="Light"
+            />
 
-            </FormGroup>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </FormGroup>
+        </Paper>
 
       </div>
     );
@@ -56,8 +48,33 @@ class ThemeSelection extends React.Component {
 
 }
 
-
-
-
-
 export default ThemeSelection;
+
+// <ExpansionPanel className={classes.expansion}>
+//   <ExpansionPanelSummary
+//     expandIcon={<ExpandMoreIcon />}
+//     aria-controls="panel1a-content"
+//     id="panel1a-header"
+//   >
+//     <Typography className={classes.heading}> Theme </Typography>
+//   </ExpansionPanelSummary>
+//   <ExpansionPanelDetails>
+//     <FormGroup col>
+//       <FormControlLabel
+//         control={
+//           <Checkbox checked={!this.props.light} onChange={event => this.props.changeTheme(event, 'dark')} value='dark'
+//             style={{color: checkBoxColor}}/>
+//         }
+//         label="Dark"
+//       />
+//       <FormControlLabel
+//         control={
+//           <Checkbox checked={this.props.light} onChange={event => this.props.changeTheme(event, 'light')} value='light'
+//             style={{color: checkBoxColor}}/>
+//         }
+//         label="Light"
+//       />
+//
+//     </FormGroup>
+//   </ExpansionPanelDetails>
+// </ExpansionPanel>

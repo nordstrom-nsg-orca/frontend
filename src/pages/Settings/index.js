@@ -11,7 +11,7 @@ class Settings extends React.Component {
     this.state = {
     };
   }
-
+  
   render() {
     const { classes } = this.props;
 

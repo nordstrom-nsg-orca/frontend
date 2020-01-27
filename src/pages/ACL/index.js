@@ -31,7 +31,7 @@ class ACLList extends React.Component {
         this.setState({ error: true });
       } else {
         this.setState({
-          data: json[0].results.data === null ? []: json[0].results.data,
+          data: json[0].results.data || [],
           displayData: json[0].results.data,
           headers: json[0].results.headers,
           parentheaders: json[0].results.parentheaders
