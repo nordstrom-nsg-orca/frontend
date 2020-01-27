@@ -23,7 +23,7 @@ class App extends React.Component {
         user: null,
         authenticated: false,
       },
-      light: true,
+      light: false,
     };
     this.logout = this.logout.bind(this);
     this.login = this.login.bind(this);
@@ -32,7 +32,7 @@ class App extends React.Component {
 
   async componentDidMount() {
     console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication();
-    console.log(this.props);
+    // console.log(this.props.classes.main);
   }
   async componentDidUpdate() {
     if (!this.state.auth.authenticated) {
@@ -97,14 +97,8 @@ class App extends React.Component {
   render() {
     const theme = this.state.light ? lightTheme: darkTheme;
     const { classes } = this.props;
-    const main = {
-      width: '100%',
-      minHeight: '100vh',
-      margin: '0 auto',
-      padding: '0',
-      background: theme.bodyBackground,
-      color: theme.color
-    };
+    const main = style(theme).main;
+
     return (
       <div>
           <Route path='/api/doc' component={APIDoc}/>
@@ -136,4 +130,4 @@ class App extends React.Component {
   }
 }
 
-export default withAuth(withStyles(style)(App));
+export default withAuth(App);

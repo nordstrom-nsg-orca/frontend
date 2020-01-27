@@ -11,7 +11,7 @@ const darkTheme = {
 };
 
 const style = theme => ({
-  root: {
+  main: {
     width: '100%',
     minHeight: '100vh',
     margin: '0 auto',

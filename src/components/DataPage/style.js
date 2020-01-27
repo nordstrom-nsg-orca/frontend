@@ -27,9 +27,6 @@ const style = theme => ({
   tableCell: {
     height: '15px'
   },
-  table: {
-
-  },
   searchInput: {
     borderRadius: '3px',
     paddingLeft: theme.spacing(5),
@@ -57,12 +54,17 @@ const style = theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color: theme.color,
+    backgroundColor: theme.background
   },
   tablePaper: {
     marginBottom : '20px',
     background: theme.background,
     color: theme.color
-  }
-
+  },
+  formStyle: {
+    color: theme.color,
+    backgroundColor: theme.background,
+  },
 });
 export default style;
