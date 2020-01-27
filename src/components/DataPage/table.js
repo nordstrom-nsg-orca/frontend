@@ -21,18 +21,18 @@ class DataTable extends React.Component {
     const { classes } = this.props;
 
     return (
-      <Paper style = {{marginBottom : '20px'}}>
+      <Paper className={classes.tablePaper}>
 
         <div style = {{padding: '15px 0px 5px 15px', marginTop: '8px', display: 'flex'}}>
           <Typography variant='h5'>{this.props.data.name}</Typography>
         </div>
 
         <Table size='small' align='center'>
-          
+
           <TableHead>
             <TableRow >
               {this.props.headers.map((column, index) => (
-                <TableCell size='small' key={index}>
+                <TableCell size='small' key={index} className={classes.tablePaper}>
                   <b>{column.toUpperCase()}</b>
                 </TableCell>
               ))}
@@ -44,15 +44,15 @@ class DataTable extends React.Component {
           <TableBody>
             {this.props.data.rows.map(row =>
               <TableRow key={row.id}>
-              
+
 
               {this.props.headers.map((column, index) =>
-                <TableCell size='small' key={index}>
+                <TableCell size='small' key={index} className={classes.tablePaper}>
                   {row[column]}
                 </TableCell>
               )}
-              
-              <TableCell size='small' style={{width: '100px'}}>
+
+              <TableCell size='small' style={{width: '100px'}} className={classes.tablePaper}>
               {this.props.actionButtons.map((action, index) =>
                 <IconButton key={index} size='small' color='inherit'
                   onClick={this.props.handleAction.bind(this, action.name, this.props.data.id, row.id, row)}>
@@ -62,9 +62,9 @@ class DataTable extends React.Component {
               </TableCell>
 
               </TableRow>
-            )}  
+            )}
           </TableBody>
-        
+
         </Table>
         <div align='center' >
           <IconButton color='inherit' onClick={this.props.handleAction.bind(this, 'create', this.props.data.id, null, null)}>
@@ -76,12 +76,5 @@ class DataTable extends React.Component {
   }
 }
 
-const style = theme => ({
- dialog: {
-   display: 'flex',
-   alignItems: 'center',
-   justifyContent: 'center',
- }
-});
 
-export default withStyles(style)(DataTable);
+export default DataTable;

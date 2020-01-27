@@ -4,12 +4,11 @@ import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
-// import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
-// import IconButton from "@material-ui/core/IconButton";
-// import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Form from './form.js';
 import Table from './table.js';
+import style from "./style.js";
+
 
 class DataPage extends React.Component {
 
@@ -97,13 +96,14 @@ class DataPage extends React.Component {
             data={this.state.formData}
             handleInput={this.handleInput}
             handleFormExit={this.handleFormExit}
+            classes={classes}
         />
 
         <div style ={{display: 'flex'}}>
           <Typography variant="h4">{this.props.title}</Typography>
-          
+
           <div style={{marginLeft: 'auto'}}>
-            
+
             <SearchRoundedIcon className={classes.searchIcon} />
             <InputBase
               placeholder="Search"
@@ -122,6 +122,7 @@ class DataPage extends React.Component {
             actionButtons={this.actionButtons}
             handleAction={this.handleAction}
             handleCreate={this.handleCreate}
+            classes={classes}
           />
         )}
       </div>
@@ -129,64 +130,5 @@ class DataPage extends React.Component {
   }
 }
 
-
-const style = theme => ({
-  root: {
-    width: '900px',
-    margin: '0 auto',
-  },
-  tableWrapper: {
-    maxHeight: 440,
-    overflow: 'auto',
-  },
-  addButton: {
-    width: 25,
-    height: 25,
-    align: 'center',
-    justifyContent: 'center',
-  },
-  createNewTableButton: {
-    marginTop: '5px',
-    width: 35,
-    height: 35,
-    align: 'center',
-    justifyContent: 'center',
-  },
-  tableCell: {
-    height: '15px'
-  },
-  table: {
-
-  },
-  searchInput: {
-    borderRadius: '3px',
-    paddingLeft: theme.spacing(5),
-    backgroundColor: '#EFEFEF',
-    '&:hover': {
-      backgroundColor: '#DDDDDD'
-    },
-    paddingRight: theme.spacing(1),
-    marginRight: theme.spacing(2)
-  },
-  searchIcon: {
-    // height: '100%',
-    color: '#333333',
-    position: 'relative',
-    left: '30px',
-    top: '8px',
-    zIndex: '9999'
-    // display: 'flex',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // paddingLeft: '5px'
-  },
-  select: {
-    marginLeft: '3px'
-  },
-  menuItem: {
-    padding: '3px',
-  }
-
-});
 
 export default withStyles(style)(DataPage);

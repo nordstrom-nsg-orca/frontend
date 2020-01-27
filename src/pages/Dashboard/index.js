@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import style from './style.js';
 
 class Dashboard extends React.Component {
 
@@ -19,15 +20,6 @@ class Dashboard extends React.Component {
     );
   }
 }
-const styles = theme => ({
-  root: {
-    width: '300px',
-    height: '100px',
-    margin: 'auto',
-    marginTop: '50px',
-    textAlign: 'center',
-    padding: '30px'
-  },
-});
 
-export default withStyles(styles)(Dashboard);
+
+export default withStyles(style)(Dashboard);

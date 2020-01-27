@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import clsx from 'clsx';
-import { withStyles } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -54,25 +53,26 @@ class Sidebar extends React.Component {
           [classes.drawerClose]: !this.state.open,
         })}
         classes={{
-          paper: clsx({
+          paper: clsx(classes.paper, {
             [classes.drawerOpen]: this.state.open,
             [classes.drawerClose]: !this.state.open,
           }),
         }}
+
         open={this.state.open}
       >
         <div className={classes.toolbar} />
         <Divider />
-        <IconButton onClick={this.toggleDrawer} style={{width: '100%', borderRadius:'0'}}>
+        <IconButton onClick={this.toggleDrawer} className={classes.leftIcon}>
             {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
         <Divider />
         <List>
           {pages.map((item, index) =>
-            <Link key={index} to={item.url} style={{textDecoration: 'none', color: 'black'}}>
+            <Link key={index} to={item.url} className={classes.sideBarLink}>
               <Tooltip title={this.state.open? "" : item.text} placement="right">
               <ListItem button>
-                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemIcon className={classes.sideBarLink}>{item.icon}</ListItemIcon>
                 <ListItemText>{item.text}</ListItemText>
               </ListItem>
               </Tooltip>
@@ -84,33 +84,5 @@ class Sidebar extends React.Component {
   }
 }
 
-const styles = theme => ({
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-  },
-  drawerOpen: {
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerClose: {
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: 'hidden',
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
-    },
-  },
-  toolbar: {
-    ...theme.mixins.toolbar,
-  },
-});
 
-export default withStyles(styles)(Sidebar);
+export default Sidebar;

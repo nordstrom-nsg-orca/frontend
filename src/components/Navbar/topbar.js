@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -76,7 +75,9 @@ class Topbar extends React.Component {
 
             <Menu anchorEl={this.state.userAnchor} keepMounted className={classes.menu}
               open={Boolean(this.state.userAnchor)} onClose={this.handleCloseMenu}>
-              <MenuItem>Settings</MenuItem>
+              <MenuItem>
+                <Link to="/settings" style={{ textDecoration: 'none', color: 'inherit'}} > Settings </Link>
+              </MenuItem>
               <MenuItem onClick={this.logout}>Logout</MenuItem>
             </Menu>
           </Toolbar>
@@ -86,26 +87,4 @@ class Topbar extends React.Component {
   }
 }
 
-const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: '#323232'
-  },
-  logo: {
-    height: '90px',
-    position: 'absolute',
-    top: '-20px',
-    left: '0px'
-  },
-  menu: {
-    marginTop: '30px',
-  },
-  user: {
-    marginLeft: 'auto',
-  },
-});
-
-export default withStyles(styles)(Topbar);
+export default Topbar;

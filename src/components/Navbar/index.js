@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Sidebar from './sidebar';
 import Topbar from './topbar';
-
+import style from './style.js';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -18,12 +18,12 @@ class Navbar extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Topbar auth={this.props.auth} logout={this.props.logout} login={this.props.login} />
-        
+        <Topbar auth={this.props.auth} logout={this.props.logout} login={this.props.login} classes={classes}/>
+
         {this.props.auth.authenticated &&
-          <Sidebar />
+          <Sidebar classes = {classes}/>
         }
-        
+
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {this.props.children}
@@ -33,22 +33,5 @@ class Navbar extends React.Component {
   }
 }
 
-const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
-  toolbar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    marginTop: '30px'
-  }
-});
 
-export default withStyles(styles)(Navbar);
+export default withStyles(style)(Navbar);
