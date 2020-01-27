@@ -1,3 +1,4 @@
+
 const style = theme => ({
   main: {
     width: '100%',
@@ -16,7 +17,8 @@ const style = theme => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightBold,
-  },
+  }
 });
+
 
 export default style;

@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import style from './style.js';
 
 class Home extends React.Component {
 
@@ -23,15 +24,6 @@ class Home extends React.Component {
     );
   }
 }
-const styles = theme => ({
-  root: {
-    width: '300px',
-    height: '100px',
-    margin: 'auto',
-    marginTop: '50px',
-    textAlign: 'center',
-    padding: '30px'
-  },
-});
 
-export default withStyles(styles)(Home);
+
+export default withStyles(style)(Home);

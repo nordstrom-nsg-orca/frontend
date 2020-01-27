@@ -18,7 +18,7 @@ class ThemeSelection extends React.Component {
 
   render() {
     const { classes } = this.props;
-
+    const checkBoxColor = this.props.light === true ? "#424242": "#fff";
     return (
       <div className={classes.root}>
         <ExpansionPanel className={classes.expansion}>
@@ -33,13 +33,15 @@ class ThemeSelection extends React.Component {
             <FormGroup col>
               <FormControlLabel
                 control={
-                  <Checkbox checked={!this.props.light} color="primary" onChange={event => this.props.changeTheme(event, 'dark')} value='dark'/>
+                  <Checkbox checked={!this.props.light} onChange={event => this.props.changeTheme(event, 'dark')} value='dark'
+                    style={{color: checkBoxColor}}/>
                 }
                 label="Dark"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={this.props.light} color="primary" onChange={event => this.props.changeTheme(event, 'light')} value='light'/>
+                  <Checkbox checked={this.props.light} onChange={event => this.props.changeTheme(event, 'light')} value='light'
+                    style={{color: checkBoxColor}}/>
                 }
                 label="Light"
               />

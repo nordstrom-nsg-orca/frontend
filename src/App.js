@@ -23,7 +23,7 @@ class App extends React.Component {
         user: null,
         authenticated: false,
       },
-      light: false,
+      light: true,
     };
     this.logout = this.logout.bind(this);
     this.login = this.login.bind(this);
