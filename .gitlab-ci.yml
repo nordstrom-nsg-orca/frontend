@@ -21,7 +21,7 @@ build-stage:
     - master
 
 update-version-stage:
-  stage: version
+  stage: update-version
   script:
     - python version.py $CI_COMMIT_MESSAGE
 
