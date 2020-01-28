@@ -23,7 +23,7 @@ build-stage:
 update-version-stage:
   stage: update-version
   script:
-    - echo $CI_PROJECT_URL
+    - echo $CI_PROJECT_URL 'HEAD:vecheka'
     - python version.py $CI_COMMIT_MESSAGE
 
 
