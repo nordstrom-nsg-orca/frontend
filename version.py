@@ -14,11 +14,11 @@ def main(args):
 
     commit_message = args
     prefix = commit_message[0]
-    print(prefix)
     with open(file_path, 'r') as package_file:
         package = package_file.read()
+        data = json.loads(package)
+        package_file.close()
 
-    data = json.loads(package)
     version = str(data['version'])
     xyz = version.split('.') ## split version x.y.z into [x,y,z]
 
@@ -42,6 +42,7 @@ def main(args):
     print(data)
     with open(file_path, 'w') as package_file:
         json.dump(data, package_file)
+        package_file.close()
 
 
 if __name__ == '__main__':
