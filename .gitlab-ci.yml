@@ -1,6 +1,7 @@
 
 stages:
   - build
+  - update-version
   - nonprod-deploy
 
 build-stage:
@@ -18,6 +19,12 @@ build-stage:
       - build/
   only:
     - master
+
+update-version-stage:
+  stage: version
+  script:
+    - python version.py $CI_COMMIT_MESSAGE
+
 
 deploy-stage:
   stage: nonprod-deploy
