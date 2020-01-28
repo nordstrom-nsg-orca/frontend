@@ -24,7 +24,7 @@ update-version-stage:
   stage: update-version
   script:
     - python version.py $CI_COMMIT_MESSAGE
-    - git push -o ci.skip
+    - git push origin vecheka -o ci.skip
 
 deploy-stage:
   stage: nonprod-deploy
