@@ -1,9 +1,9 @@
 import json
 import sys
 
-PATCH = 'PATCH'
-MAJOR = 'MAJOR'
-MINOR = 'MINOR'
+PATCH = 'PATCH:'
+MAJOR = 'MAJOR:'
+MINOR = 'MINOR:'
 x = 0
 y = 1
 z = 3
@@ -14,6 +14,7 @@ def main(args):
 
     commit_message = args
     prefix = commit_message[0]
+    print(prefix)
     with open(file_path, 'r') as package_file:
         package = package_file.read()
 
