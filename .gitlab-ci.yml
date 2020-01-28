@@ -23,9 +23,8 @@ build-stage:
 update-version-stage:
   stage: update-version
   script:
-    - echo $CI_PROJECT_URL 'HEAD:vecheka'
     - python version.py $CI_COMMIT_MESSAGE
-
+    - git push $CI_PROJECT_URL 'HEAD:vecheka' -0 ci.skip
 
 deploy-stage:
   stage: nonprod-deploy
