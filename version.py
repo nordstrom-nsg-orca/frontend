@@ -6,7 +6,7 @@ MAJOR = 'MAJOR:'
 MINOR = 'MINOR:'
 x = 0
 y = 1
-z = 3
+z = 2
 file_path = './package.json'
 
 
