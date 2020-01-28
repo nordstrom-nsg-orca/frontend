@@ -38,6 +38,7 @@ def main(args):
     ## write back to package.json
     version = '.'.join(xyz)
     data['version'] = version
+    print(data)
     with open(file_path, 'w') as package_file:
         json.dump(data, package_file)
 
