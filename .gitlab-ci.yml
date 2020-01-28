@@ -23,6 +23,7 @@ build-stage:
 update-version-stage:
   stage: update-version
   script:
+    - echo $CI_PROJECT_URL
     - python version.py $CI_COMMIT_MESSAGE
 
 
