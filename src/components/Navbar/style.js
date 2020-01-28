@@ -1,5 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles';
-
 const drawerWidth = 240;
 
 const style = theme => ({
@@ -43,9 +41,9 @@ const style = theme => ({
       width: theme.spacing(9) + 1,
     },
   },
-  toolbar: {
-    ...theme.mixins.toolbar,
-  },
+  // toolbar: {
+  //   ...theme.mixins.toolbar,
+  // },
   paper: {
     background: theme.background,
     color: theme.color

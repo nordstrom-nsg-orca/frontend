@@ -7,11 +7,12 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ACL from './pages/ACL';
-import Secret from './pages/Secret';
+import Server from './pages/Server';
 import APIDoc from './pages/APIDoc';
 import Settings from './pages/Settings';
-import {lightTheme, darkTheme} from './global.js';
 import { tokenExchange } from './util/api.js';
+
+import {lightTheme, darkTheme} from './global.js';
 
 import './App.css';
 
@@ -108,8 +109,8 @@ class App extends React.Component {
                     <div>
                       <Route path='/' exact={true} component={Dashboard} />
                       <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.apiToken} />} />
+                      <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.apiToken} />} />
                       <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
-                      <SecureRoute path='/secret' component={Secret} />
                       <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}  />
                     </div>
                   }

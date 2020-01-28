@@ -5,6 +5,8 @@ import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import Typography from '@material-ui/core/Typography';
+
+import { api } from '../../util/api.js'
 import Form from './form.js';
 import Table from './table.js';
 import style from "./style.js";
@@ -15,57 +17,71 @@ class DataPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      data:  [],
+      displayData: [],
+      headers: [],
       formAction: null,
       formOpen: false,
       formHeaders: [],
       formData: null
     };
+
     this.actionButtons = [
-      {name: 'update', icon: <CreateRoundedIcon style={{fontSize: '20px'}} />},
-      {name: 'delete', icon: <DeleteRoundedIcon style={{fontSize: '20px'}} />},
+      {name: 'PUT', icon: <CreateRoundedIcon style={{fontSize: '20px'}} />},
+      {name: 'DELETE', icon: <DeleteRoundedIcon style={{fontSize: '20px'}} />},
     ];
   }
 
-  handleCreate = (tableName) => {
-    this.setState({formOpen: true, currentTableName: tableName});
-  }
+  async componentDidMount() { this.loadData() }
 
-  handleFormExit = (action) => {
-    if (action === 'update') {
-      this.props.actions.update(this.state.formData);
-    } else if (action === 'delete')
-      this.props.actions.delete(this.state.formData);
-    else if (action === 'create')
-      this.props.actions.create(this.state.formData, this.state.currentTableName);
+  loadData = async () => {
+    const res = await api(this.props.loadUrl, {
+      method: 'GET',
+      token: this.props.token
+    });
 
     this.setState({
-      // formAction: null,
-      formOpen: false,
-      // currentID: null,
-      // formData: null,
-      // currentTableName: null,
-      // currentTableData: null,
+      data: res.json[0].results.data,
+      displayData: res.json[0].results.data,
+      headers: res.json[0].results.headers,
+      parentheaders: res.json[0].results.parentheaders
     });
+  }
+  
+  handleCreate = (tableName) => {
+    this.setState({formOpen: true, parentID: tableName});
+  }
+
+  handleFormSubmit = async (action) => {
+    this.setState({ formOpen: false });
+    
+    let options = {
+      method: action,
+      token: this.props.token,
+      data: this.state.formData
+    }
+    if (action == 'POST')
+      options.data[this.props.parentId] = this.state.parentID;
+
+    const resp = await api(this.props.crudUrl, options);
+ 
+    if (resp.ok)
+      this.loadData();
   }
 
   handleAction = (action, tableId, id, data) => {
-    if (action === 'create') {
+    if (action === 'POST') {
       data = {};
       for (let i in this.props.headers)
         data[this.props.headers[i]] = '';
-    } else if (action === 'createTable') {
-      data = {};
-      for (let i in this.props.parentheaders)
-        data[this.props.parentheaders[i]] = '';
     }
-    let headers = (action.includes('Table'))? this.props.parentheaders : this.props.headers;
     this.setState({
       formOpen: true,
       formAction: action,
-      formHeaders: headers,
+      formHeaders: this.state.headers,
       formData: data,
       currentID: id,
-      currentTableName: tableId
+      parentID: tableId
     });
   }
 
@@ -78,8 +94,44 @@ class DataPage extends React.Component {
     }
     data[index] = event.target.value;
     this.setState({formData: data});
-
   }
+
+
+  handleSearch = (event) => {
+    const search = event.target.value;
+    if (search === '') {
+      this.setState({ displayData: this.state.data });
+    } else {
+
+      // start with a copy of the full data
+      let searchResults = JSON.parse(JSON.stringify(this.state.data));
+
+      for (let i = this.state.data.length - 1; i >= 0; i--) {
+
+        // loop reverse, so we can splice without offsetting indexes
+        for (let j = this.state.data[i]['rows'].length - 1; j >= 0; j--) {
+
+          let remove = true;
+          for (let h = 0; h < this.state.headers.length; h++) {
+            const header = this.state.headers[h];
+            const value = this.state.data[i]['rows'][j][header];
+
+            // if any of the values match the search, don't delete
+            if (value.search(search) > -1) remove = false;
+          }
+          if (remove) searchResults[i]['rows'].splice(j,1);
+        }
+
+        // removes empty lists
+        if (searchResults[i]['rows'].length === 0)
+          searchResults.splice(i,1);
+      }
+
+      this.setState({ displayData: searchResults });
+    }
+  }
+
+
 
   render() {
     const { classes } = this.props;
@@ -95,7 +147,7 @@ class DataPage extends React.Component {
             headers={this.state.formHeaders}
             data={this.state.formData}
             handleInput={this.handleInput}
-            handleFormExit={this.handleFormExit}
+            handleFormSubmit={this.handleFormSubmit}
             classes={classes}
         />
 
@@ -113,11 +165,11 @@ class DataPage extends React.Component {
           </div>
         </div>
 
-        {this.props.data.map((table, index) =>
+        {this.state.displayData.map((table, index) =>
           <Table
             key={index}
             deleteTable={this.deleteTable}
-            headers={this.props.headers}
+            headers={this.state.headers}
             data={table}
             actionButtons={this.actionButtons}
             handleAction={this.handleAction}

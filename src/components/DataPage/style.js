@@ -1,16 +1,12 @@
 const style = theme => ({
   main: {
     width: '100%',
-    height: '100vh',
-    minHeight: '100vh',
     background: theme.background,
     color: theme.color
   },
   root: {
     width: '900px',
     margin: '0 auto',
-    height: '100vh',
-    minHeight: '100vh',
     background: theme.background,
     color: theme.color
   },
@@ -34,9 +30,6 @@ const style = theme => ({
   tableCell: {
     height: '15px'
   },
-  table: {
-
-  },
   searchInput: {
     borderRadius: '3px',
     paddingLeft: theme.spacing(5),
@@ -44,8 +37,7 @@ const style = theme => ({
     '&:hover': {
       backgroundColor: '#DDDDDD'
     },
-    paddingRight: theme.spacing(1),
-    marginRight: theme.spacing(2)
+    paddingRight: theme.spacing(1)
   },
   searchIcon: {
     color: '#333333',
