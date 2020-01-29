@@ -28,12 +28,11 @@ update-version-stage:
   artifacts:
     expire_in: 1 hrs
     paths:
-      - /
+      - dir/
 
 push-stage:
   stage: push
   image: "gitlab-registry.nordstrom.com/cicd/images/git"
-  # when: manual
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
   before_script:
@@ -47,8 +46,6 @@ push-stage:
     - git push -o ci.skip origin HEAD:vecheka
   dependencies:
     - update-version-stage
-
-
 
 deploy-stage:
   stage: nonprod-deploy
