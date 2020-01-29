@@ -1,9 +1,12 @@
 const style = theme => ({
+  main: {
+    width: '100%',
+    background: theme.background,
+    color: theme.color
+  },
   root: {
     width: '900px',
     margin: '0 auto',
-    height: '100vh',
-    minHeight: '100vh',
     background: theme.bodyBackground,
     color: theme.color
   },
@@ -27,9 +30,6 @@ const style = theme => ({
   tableCell: {
     height: '15px'
   },
-  table: {
-
-  },
   searchInput: {
     borderRadius: '3px',
     paddingLeft: theme.spacing(5),
@@ -37,8 +37,7 @@ const style = theme => ({
     '&:hover': {
       backgroundColor: '#DDDDDD'
     },
-    paddingRight: theme.spacing(1),
-    marginRight: theme.spacing(2)
+    paddingRight: theme.spacing(1)
   },
   searchIcon: {
     color: '#333333',
@@ -51,18 +50,32 @@ const style = theme => ({
     marginLeft: '3px'
   },
   menuItem: {
-    padding: '3px',
+    padding: '3px'
   },
-  dialog: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  dialogPaper: {
+    backgroundColor: theme.bodyBackground,
+  },
+  inputLabel: {
+    color: theme.colorSecondary
+  },
+  inputFocused: {
+    color: theme.color + ' !important'
+  },
+  dialogUnderline: {
+    '&:before': {
+      borderBottom: '2px solid ' + theme.colorSecondary + ' !important',
+    },
+    '&:after': {
+      borderBottom: '2px solid ' + theme.color + ' !important',
+    }
+  },
+  dialogInput: {
+    color: theme.color
   },
   tablePaper: {
     marginBottom : '20px',
     background: theme.background,
     color: theme.color
   }
-
 });
 export default style;

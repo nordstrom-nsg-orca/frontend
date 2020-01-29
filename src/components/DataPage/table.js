@@ -1,5 +1,4 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -67,7 +66,7 @@ class DataTable extends React.Component {
 
         </Table>
         <div align='center' >
-          <IconButton color='inherit' onClick={this.props.handleAction.bind(this, 'create', this.props.data.id, null, null)}>
+          <IconButton color='inherit' onClick={this.props.handleAction.bind(this, 'POST', this.props.data.id, null, null)}>
             <AddCircleRoundedIcon className={classes.addButton} />
           </IconButton>
         </div>

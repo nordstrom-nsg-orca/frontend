@@ -1,5 +1,4 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
@@ -16,18 +15,14 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-
   }
-
-
 
   render() {
     const { classes } = this.props;
 
     return (
-      <Dialog open={(this.props.open)} className={classes.dialog}>
+      <Dialog open={(this.props.open)} classes={{paper:classes.dialogPaper}}>
         <DialogContent>
-
           <Grid
             container
             direction="row"
@@ -37,17 +32,21 @@ class Form extends React.Component {
             style={{marginBottom: '10px'}}
           >
 
-          {this.props.action !== 'delete' && this.props.headers.map((header, index) =>
+          {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
             <Grid item md={6} key={index}>
               <FormControl>
-                <InputLabel>{header}</InputLabel>
+                <InputLabel className={classes.inputLabel}
+                  classes={{focused:classes.inputFocused, root:classes.inputLabel}}>
+                  {header}
+                </InputLabel>
                 <Input onChange={event => this.props.handleInput(header, event)}
+                    classes={{underline: classes.dialogUnderline, root:classes.dialogInput, focused: classes.inputFocused}}
                     value={this.props.data? this.props.data[header] : ''}/>
               </FormControl>
             </Grid>
           )}
 
-          {this.props.action === 'delete' &&
+          {this.props.action === 'DELETE' &&
             <Grid item md={12}>
               <DialogContent>
                 <DialogContentText>
@@ -61,14 +60,13 @@ class Form extends React.Component {
         </DialogContent>
 
         <DialogActions >
-          <Button onClick={this.props.handleFormExit.bind(this, 'cancel')} color="primary">
+          <Button onClick={this.props.handleFormSubmit.bind(this, 'cancel')} color="primary">
             Cancel
           </Button>
-          <Button onClick={this.props.handleFormExit.bind(this,this.props.action)} color="primary">
-              {this.props.action}
+          <Button onClick={this.props.handleFormSubmit.bind(this,this.props.action)} color="primary">
+            Accept
           </Button>
         </DialogActions>
-
       </Dialog>
     );
   }

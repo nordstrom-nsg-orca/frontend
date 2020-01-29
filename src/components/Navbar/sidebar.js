@@ -16,14 +16,18 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
-
-const drawerWidth = 240;
+import StorageIcon from '@material-ui/icons/Storage';
 
 const pages = [
   {
     "url": "/acl",
     "text": "Edit ACLs",
     "icon": <ViewHeadlineIcon />
+  },
+  {
+    "url": "/server",
+    "text": "Edit Servers",
+    "icon": <StorageIcon />
   }
 ]
 
