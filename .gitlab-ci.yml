@@ -28,7 +28,7 @@ update-version-stage:
   artifacts:
     expire_in: 1 hrs
     paths:
-      - dir/
+      - package.json
 
 push-stage:
   stage: push
