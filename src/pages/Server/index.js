@@ -1,15 +1,15 @@
 import React from 'react';
 import DataPage from '../../components/DataPage';
 
-class ACLList extends React.Component {
+class ServerList extends React.Component {
   render() {
     return (
       <div>
         <DataPage
-          title='ACL Management'
-          loadUrl='/table/acl_view_json'
-          crudUrl='/table/access_item'
-          parentId='list_id'
+          title='Server Management'
+          loadUrl='/table/server_view_json'
+          crudUrl='/table/server_item'
+          parentId='type_id'
           tables={true}
           token={this.props.token}
         />
@@ -18,4 +18,4 @@ class ACLList extends React.Component {
   }
 }
 
-export default ACLList;
+export default ServerList;

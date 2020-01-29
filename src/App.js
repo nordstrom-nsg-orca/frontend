@@ -1,17 +1,18 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { ImplicitCallback, SecureRoute, withAuth } from '@okta/okta-react';
-import { createMuiTheme, ThemeProvider, withStyles } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ACL from './pages/ACL';
-import Secret from './pages/Secret';
+import Server from './pages/Server';
 import APIDoc from './pages/APIDoc';
 import Settings from './pages/Settings';
-import { lightTheme, darkTheme, style } from './global.js';
 
-import './App.css';
+import { tokenExchange } from './util/api.js';
+import { lightTheme, darkTheme } from './global.js';
 
 class App extends React.Component {
 
@@ -30,21 +31,16 @@ class App extends React.Component {
     this.changeTheme = this.changeTheme.bind(this);
   }
 
-  async componentDidMount() {
-    console.log('mount  ' + this.state.auth.authenticated); this.checkAuthentication();
-    // console.log(this.props.classes.main);
-  }
+  async componentDidMount() { this.checkAuthentication(); }
+
   async componentDidUpdate() {
-    if (!this.state.auth.authenticated) {
-      this.checkAuthentication();
-    }
+    if (!this.state.auth.authenticated) { this.checkAuthentication(); }
   }
 
   changeTheme(event, label) {
     if (label === 'light' && !this.state.light) {
       this.setState({light: event.target.checked});
     } else this.setState({light: !event.target.checked});
-
   }
 
 
@@ -52,27 +48,18 @@ class App extends React.Component {
     const authenticated = await this.props.auth.isAuthenticated();
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
-      const token = await this.props.auth.getAccessToken();
-      console.log('Retrieving api key...');
-      try {
-        const resp = await fetch(`${process.env.REACT_APP_DB_API_URL}/token`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-        });
-        const json = await resp.json();
-        this.setState({
-          auth: {
-            authenticated: authenticated,
-            user: userinfo,
-            token: token,
-            apiKey: json.apiKey
-          }
-        });
-      } catch(err) {
-        console.log(err);
-      }
+      const oAuthToken = await this.props.auth.getAccessToken();
 
+      const apiToken = await tokenExchange(oAuthToken);
+
+      this.setState({
+        auth: {
+          authenticated: authenticated,
+          user: userinfo,
+          oAuthToken: oAuthToken,
+          apiToken: apiToken
+        }
+      });
     }
   }
 
@@ -89,31 +76,29 @@ class App extends React.Component {
       auth: {
         authenticated: false,
         user: null,
-        token: null
+        oAuthToken: null,
+        apiToken: null
       }
     });
   }
 
   render() {
     const theme = this.state.light ? lightTheme: darkTheme;
-    const { classes } = this.props;
-    const main = style(theme).main;
 
     return (
       <div>
           <Route path='/api/doc' component={APIDoc}/>
          { window.location.pathname !== '/api/doc' &&
             <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
-              <div style={main}>
-
+              <div style={{background: theme.bodyBackground, minHeight: '100vh'}}>
                 	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
                     {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
                     {this.state.auth.authenticated &&
                       <div>
                         <Route path='/' exact={true} component={Dashboard} />
-                        <SecureRoute path='/acl' render={(props) => <ACL {...props} apiKey={this.state.auth.apiKey} />} />
+                        <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.apiToken} />} />
+                        <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.apiToken} />} />
                         <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
-                        <SecureRoute path='/secret' component={Secret} />
                         <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}  />
                       </div>
                     }
@@ -130,4 +115,4 @@ class App extends React.Component {
   }
 }
 
-export default withAuth(App);
+export default withAuth((App));
