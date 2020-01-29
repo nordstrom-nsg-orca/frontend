@@ -14,7 +14,7 @@ def main(args):
 
     commit_message = args
     prefix = commit_message[0]
-    print(prefix)
+    # print(prefix)
     with open(file_path, 'r') as package_file:
         package = package_file.read()
         data = json.loads(package)
