@@ -22,7 +22,7 @@ build-stage:
 
 update-version-stage:
   stage: update-version
-  image: "gitlab-registry.nordstrom.com/cicd/images/git"
+  # image: "gitlab-registry.nordstrom.com/cicd/images/git"
   # when: manual
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
