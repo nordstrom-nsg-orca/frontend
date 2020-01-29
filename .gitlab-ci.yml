@@ -31,7 +31,7 @@ update-version-stage:
     - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
     - chmod 0400 /tmp/.ssh/id_rsa
   script:
-    - echo $CI_PROJECT_PATH
+    # - echo $CI_PROJECT_PATH
     - echo $SSH_KEY
     - git config user.email $GITLAB_USER_EMAIL
     - git config user.name $GITLAB_USER_NAME
