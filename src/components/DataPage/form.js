@@ -1,5 +1,4 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
@@ -18,15 +17,12 @@ class Form extends React.Component {
     this.state = {};
   }
 
-
-
   render() {
     const { classes } = this.props;
 
     return (
-      <Dialog open={(this.props.open)} className={classes.dialog}>
+      <Dialog open={(this.props.open)} classes={{paper:classes.dialogPaper}}>
         <DialogContent>
-
           <Grid
             container
             direction="row"
@@ -39,8 +35,12 @@ class Form extends React.Component {
           {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
             <Grid item md={6} key={index}>
               <FormControl>
-                <InputLabel>{header}</InputLabel>
+                <InputLabel className={classes.inputLabel}
+                  classes={{focused:classes.inputFocused, root:classes.inputLabel}}>
+                  {header}
+                </InputLabel>
                 <Input onChange={event => this.props.handleInput(header, event)}
+                    classes={{underline: classes.dialogUnderline, root:classes.dialogInput, focused: classes.inputFocused}}
                     value={this.props.data? this.props.data[header] : ''}/>
               </FormControl>
             </Grid>
@@ -67,7 +67,6 @@ class Form extends React.Component {
             Accept
           </Button>
         </DialogActions>
-
       </Dialog>
     );
   }

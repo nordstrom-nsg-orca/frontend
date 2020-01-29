@@ -39,13 +39,8 @@ resources:
                 OriginProtocolPolicy: http-only
             # added this here
             -
-<<<<<<< HEAD
-              DomainName: girm9btzs7.execute-api.us-west-2.amazonaws.com
-              OriginPath: /nonprod
-=======
               DomainName: { 'Fn::ImportValue': 'ApiHostname' }
               OriginPath: /${self:provider.stage}
->>>>>>> 5ae4a79c059181185bf44eaa135b8c0c085af6f0
               Id: APIGatewayOrigin
               CustomOriginConfig:
                 HTTPPort: 80

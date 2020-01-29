@@ -11,7 +11,6 @@ import Form from './form.js';
 import Table from './table.js';
 import style from "./style.js";
 
-
 class DataPage extends React.Component {
 
   constructor(props) {
@@ -60,7 +59,7 @@ class DataPage extends React.Component {
       token: this.props.token,
       data: this.state.formData
     }
-    if (action == 'POST')
+    if (action === 'POST')
       options.data[this.props.parentId] = this.state.parentID;
 
     const resp = await api(this.props.crudUrl, options);

@@ -1,8 +1,5 @@
 import React from 'react';
 import DataPage from '../../components/DataPage';
-import { postToSlack } from '../../util/reporter.js'
-import { api } from '../../util/api.js'
-import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded';
 
 class ServerList extends React.Component {
   render() {

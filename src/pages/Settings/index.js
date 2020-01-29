@@ -1,7 +1,7 @@
 import React from 'react';
 import ThemeSelection from './themeSelection.js';
 import { withStyles } from '@material-ui/core/styles';
-import style from './style.js';
+import style  from './style.js';
 
 
 class Settings extends React.Component {
@@ -11,7 +11,7 @@ class Settings extends React.Component {
     this.state = {
     };
   }
-
+  
   render() {
     const { classes } = this.props;
 

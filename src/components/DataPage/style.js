@@ -7,7 +7,7 @@ const style = theme => ({
   root: {
     width: '900px',
     margin: '0 auto',
-    background: theme.background,
+    background: theme.bodyBackground,
     color: theme.color
   },
   tableWrapper: {
@@ -50,13 +50,32 @@ const style = theme => ({
     marginLeft: '3px'
   },
   menuItem: {
-    padding: '3px',
+    padding: '3px'
   },
-  dialog: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  dialogPaper: {
+    backgroundColor: theme.bodyBackground,
+  },
+  inputLabel: {
+    color: theme.colorSecondary
+  },
+  inputFocused: {
+    color: theme.color + ' !important'
+  },
+  dialogUnderline: {
+    '&:before': {
+      borderBottom: '2px solid ' + theme.colorSecondary + ' !important',
+    },
+    '&:after': {
+      borderBottom: '2px solid ' + theme.color + ' !important',
+    }
+  },
+  dialogInput: {
+    color: theme.color
+  },
+  tablePaper: {
+    marginBottom : '20px',
+    background: theme.background,
+    color: theme.color
   }
-
 });
 export default style;

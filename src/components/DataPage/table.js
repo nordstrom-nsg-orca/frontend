@@ -1,5 +1,4 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -21,7 +20,7 @@ class DataTable extends React.Component {
     const { classes } = this.props;
 
     return (
-      <Paper style = {{marginBottom : '20px'}}>
+      <Paper className={classes.tablePaper}>
 
         <div style = {{padding: '15px 0px 5px 15px', marginTop: '8px', display: 'flex'}}>
           <Typography variant='h5'>{this.props.data.name}</Typography>
@@ -32,7 +31,7 @@ class DataTable extends React.Component {
           <TableHead>
             <TableRow >
               {this.props.headers.map((column, index) => (
-                <TableCell size='small' key={index}>
+                <TableCell size='small' key={index} className={classes.tablePaper}>
                   <b>{column.toUpperCase()}</b>
                 </TableCell>
               ))}
@@ -47,12 +46,12 @@ class DataTable extends React.Component {
 
 
               {this.props.headers.map((column, index) =>
-                <TableCell size='small' key={index}>
+                <TableCell size='small' key={index} className={classes.tablePaper}>
                   {row[column]}
                 </TableCell>
               )}
 
-              <TableCell size='small' style={{width: '100px'}}>
+              <TableCell size='small' style={{width: '100px'}} className={classes.tablePaper}>
               {this.props.actionButtons.map((action, index) =>
                 <IconButton key={index} size='small' color='inherit'
                   onClick={this.props.handleAction.bind(this, action.name, this.props.data.id, row.id, row)}>

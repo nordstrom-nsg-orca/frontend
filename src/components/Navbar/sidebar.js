@@ -18,8 +18,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import StorageIcon from '@material-ui/icons/Storage';
 
-const drawerWidth = 240;
-
 const pages = [
   {
     "url": "/acl",
