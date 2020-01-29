@@ -2,6 +2,7 @@
 stages:
   - build
   - update-version
+  - push
   - nonprod-deploy
 
 build-stage:
@@ -22,7 +23,16 @@ build-stage:
 
 update-version-stage:
   stage: update-version
-  # image: "gitlab-registry.nordstrom.com/cicd/images/git"
+  script:
+    - python version.py $CI_COMMIT_MESSAGE
+  artifacts:
+    expire_in: 1 hrs
+    paths:
+      - /
+
+push-stage:
+  stage: push
+  image: "gitlab-registry.nordstrom.com/cicd/images/git"
   # when: manual
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
@@ -30,12 +40,14 @@ update-version-stage:
     - mkdir -pvm 0700 /tmp/.ssh
     - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
     - chmod 0400 /tmp/.ssh/id_rsa
-    - python version.py $CI_COMMIT_MESSAGE
   script:
     - git config user.email $GITLAB_USER_EMAIL
     - git config user.name $GITLAB_USER_NAME
     - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
     - git push -o ci.skip origin HEAD:vecheka
+  dependencies:
+    - update-version-stage
+
 
 
 deploy-stage:
