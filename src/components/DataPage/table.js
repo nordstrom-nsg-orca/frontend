@@ -35,7 +35,9 @@ class DataTable extends React.Component {
                   <b>{column.toUpperCase()}</b>
                 </TableCell>
               ))}
-              
+              { this.props.handleAction &&
+                <TableCell> </TableCell>
+              }
             </TableRow>
           </TableHead>
 

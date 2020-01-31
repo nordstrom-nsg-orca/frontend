@@ -28,7 +28,7 @@ class OrcaDataPage extends React.Component {
       <DataPage
         title={this.props.title}
         loadData={this.loadData}
-        // crud={this.crud}
+        crud={this.crud}
         parentId={this.props.parentId}
       />
     )

@@ -11,7 +11,6 @@ import Server from './pages/Server';
 import APIDoc from './pages/APIDoc';
 import Settings from './pages/Settings';
 
-import { tokenExchange } from './util/api.js';
 import { lightTheme, darkTheme } from './global.js';
 
 class App extends React.Component {
