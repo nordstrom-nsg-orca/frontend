@@ -15,23 +15,11 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: null
     };
   }
-  async componentDidUpdate(){
-    // console.log(this.state.formData);
-  }
+  async componentDidUpdate(){  }
 
-  handleInput = (index, event) => {
-    var data;
-    if (this.state.formData === null) {
-      data = {};
-    } else {
-      data = JSON.parse(JSON.stringify(this.state.formData));
-    }
-    data[index] = event.target.value;
-    this.setState({formData: data});
-  }
+
 
   render() {
     const { classes } = this.props;

@@ -64,7 +64,7 @@ class DataPage extends React.Component {
       data: this.state.formData
     }
     if (action === 'POST' && this.props.parentId)
-      options.data[this.props.parentId] = this.state.parentID; 
+      options.data[this.props.parentId] = this.state.parentID;
     try {
       const resp = await this.props.crud(options);
       if (resp.ok)
@@ -105,7 +105,8 @@ class DataPage extends React.Component {
 
 
   handleSearch = (event) => {
-    const search = event.target.value;
+    let search = event.target.value;
+    search = search.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
     if (search === '') {
       this.setState({ displayData: this.state.data });
     } else {
@@ -121,10 +122,10 @@ class DataPage extends React.Component {
           let remove = true;
           for (let h = 0; h < this.state.headers.length; h++) {
             const header = this.state.headers[h];
-            const value = this.state.data[i]['rows'][j][header];
+            const value = this.state.data[i]['rows'][j][header].toLowerCase();
 
             // if any of the values match the search, don't delete
-            if (value.search(search) > -1) remove = false;
+            if (value.search(search.toLowerCase()) > -1) remove = false;
           }
           if (remove) searchResults[i]['rows'].splice(j,1);
         }
