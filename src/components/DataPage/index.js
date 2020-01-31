@@ -37,7 +37,8 @@ class DataPage extends React.Component {
   loadData = async () => {
 
     try {
-      const res = await this.props.loadData()
+      const res = await this.props.loadData();
+      // console.log(res.json[0]);
       this.setState({
         data: res.json[0].results.data || null,
         displayData: res.json[0].results.data || null,
