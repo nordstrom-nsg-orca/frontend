@@ -1,8 +1,9 @@
 import React from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Radio from '@material-ui/core/Radio';
+
 
 class ThemeSelection extends React.Component {
 
@@ -16,27 +17,24 @@ class ThemeSelection extends React.Component {
     const { classes } = this.props;
     const checkBoxColor = this.props.light === true ? "#424242": "#fff";
     return (
-      <div className={classes.root}>
-        <Paper className={classes.expansion}>
-          <FormGroup row className={classes.form}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={!this.props.light} onChange={event => this.props.changeTheme(event, 'dark')} value='dark'
-                  style={{color: checkBoxColor}}/>
-              }
-              label="Dark"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox checked={this.props.light} onChange={event => this.props.changeTheme(event, 'light')} value='light'
-                  style={{color: checkBoxColor}}/>
-              }
-              label="Light"
-            />
-
-          </FormGroup>
-        </Paper>
-
+      <div className={classes.childMain}>
+        <Typography className={classes.themeTitle}> Theme </Typography>
+        <FormGroup row className={classes.themeForm}>
+          <FormControlLabel
+            control={
+              <Radio checked={!this.props.light} onChange={event => this.props.changeTheme(event, 'dark')} value='dark'
+                style={{color: checkBoxColor}}/>
+            }
+            label="Dark"
+          />
+          <FormControlLabel
+            control={
+              <Radio checked={this.props.light} onChange={event => this.props.changeTheme(event, 'light')} value='light'
+                style={{color: checkBoxColor}}/>
+            }
+            label="Light"
+          />
+        </FormGroup>
       </div>
     );
   }

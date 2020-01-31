@@ -36,7 +36,9 @@ update-version-stage:
     - git status
     - git add .
     - git commit -m "[ci skip] ${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin HEAD:vecheka
+    - git push -o ci.skip origin HEAD:master
+  only:
+    - master
 
 
 deploy-stage:

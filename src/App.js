@@ -50,14 +50,11 @@ class App extends React.Component {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
 
-      const apiToken = await tokenExchange(oAuthToken);
-
       this.setState({
         auth: {
           authenticated: authenticated,
           user: userinfo,
           oAuthToken: oAuthToken,
-          apiToken: apiToken
         }
       });
     }
@@ -96,8 +93,8 @@ class App extends React.Component {
                     {this.state.auth.authenticated &&
                       <div>
                         <Route path='/' exact={true} component={Dashboard} />
-                        <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.apiToken} />} />
-                        <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.apiToken} />} />
+                        <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.oAuthToken} />} />
+                        <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.oAuthToken} />} />
                         <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
                         <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}  />
                       </div>

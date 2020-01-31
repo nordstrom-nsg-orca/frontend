@@ -35,7 +35,7 @@ class DataTable extends React.Component {
                   <b>{column.toUpperCase()}</b>
                 </TableCell>
               ))}
-              <TableCell></TableCell>
+              
             </TableRow>
           </TableHead>
 
@@ -50,26 +50,30 @@ class DataTable extends React.Component {
                   {row[column]}
                 </TableCell>
               )}
+              { this.props.handleAction &&
+                <TableCell size='small' style={{width: '100px'}} className={classes.tablePaper}>
+                {this.props.actionButtons.map((action, index) =>
+                  <IconButton key={index} size='small' color='inherit'
+                    onClick={this.props.handleAction.bind(this, action.name, this.props.data.id, row.id, row)}>
+                    {action.icon}
+                  </IconButton>
+                )}
+                </TableCell>
+              }
 
-              <TableCell size='small' style={{width: '100px'}} className={classes.tablePaper}>
-              {this.props.actionButtons.map((action, index) =>
-                <IconButton key={index} size='small' color='inherit'
-                  onClick={this.props.handleAction.bind(this, action.name, this.props.data.id, row.id, row)}>
-                  {action.icon}
-                </IconButton>
-              )}
-              </TableCell>
 
               </TableRow>
             )}
           </TableBody>
 
         </Table>
-        <div align='center' >
-          <IconButton color='inherit' onClick={this.props.handleAction.bind(this, 'POST', this.props.data.id, null, null)}>
-            <AddCircleRoundedIcon className={classes.addButton} />
-          </IconButton>
-        </div>
+        { this.props.handleAction &&
+          <div align='center' >
+            <IconButton color='inherit' onClick={this.props.handleAction.bind(this, 'POST', this.props.data.id, null, null)}>
+              <AddCircleRoundedIcon className={classes.addButton} />
+            </IconButton>
+          </div>
+        }
       </Paper>
     );
   }

@@ -1,25 +1,33 @@
-
+const topPadding = '10px';
+const fontSize = '1.1em';
+const leftPadding = '10px';
 const style = theme => ({
   main: {
-    width: '100%',
-    height: '100vh',
-    minHeight: '100vh',
+    width: theme.maxWidth,
     background: theme.bodyBackground,
-    color: theme.color
-  },
-  root: {
-    width: '100%',
-  },
-  expansion: {
-    background: theme.background,
     color: theme.color,
   },
-  form: {
-    paddingLeft: '10px'
+  childMain: {
+    display: "flex",
+    justifyContent: "center"
+  },
+  themeForm: {
+    fontSize: fontSize,
+    marginLeft: 'auto'
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightBold,
+  },
+  themeTitle: {
+    paddingTop: topPadding,
+    fontSize: fontSize,
+    marginLeft: leftPadding
+  },
+  version: {
+    paddingTop: topPadding,
+    fontSize: fontSize,
+    marginLeft: leftPadding
   }
 });
 

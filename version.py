@@ -14,7 +14,6 @@ def main(args):
 
     commit_message = args
     prefix = commit_message[0]
-    # print(prefix)
     with open(file_path, 'r') as package_file:
         package = package_file.read()
         data = json.loads(package)
@@ -40,7 +39,6 @@ def main(args):
     ## write back to package.json
     version = '.'.join(xyz)
     data['version'] = version
-    print(data)
     with open(file_path, 'w') as package_file:
         json.dump(data, package_file)
         # package_file.close()

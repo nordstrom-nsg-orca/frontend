@@ -5,8 +5,6 @@ import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import Typography from '@material-ui/core/Typography';
-
-import { api } from '../../util/api.js'
 import Form from './form.js';
 import Table from './table.js';
 import style from "./style.js";
@@ -22,7 +20,7 @@ class DataPage extends React.Component {
       formAction: null,
       formOpen: false,
       formHeaders: [],
-      formData: null
+      formData: null,
     };
 
     this.actionButtons = [
@@ -32,40 +30,50 @@ class DataPage extends React.Component {
   }
 
   async componentDidMount() { this.loadData() }
+  async shouldComponentUpdate(nextProps, nextState) {
+   return this.state.data !== nextState.data;
+  }
 
   loadData = async () => {
-    const res = await api(this.props.loadUrl, {
-      method: 'GET',
-      token: this.props.token
-    });
 
-    this.setState({
-      data: res.json[0].results.data,
-      displayData: res.json[0].results.data,
-      headers: res.json[0].results.headers,
-      parentheaders: res.json[0].results.parentheaders
-    });
+    try {
+      const res = await this.props.loadData()
+      this.setState({
+        data: res.json[0].results.data || null,
+        displayData: res.json[0].results.data || null,
+        headers: res.json[0].results.headers,
+        parentheaders: res.json[0].results.parentheaders
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
   }
-  
-  handleCreate = (tableName) => {
-    this.setState({formOpen: true, parentID: tableName});
-  }
+
+  // handleCreate = (tableName) => {
+  //   this.setState({formOpen: true, parentID: tableName});
+  // }
 
   handleFormSubmit = async (action) => {
     this.setState({ formOpen: false });
-    
+    if (action === 'cancel') return;
+    console.log(this.state.formData);
     let options = {
       method: action,
       token: this.props.token,
       data: this.state.formData
     }
-    if (action === 'POST')
-      options.data[this.props.parentId] = this.state.parentID;
+    if (action === 'POST' && this.props.parentId)
+      options.data[this.props.parentId] = this.state.parentID; 
+    try {
+      const resp = await this.props.crud(options);
+      if (resp.ok)
+        this.loadData();
+    } catch (err) {
+      console.log(err);
+    }
 
-    const resp = await api(this.props.crudUrl, options);
- 
-    if (resp.ok)
-      this.loadData();
+
   }
 
   handleAction = (action, tableId, id, data) => {
@@ -84,15 +92,15 @@ class DataPage extends React.Component {
     });
   }
 
-  handleInput = (index, event) => {
+  handleInput = (header, event) => {
     var data;
     if (this.state.isAdd && this.state.formData === null) {
-      data = [];
+      data = {};
     } else {
       data = JSON.parse(JSON.stringify(this.state.formData));
     }
-    data[index] = event.target.value;
-    this.setState({formData: data});
+    data[header] = event.target.value;
+    this.setState({formData: data, isInput: true});
   }
 
 
@@ -159,20 +167,19 @@ class DataPage extends React.Component {
             <InputBase
               placeholder="Search"
               className={classes.searchInput}
-              onChange = {this.props.handleSearch}
+              onChange = {this.handleSearch}
             />
           </div>
         </div>
 
-        {this.state.displayData.map((table, index) =>
+        { this.state.displayData.map((table, index) =>
           <Table
             key={index}
             deleteTable={this.deleteTable}
             headers={this.state.headers}
             data={table}
             actionButtons={this.actionButtons}
-            handleAction={this.handleAction}
-            handleCreate={this.handleCreate}
+            handleAction={this.props.crud ? this.handleAction: null}
             classes={classes}
           />
         )}

@@ -5,7 +5,7 @@ const style = theme => ({
     color: theme.color
   },
   root: {
-    width: '900px',
+    width: theme.maxWidth,
     margin: '0 auto',
     background: theme.bodyBackground,
     color: theme.color

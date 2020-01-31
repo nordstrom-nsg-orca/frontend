@@ -1,15 +1,18 @@
+const maxWidth = '900px';
 const lightTheme = {
   bodyBackground: '#fafafa',
   background: '#fff',
   color: '#1F1F1F',
-  colorSecondary: 'rgba(0, 0, 0, 0.50)'
+  colorSecondary: 'rgba(0, 0, 0, 0.50)',
+  maxWidth: maxWidth
 };
 
 const darkTheme = {
   bodyBackground: '#303030',
   background: '#424242',
   color: '#fff',
-  colorSecondary: 'rgba(255, 255, 255, 0.55)'
+  colorSecondary: 'rgba(255, 255, 255, 0.55)',
+  maxWidth: maxWidth
 };
 
 const style = theme => ({

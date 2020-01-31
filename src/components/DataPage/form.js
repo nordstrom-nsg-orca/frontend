@@ -14,7 +14,23 @@ class Form extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      formData: null
+    };
+  }
+  async componentDidUpdate(){
+    // console.log(this.state.formData);
+  }
+
+  handleInput = (index, event) => {
+    var data;
+    if (this.state.formData === null) {
+      data = {};
+    } else {
+      data = JSON.parse(JSON.stringify(this.state.formData));
+    }
+    data[index] = event.target.value;
+    this.setState({formData: data});
   }
 
   render() {
@@ -34,14 +50,14 @@ class Form extends React.Component {
 
           {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
             <Grid item md={6} key={index}>
-              <FormControl>
+              <FormControl >
                 <InputLabel className={classes.inputLabel}
                   classes={{focused:classes.inputFocused, root:classes.inputLabel}}>
                   {header}
                 </InputLabel>
                 <Input onChange={event => this.props.handleInput(header, event)}
                     classes={{underline: classes.dialogUnderline, root:classes.dialogInput, focused: classes.inputFocused}}
-                    value={this.props.data? this.props.data[header] : ''}/>
+                    value={this.props.data ? this.props.data[header]: ''}/>
               </FormControl>
             </Grid>
           )}
@@ -49,7 +65,7 @@ class Form extends React.Component {
           {this.props.action === 'DELETE' &&
             <Grid item md={12}>
               <DialogContent>
-                <DialogContentText className={classes.formStyle}>
+                <DialogContentText className={classes.dialogInput}>
                   Are you sure you want to delete this?
                 </DialogContentText>
               </DialogContent>
@@ -63,7 +79,7 @@ class Form extends React.Component {
           <Button onClick={this.props.handleFormSubmit.bind(this, 'cancel')} color="primary">
             Cancel
           </Button>
-          <Button onClick={this.props.handleFormSubmit.bind(this,this.props.action)} color="primary">
+          <Button onClick={this.props.handleFormSubmit.bind(this, this.props.action)} color="primary">
             Accept
           </Button>
         </DialogActions>
