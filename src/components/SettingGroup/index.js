@@ -16,15 +16,13 @@ class SettingGroup extends React.Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <Typography className={classes.title}> {this.props.title} </Typography>
+        <Typography variant="h5"> {this.props.title} </Typography>
         <Paper className={classes.paperStyle}>
           {this.props.children}
         </Paper>
-
       </div>
     );
   }
-
 }
 
 export default withStyles(style)(SettingGroup);

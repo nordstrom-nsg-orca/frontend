@@ -18,7 +18,7 @@ class ThemeSelection extends React.Component {
     const checkBoxColor = this.props.light === true ? "#424242": "#fff";
     return (
       <div className={classes.childMain}>
-        <Typography className={classes.themeTitle}> Theme </Typography>
+        <Typography className={classes.label}>Theme</Typography>
         <FormGroup row className={classes.themeForm}>
           <FormControlLabel
             control={

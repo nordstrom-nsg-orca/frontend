@@ -35,7 +35,6 @@ class DataPage extends React.Component {
   }
 
   loadData = async () => {
-
     try {
       const res = await this.props.loadData()
       this.setState({
@@ -47,7 +46,6 @@ class DataPage extends React.Component {
     } catch (err) {
       console.log(err);
     }
-
   }
 
   // handleCreate = (tableName) => {
@@ -56,8 +54,9 @@ class DataPage extends React.Component {
 
   handleFormSubmit = async (action) => {
     this.setState({ formOpen: false });
-    if (action === 'cancel') return;
-    console.log(this.state.formData);
+    if (action === 'cancel')
+      return;
+    
     let options = {
       method: action,
       token: this.props.token,
@@ -72,8 +71,6 @@ class DataPage extends React.Component {
     } catch (err) {
       console.log(err);
     }
-
-
   }
 
   handleAction = (action, tableId, id, data) => {
@@ -145,8 +142,7 @@ class DataPage extends React.Component {
 
 
     return (
-      <div className={classes.root}>
-
+      <div>
         <Form
             open={this.state.formOpen}
             action={this.state.formAction}
