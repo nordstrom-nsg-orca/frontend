@@ -17,7 +17,7 @@ class Settings extends React.Component {
 
     return (
       <div className={classes.main}>
-        <Typography variant='h5' style={{paddingBottom: '10px'}}> My Settings </Typography>
+        <Typography variant='h4' style={{paddingBottom: '10px'}}> My Settings </Typography>
         <SettingGroup title="Appearance">
           <ThemeSelection classes={classes} changeTheme={this.props.changeTheme} light={this.props.light}/>
         </SettingGroup>
