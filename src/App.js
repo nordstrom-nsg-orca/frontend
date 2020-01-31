@@ -14,23 +14,21 @@ import Settings from './pages/Settings';
 import { lightTheme, darkTheme } from './global.js';
 
 class App extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props);
-
     this.state = {
       auth: {
         user: null,
-        authenticated: false,
+        authenticated: false
       },
-      light: false,
+      light: false
     };
     this.logout = this.logout.bind(this);
     this.login = this.login.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
   }
 
-  async componentDidMount() { this.checkAuthentication(); }
+  async componentDidMount () { this.checkAuthentication(); }
 
   async componentDidUpdate() {
     if (!this.state.auth.authenticated) { this.checkAuthentication(); }
@@ -38,8 +36,8 @@ class App extends React.Component {
 
   changeTheme(event, label) {
     if (label === 'light' && !this.state.light) {
-      this.setState({light: event.target.checked});
-    } else this.setState({light: !event.target.checked});
+      this.setState({ light: event.target.checked });
+    } else this.setState({ light: !event.target.checked });
   }
 
 
@@ -52,7 +50,7 @@ class App extends React.Component {
         auth: {
           authenticated: authenticated,
           user: userinfo,
-          oAuthToken: oAuthToken,
+          oAuthToken: oAuthToken
         }
       });
     }
@@ -60,7 +58,7 @@ class App extends React.Component {
 
 
   login() {
-    if (!this.state.authenticated){
+    if (!this.state.authenticated) {
       this.props.auth.login('/dashboard');
     }
   }
@@ -110,4 +108,13 @@ class App extends React.Component {
   }
 }
 
-export default withAuth((App));
+App.propTypes = {
+   auth: React.PropTypes.auth.isRequired,
+   // propBool: React.PropTypes.bool.isRequired,
+   // propFunc: React.PropTypes.func,
+   // propNumber: React.PropTypes.number,
+   // propString: React.PropTypes.string,
+   // propObject: React.PropTypes.object
+}
+
+export default withAuth(App);
