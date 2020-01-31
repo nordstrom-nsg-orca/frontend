@@ -1,5 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
@@ -11,7 +12,7 @@ import style from "./style.js";
 
 class DataPage extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       data:  [],
@@ -29,8 +30,8 @@ class DataPage extends React.Component {
     ];
   }
 
-  async componentDidMount() { this.loadData() }
-  async shouldComponentUpdate(nextProps, nextState) {
+  async componentDidMount () { this.loadData() }
+  async shouldComponentUpdate (nextProps, nextState) {
    return this.state.data !== nextState.data;
   }
 
@@ -95,11 +96,9 @@ class DataPage extends React.Component {
 
   handleInput = (header, event) => {
     var data;
-    if (this.state.isAdd && this.state.formData === null) {
-      data = {};
-    } else {
-      data = JSON.parse(JSON.stringify(this.state.formData));
-    }
+    if (this.state.isAdd && this.state.formData === null) data = {};
+    else data = JSON.parse(JSON.stringify(this.state.formData));
+
     data[header] = event.target.value;
     this.setState({formData: data, isInput: true});
   }
@@ -108,10 +107,8 @@ class DataPage extends React.Component {
   handleSearch = (event) => {
     let search = event.target.value;
     search = search.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-    if (search === '') {
-      this.setState({ displayData: this.state.data });
-    } else {
-
+    if (search === '') this.setState({ displayData: this.state.data });
+    else {
       // start with a copy of the full data
       let searchResults = JSON.parse(JSON.stringify(this.state.data));
 
@@ -142,47 +139,47 @@ class DataPage extends React.Component {
 
 
 
-  render() {
+  render () {
     const { classes } = this.props;
 
 
     return (
-      <div className={classes.root}>
+      <div className={ classes.root }>
 
         <Form
-            open={this.state.formOpen}
-            action={this.state.formAction}
-            title={this.props.title}
-            headers={this.state.formHeaders}
-            data={this.state.formData}
-            handleInput={this.handleInput}
-            handleFormSubmit={this.handleFormSubmit}
-            classes={classes}
+            open={ this.state.formOpen }
+            action={ this.state.formAction }
+            title={ this.props.title }
+            headers={ this.state.formHeaders }
+            data={ this.state.formData }
+            handleInput={ this.handleInput }
+            handleFormSubmit={ this.handleFormSubmit }
+            classes={ classes }
         />
 
-        <div style ={{display: 'flex'}}>
-          <Typography variant="h4">{this.props.title}</Typography>
+        <div style ={{ display: 'flex' }}>
+          <Typography variant="h4">{ this.props.title }</Typography>
 
-          <div style={{marginLeft: 'auto'}}>
+          <div style={{ marginLeft: 'auto' }}>
 
-            <SearchRoundedIcon className={classes.searchIcon} />
+            <SearchRoundedIcon className={ classes.searchIcon } />
             <InputBase
               placeholder="Search"
-              className={classes.searchInput}
-              onChange = {this.handleSearch}
+              className={ classes.searchInput }
+              onChange = { this.handleSearch }
             />
           </div>
         </div>
 
         { this.state.displayData.map((table, index) =>
           <Table
-            key={index}
-            deleteTable={this.deleteTable}
-            headers={this.state.headers}
-            data={table}
-            actionButtons={this.actionButtons}
-            handleAction={this.props.crud ? this.handleAction: null}
-            classes={classes}
+            key={ index }
+            deleteTable={ this.deleteTable }
+            headers={ this.state.headers }
+            data={ table }
+            actionButtons={ this.actionButtons }
+            handleAction={ this.props.crud ? this.handleAction: null }
+            classes={ classes }
           />
         )}
       </div>
@@ -190,5 +187,10 @@ class DataPage extends React.Component {
   }
 }
 
+DataPage.propsTypes = {
+  classes: PropTypes.object.isRequired,
+  crud: PropTypes.func,
+  title: PropTypes.string.isRequired
+};
 
 export default withStyles(style)(DataPage);
