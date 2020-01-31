@@ -78,26 +78,26 @@ class App extends React.Component {
 
     return (
       <div>
-        <Route path='/api/doc' component={APIDoc}/>
-       { window.location.pathname !== '/api/doc' &&
-          <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
-            <div style={{background: theme.bodyBackground, minHeight: '100vh'}}>
-              	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
-                  {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
-                  {this.state.auth.authenticated &&
-                    <div>
-                      <Route path='/' exact={true} component={Dashboard} />
-                      <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.oAuthToken} />} />
-                      <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.oAuthToken} />} />
-                      <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
-                      <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}  />
-                    </div>
-                  }
-                  <Route path='/implicit/callback' component={ImplicitCallback} />
-                </Navbar>
+        <Route path='/api/doc' component={APIDoc} />
+       {window.location.pathname !== '/api/doc' &&
+        <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
+          <div style={{background: theme.bodyBackground, minHeight: '100vh'}}>
+          	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
+              {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
+              {this.state.auth.authenticated &&
+                <div>
+                  <Route path='/' exact component={Dashboard} />
+                  <SecureRoute path='/acl' render={(props) => <ACL {...props} token={this.state.auth.oAuthToken} />} />
+                  <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.oAuthToken} />} />
+                  <SecureRoute path='/dashboard' exact={true} component={Dashboard} />
+                  <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}  />
+                </div>
+              }
+              <Route path='/implicit/callback' component={ImplicitCallback} />
+            </Navbar>
 
-            </div>
-          </ThemeProvider>
+          </div>
+        </ThemeProvider>
         }
       </div>
 
