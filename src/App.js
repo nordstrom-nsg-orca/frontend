@@ -39,7 +39,6 @@ class App extends React.Component {
     else this.setState({ light: !event.target.checked });
   }
 
-
   async checkAuthentication () {
     const authenticated = await this.props.auth.isAuthenticated();
     if (authenticated && !this.state.auth.user) {
@@ -54,7 +53,6 @@ class App extends React.Component {
       });
     }
   }
-
 
   login () {
     if (!this.state.authenticated)
@@ -79,8 +77,8 @@ class App extends React.Component {
     return (
       <div>
         <Route path='/api/doc' component={APIDoc} />
-       {window.location.pathname !== '/api/doc' &&
-        <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
+        {window.location.pathname !== '/api/doc' &&
+         <ThemeProvider theme={{...createMuiTheme(), ...theme}}>
           <div style={{background: theme.bodyBackground, minHeight: '100vh'}}>
           	<Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
               {!this.state.auth.authenticated && <Route path='/' exact={true} component={Home} />}
@@ -97,7 +95,7 @@ class App extends React.Component {
             </Navbar>
 
           </div>
-        </ThemeProvider>
+         </ThemeProvider>
         }
       </div>
 
