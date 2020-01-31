@@ -2,6 +2,8 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { ImplicitCallback, SecureRoute, withAuth } from '@okta/okta-react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+
 
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -30,18 +32,18 @@ class App extends React.Component {
 
   async componentDidMount () { this.checkAuthentication(); }
 
-  async componentDidUpdate() {
-    if (!this.state.auth.authenticated) { this.checkAuthentication(); }
+  async componentDidUpdate () {
+    if (!this.state.auth.authenticated) this.checkAuthentication();
   }
 
-  changeTheme(event, label) {
+  changeTheme (event, label) {
     if (label === 'light' && !this.state.light) {
       this.setState({ light: event.target.checked });
     } else this.setState({ light: !event.target.checked });
   }
 
 
-  async checkAuthentication() {
+  async checkAuthentication () {
     const authenticated = await this.props.auth.isAuthenticated();
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
@@ -57,13 +59,12 @@ class App extends React.Component {
   }
 
 
-  login() {
-    if (!this.state.authenticated) {
+  login () {
+    if (!this.state.authenticated)
       this.props.auth.login('/dashboard');
-    }
   }
 
-  async logout() {
+  async logout () {
     await this.props.auth.logout('/');
     this.setState({
       auth: {
@@ -75,7 +76,7 @@ class App extends React.Component {
     });
   }
 
-  render() {
+  render () {
     const theme = this.state.light ? lightTheme: darkTheme;
 
     return (
@@ -109,12 +110,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-   auth: React.PropTypes.auth.isRequired,
-   // propBool: React.PropTypes.bool.isRequired,
-   // propFunc: React.PropTypes.func,
-   // propNumber: React.PropTypes.number,
-   // propString: React.PropTypes.string,
-   // propObject: React.PropTypes.object
-}
+   auth: PropTypes.object.isRequired,
+};
 
 export default withAuth(App);
