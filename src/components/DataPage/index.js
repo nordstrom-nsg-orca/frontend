@@ -1,5 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
@@ -11,7 +12,7 @@ import style from "./style.js";
 
 class DataPage extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       data:  [],
@@ -29,14 +30,15 @@ class DataPage extends React.Component {
     ];
   }
 
-  async componentDidMount() { this.loadData() }
-  async shouldComponentUpdate(nextProps, nextState) {
+  async componentDidMount () { this.loadData() }
+  async shouldComponentUpdate (nextProps, nextState) {
    return this.state.data !== nextState.data;
   }
 
   loadData = async () => {
     try {
-      const res = await this.props.loadData()
+      const res = await this.props.loadData();
+      // console.log(res.json[0]);
       this.setState({
         data: res.json[0].results.data || null,
         displayData: res.json[0].results.data || null,
@@ -63,7 +65,7 @@ class DataPage extends React.Component {
       data: this.state.formData
     }
     if (action === 'POST' && this.props.parentId)
-      options.data[this.props.parentId] = this.state.parentID; 
+      options.data[this.props.parentId] = this.state.parentID;
     try {
       const resp = await this.props.crud(options);
       if (resp.ok)
@@ -91,22 +93,19 @@ class DataPage extends React.Component {
 
   handleInput = (header, event) => {
     var data;
-    if (this.state.isAdd && this.state.formData === null) {
-      data = {};
-    } else {
-      data = JSON.parse(JSON.stringify(this.state.formData));
-    }
+    if (this.state.isAdd && this.state.formData === null) data = {};
+    else data = JSON.parse(JSON.stringify(this.state.formData));
+
     data[header] = event.target.value;
     this.setState({formData: data, isInput: true});
   }
 
 
   handleSearch = (event) => {
-    const search = event.target.value;
-    if (search === '') {
-      this.setState({ displayData: this.state.data });
-    } else {
-
+    let search = event.target.value;
+    search = search.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+    if (search === '') this.setState({ displayData: this.state.data });
+    else {
       // start with a copy of the full data
       let searchResults = JSON.parse(JSON.stringify(this.state.data));
 
@@ -118,10 +117,10 @@ class DataPage extends React.Component {
           let remove = true;
           for (let h = 0; h < this.state.headers.length; h++) {
             const header = this.state.headers[h];
-            const value = this.state.data[i]['rows'][j][header];
+            const value = this.state.data[i]['rows'][j][header].toLowerCase();
 
             // if any of the values match the search, don't delete
-            if (value.search(search) > -1) remove = false;
+            if (value.search(search.toLowerCase()) > -1) remove = false;
           }
           if (remove) searchResults[i]['rows'].splice(j,1);
         }
@@ -137,46 +136,46 @@ class DataPage extends React.Component {
 
 
 
-  render() {
+  render () {
     const { classes } = this.props;
 
 
     return (
       <div>
         <Form
-            open={this.state.formOpen}
-            action={this.state.formAction}
-            title={this.props.title}
-            headers={this.state.formHeaders}
-            data={this.state.formData}
-            handleInput={this.handleInput}
-            handleFormSubmit={this.handleFormSubmit}
-            classes={classes}
+            open={ this.state.formOpen }
+            action={ this.state.formAction }
+            title={ this.props.title }
+            headers={ this.state.formHeaders }
+            data={ this.state.formData }
+            handleInput={ this.handleInput }
+            handleFormSubmit={ this.handleFormSubmit }
+            classes={ classes }
         />
 
-        <div style ={{display: 'flex'}}>
-          <Typography variant="h4">{this.props.title}</Typography>
+        <div style ={{ display: 'flex' }}>
+          <Typography variant="h4">{ this.props.title }</Typography>
 
-          <div style={{marginLeft: 'auto'}}>
+          <div style={{ marginLeft: 'auto' }}>
 
-            <SearchRoundedIcon className={classes.searchIcon} />
+            <SearchRoundedIcon className={ classes.searchIcon } />
             <InputBase
               placeholder="Search"
-              className={classes.searchInput}
-              onChange = {this.handleSearch}
+              className={ classes.searchInput }
+              onChange = { this.handleSearch }
             />
           </div>
         </div>
 
         { this.state.displayData.map((table, index) =>
           <Table
-            key={index}
-            deleteTable={this.deleteTable}
-            headers={this.state.headers}
-            data={table}
-            actionButtons={this.actionButtons}
-            handleAction={this.props.crud ? this.handleAction: null}
-            classes={classes}
+            key={ index }
+            deleteTable={ this.deleteTable }
+            headers={ this.state.headers }
+            data={ table }
+            actionButtons={ this.actionButtons }
+            handleAction={ this.props.crud ? this.handleAction: null }
+            classes={ classes }
           />
         )}
       </div>
@@ -184,5 +183,10 @@ class DataPage extends React.Component {
   }
 }
 
+DataPage.propsTypes = {
+  classes: PropTypes.object.isRequired,
+  crud: PropTypes.func,
+  title: PropTypes.string.isRequired
+};
 
 export default withStyles(style)(DataPage);

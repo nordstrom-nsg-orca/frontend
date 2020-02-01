@@ -8,36 +8,21 @@ import DialogContent from '@material-ui/core/DialogContent';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import DialogContentText from '@material-ui/core/DialogContentText';
-
+import PropTypes from 'prop-types';
 
 class Form extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
-      formData: null
     };
   }
-  async componentDidUpdate(){
-    // console.log(this.state.formData);
-  }
 
-  handleInput = (index, event) => {
-    var data;
-    if (this.state.formData === null) {
-      data = {};
-    } else {
-      data = JSON.parse(JSON.stringify(this.state.formData));
-    }
-    data[index] = event.target.value;
-    this.setState({formData: data});
-  }
+  async componentDidUpdate (){  }
 
-  render() {
+  render () {
     const { classes } = this.props;
-
     return (
-      <Dialog open={(this.props.open)} classes={{paper:classes.dialogPaper}}>
+      <Dialog open={ (this.props.open) } classes={{ paper:classes.dialogPaper }}>
         <DialogContent>
           <Grid
             container
@@ -49,23 +34,23 @@ class Form extends React.Component {
           >
 
           {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
-            <Grid item md={6} key={index}>
+            <Grid item md={6} key={ index }>
               <FormControl >
                 <InputLabel className={classes.inputLabel}
-                  classes={{focused:classes.inputFocused, root:classes.inputLabel}}>
-                  {header}
+                  classes={{ focused:classes.inputFocused, root:classes.inputLabel }}>
+                  { header }
                 </InputLabel>
-                <Input onChange={event => this.props.handleInput(header, event)}
-                    classes={{underline: classes.dialogUnderline, root:classes.dialogInput, focused: classes.inputFocused}}
-                    value={this.props.data ? this.props.data[header]: ''}/>
+                <Input onChange={ event => this.props.handleInput(header, event) }
+                    classes={{ underline: classes.dialogUnderline, root:classes.dialogInput, focused: classes.inputFocused }}
+                    value={ this.props.data ? this.props.data[header]: '' }/>
               </FormControl>
             </Grid>
           )}
 
           {this.props.action === 'DELETE' &&
-            <Grid item md={12}>
+            <Grid item md={ 12 }>
               <DialogContent>
-                <DialogContentText className={classes.dialogInput}>
+                <DialogContentText className={ classes.dialogInput }>
                   Are you sure you want to delete this?
                 </DialogContentText>
               </DialogContent>
@@ -76,17 +61,23 @@ class Form extends React.Component {
         </DialogContent>
 
         <DialogActions >
-          <Button onClick={this.props.handleFormSubmit.bind(this, 'cancel')} color="primary">
+          <Button onClick={ this.props.handleFormSubmit.bind(this, 'cancel') } color="primary">
             Cancel
           </Button>
-          <Button onClick={this.props.handleFormSubmit.bind(this, this.props.action)} color="primary">
+          <Button onClick={ this.props.handleFormSubmit.bind(this, this.props.action) } color="primary">
             Accept
           </Button>
         </DialogActions>
       </Dialog>
     );
   }
-
 }
+Form.propTypes = {
+  classes: PropTypes.object.isRequired,
+  handleFormSubmit: PropTypes.func,
+  action: PropTypes.array,
+  headers: PropTypes.array.isRequired,
+  data: PropTypes.object
+};
 
 export default Form;

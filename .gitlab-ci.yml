@@ -1,8 +1,19 @@
 
 stages:
+  - lint
   - build
   - update-version
   - nonprod-deploy
+
+eslint:
+ stage: lint
+ image: node:latest
+ before_script:
+    - npm install eslint
+ script:
+    - node_modules/eslint/bin/eslint.js .
+ # only:
+ #    - merge_requests
 
 build-stage:
   stage: build

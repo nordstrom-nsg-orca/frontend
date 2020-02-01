@@ -2,7 +2,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { ImplicitCallback, SecureRoute, withAuth } from '@okta/okta-react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-
+import PropTypes from 'prop-types';
 import Navbar from './components/Navbar';
 import PageContent from './components/PageContent';
 import Home from './pages/Home';
@@ -15,36 +15,32 @@ import Settings from './pages/Settings';
 import { lightTheme, darkTheme } from './util/global.js';
 
 class App extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props);
-
     this.state = {
       auth: {
         user: null,
-        authenticated: false,
+        authenticated: false
       },
-      light: false,
+      light: false
     };
     this.logout = this.logout.bind(this);
     this.login = this.login.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
   }
 
-  async componentDidMount() { this.checkAuthentication(); }
+  async componentDidMount () { this.checkAuthentication(); }
 
-  async componentDidUpdate() {
-    if (!this.state.auth.authenticated) { this.checkAuthentication(); }
+  async componentDidUpdate () {
+    if (!this.state.auth.authenticated) this.checkAuthentication();
   }
 
-  changeTheme(event, label) {
-    if (label === 'light' && !this.state.light) {
-      this.setState({light: event.target.checked});
-    } else this.setState({light: !event.target.checked});
+  changeTheme (event, label) {
+    if (label === 'light' && !this.state.light) this.setState({ light: event.target.checked });
+    else this.setState({ light: !event.target.checked });
   }
 
-
-  async checkAuthentication() {
+  async checkAuthentication () {
     const authenticated = await this.props.auth.isAuthenticated();
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
@@ -53,19 +49,18 @@ class App extends React.Component {
         auth: {
           authenticated: authenticated,
           user: userinfo,
-          oAuthToken: oAuthToken,
+          oAuthToken: oAuthToken
         }
       });
     }
   }
 
-
-  login() {
+  login () {
     if (!this.state.authenticated)
       this.props.auth.login('/dashboard');
   }
 
-  async logout() {
+  async logout () {
     await this.props.auth.logout('/');
     this.setState({
       auth: {
@@ -77,8 +72,8 @@ class App extends React.Component {
     });
   }
 
-  render() {
-    const theme = this.state.light ? lightTheme: darkTheme;
+  render () {
+    const theme = this.state.light ? lightTheme : darkTheme;
 
     return (
       <div>
@@ -102,11 +97,12 @@ class App extends React.Component {
               </div>
             </ThemeProvider>
           }
-
       </div>
-
     );
   }
 }
 
-export default withAuth((App));
+App.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+export default withAuth(App);
