@@ -1,9 +1,9 @@
 import React from 'react';
 import OrcaDataPage from '../../components/OrcaDataPage';
-
+import PropTypes from 'prop-types';
 
 class ServerList extends React.Component {
-  render() {
+  render () {
     return (
       <div>
         <OrcaDataPage
@@ -17,5 +17,7 @@ class ServerList extends React.Component {
     );
   }
 }
-
+ServerList.propTypes = {
+  token: PropTypes.string.isRequired
+};
 export default ServerList;

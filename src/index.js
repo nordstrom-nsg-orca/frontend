@@ -4,23 +4,23 @@ import './index.css';
 import App from './App';
 import { Security } from '@okta/okta-react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './util/serviceWorker';
 
 const config = {
   issuer: process.env.REACT_APP_OKTA_ISSUER,
   redirectUri: window.location.origin + '/implicit/callback',
   clientId: process.env.REACT_APP_CLIENT_ID,
   pkce: false
-}
+};
 
-function SecurityWrapper() {
-	return (
-		<Router>
-			<Security {...config}>
-				<App />
-			</Security>
-		</Router>
-	);
+function SecurityWrapper () {
+  return (
+    <Router>
+      <Security {...config}>
+        <App />
+      </Security>
+    </Router>
+  );
 }
 
 ReactDOM.render(<SecurityWrapper />, document.getElementById('root'));

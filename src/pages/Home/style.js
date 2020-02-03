@@ -8,7 +8,7 @@ const style = theme => ({
     padding: '30px',
     background: theme.background,
     color: theme.color
-  },
+  }
 });
 
 export default style;

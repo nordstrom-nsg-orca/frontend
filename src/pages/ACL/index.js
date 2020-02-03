@@ -1,8 +1,9 @@
 import React from 'react';
 import OrcaDataPage from '../../components/OrcaDataPage';
+import PropTypes from 'prop-types';
 
 class ACLList extends React.Component {
-  render() {
+  render () {
     return (
       <div>
         <OrcaDataPage
@@ -17,4 +18,7 @@ class ACLList extends React.Component {
   }
 }
 
+ACLList.propTypes = {
+  token: PropTypes.string.isRequired
+};
 export default ACLList;
