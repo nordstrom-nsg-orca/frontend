@@ -10,7 +10,7 @@ eslint:
  image: node:latest
  before_script:
     - npm install eslint
-    - npm install --save-dev eslint standard eslint-config-standard eslint-config-standard-react eslint-plugin-promise eslint-plugin-react eslint-plugin-standar
+    # - npm install --save-dev eslint standard eslint-config-standard eslint-config-standard-react eslint-plugin-promise eslint-plugin-react eslint-plugin-standar
  script:
     - node_modules/eslint/bin/eslint.js src/
  # only:
