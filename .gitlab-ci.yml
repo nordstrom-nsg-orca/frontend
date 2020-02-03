@@ -51,7 +51,6 @@ update-version-stage:
   only:
      - merge_requests
 
-
 deploy-stage:
   stage: nonprod-deploy
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
@@ -64,4 +63,4 @@ deploy-stage:
   dependencies:
     - build-stage
   only:
-     - merge_requests
+     - master
