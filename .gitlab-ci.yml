@@ -63,4 +63,4 @@ deploy-stage:
   dependencies:
     - build-stage
   only:
-     - master
+     - merge_requests
