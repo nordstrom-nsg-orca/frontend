@@ -29,7 +29,7 @@ build-stage:
     paths:
       - build/
   only:
-    - master
+     - merge_requests
 
 update-version-stage:
   stage: update-version
@@ -49,7 +49,7 @@ update-version-stage:
     - git commit -m "[ci skip] ${CI_COMMIT_MESSAGE}"
     - git push -o ci.skip origin HEAD:master
   only:
-    - master
+     - merge_requests
 
 
 deploy-stage:
@@ -64,4 +64,4 @@ deploy-stage:
   dependencies:
     - build-stage
   only:
-    - master
+     - merge_requests

@@ -21,6 +21,7 @@ def main(args):
 
     version = str(data['version'])
     xyz = version.split('.') ## split version x.y.z into [x,y,z]
+    print(prefix)
 
     ## determines which has changed, updates version accordingly
     if prefix.upper() == PATCH:
