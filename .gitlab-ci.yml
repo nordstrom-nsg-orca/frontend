@@ -47,7 +47,7 @@ update-version-stage:
     - git status
     - git add .
     - git commit -m "[ci skip] ${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin HEAD:master
+    - git push -o ci.skip origin HEAD:vecheka
   only:
      - merge_requests
 
