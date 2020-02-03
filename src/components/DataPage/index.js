@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Form from './form.js';
 import Table from './table.js';
 import style from './style.js';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 
 class DataPage extends React.Component {
   constructor (props) {
@@ -20,7 +21,8 @@ class DataPage extends React.Component {
       formAction: null,
       formOpen: false,
       formHeaders: [],
-      formData: null
+      formData: null,
+      error: false
     };
 
     this.actionButtons = [
@@ -29,7 +31,10 @@ class DataPage extends React.Component {
     ];
   }
 
-  async componentDidMount () { this.loadData(); }
+  async componentDidMount () {
+    this.loadData();
+  }
+
   async shouldComponentUpdate (nextProps, nextState) {
     return this.state.data !== nextState.data;
   }
@@ -37,21 +42,22 @@ class DataPage extends React.Component {
   loadData = async () => {
     try {
       const res = await this.props.loadData();
-      // console.log(res.json[0]);
-      this.setState({
-        data: res.json[0].results.data || null,
-        displayData: res.json[0].results.data || null,
-        headers: res.json[0].results.headers,
-        parentheaders: res.json[0].results.parentheaders
-      });
+      const results = res.json[0].results;
+      const data = results ? results.data : null;
+      if (!data) this.setState({ error: true });
+      else {
+        this.setState({
+          data: data,
+          displayData: data,
+          headers: results.headers,
+          parentheaders: results.parentheaders,
+          error: false
+        });
+      }
     } catch (err) {
-      console.log(err);
+      this.setState({ error: true });
     }
   }
-
-  // handleCreate = (tableName) => {
-  //   this.setState({formOpen: true, parentID: tableName});
-  // }
 
   handleFormSubmit = (action) => async () => {
     this.setState({ formOpen: false });
@@ -69,6 +75,7 @@ class DataPage extends React.Component {
       const resp = await this.props.crud(options);
       if (resp.ok)
         this.loadData();
+      else this.setState({ error: true });
     } catch (err) {
       console.log(err);
     }
@@ -135,43 +142,56 @@ class DataPage extends React.Component {
 
     return (
       <div>
-        <Form
-          open={this.state.formOpen}
-          action={this.state.formAction}
-          title={this.props.title}
-          headers={this.state.formHeaders}
-          data={this.state.formData}
-          onHandleInput={this.handleInput}
-          onHandleFormSubmit={this.handleFormSubmit}
-          classes={classes}
-        />
-        <div style={{ display: 'flex' }}>
-          <Typography variant='h4'>
-            {this.props.title}
-          </Typography>
-
-          <div style={{ marginLeft: 'auto' }}>
-
-            <SearchRoundedIcon className={classes.searchIcon} />
-            <InputBase
-              placeholder='Search'
-              className={classes.searchInput}
-              onChange={this.handleSearch}
+        {!this.state.error &&
+          <div>
+            <Form
+              open={this.state.formOpen}
+              action={this.state.formAction}
+              title={this.props.title}
+              headers={this.state.formHeaders}
+              data={this.state.formData}
+              onHandleInput={this.handleInput}
+              onHandleFormSubmit={this.handleFormSubmit}
+              classes={classes}
             />
-          </div>
-        </div>
+            <div style={{ display: 'flex' }}>
+              <Typography variant='h4'>
+                {this.props.title}
+              </Typography>
 
-        {this.state.displayData.map((table, index) =>
-          <Table
-            key={index}
-            deleteTable={this.deleteTable}
-            headers={this.state.headers}
-            data={table}
-            actionButtons={this.actionButtons}
-            handleAction={this.props.crud ? this.handleAction : null}
-            classes={classes}
-          />)}
+              <div style={{ marginLeft: 'auto' }}>
+
+                <SearchRoundedIcon className={classes.searchIcon} />
+                <InputBase
+                  placeholder='Search'
+                  className={classes.searchInput}
+                  onChange={this.handleSearch}
+                />
+              </div>
+            </div>
+
+            {this.state.displayData.map((table, index) =>
+              <Table
+                key={index}
+                deleteTable={this.deleteTable}
+                headers={this.state.headers}
+                data={table}
+                actionButtons={this.actionButtons}
+                handleAction={this.props.crud ? this.handleAction : null}
+                classes={classes}
+              />)}
+          </div>}
+        {this.state.error &&
+          <div align='center'>
+            <div>
+              <WarningRoundedIcon className={classes.errorIcon} />
+            </div>
+            <div className={classes.errorMessage}>
+              Opps..Something Went Wrong. We are looking into it!
+            </div>
+          </div>}
       </div>
+
     );
   }
 }

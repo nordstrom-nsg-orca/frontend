@@ -65,6 +65,15 @@ const style = theme => ({
     marginBottom: '20px',
     background: theme.background,
     color: theme.color
+  },
+  errorMessage: {
+    fontSize: '1.5em',
+    color: theme.color,
+    margin: '0 auto'
+  },
+  errorIcon: {
+    fontSize: '4em',
+    color: 'red'
   }
 });
 export default style;
