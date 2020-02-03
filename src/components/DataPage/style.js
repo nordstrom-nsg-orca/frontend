@@ -1,20 +1,20 @@
 const style = theme => ({
   tableWrapper: {
     maxHeight: 440,
-    overflow: 'auto',
+    overflow: 'auto'
   },
   addButton: {
     width: 25,
     height: 25,
     align: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   createNewTableButton: {
     marginTop: '5px',
     width: 35,
     height: 35,
     align: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   tableCell: {
     height: '15px'
@@ -42,7 +42,7 @@ const style = theme => ({
     padding: '3px'
   },
   dialogPaper: {
-    backgroundColor: theme.bodyBackground,
+    backgroundColor: theme.bodyBackground
   },
   inputLabel: {
     color: theme.colorSecondary
@@ -52,19 +52,28 @@ const style = theme => ({
   },
   dialogUnderline: {
     '&:before': {
-      borderBottom: '2px solid ' + theme.colorSecondary + ' !important',
+      borderBottom: '2px solid ' + theme.colorSecondary + ' !important'
     },
     '&:after': {
-      borderBottom: '2px solid ' + theme.color + ' !important',
+      borderBottom: '2px solid ' + theme.color + ' !important'
     }
   },
   dialogInput: {
     color: theme.color
   },
   tablePaper: {
-    marginBottom : '20px',
+    marginBottom: '20px',
     background: theme.background,
     color: theme.color
+  },
+  errorMessage: {
+    fontSize: '1.5em',
+    color: theme.color,
+    margin: '0 auto'
+  },
+  errorIcon: {
+    fontSize: '4em',
+    color: 'red'
   }
 });
 export default style;

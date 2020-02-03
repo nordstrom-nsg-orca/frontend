@@ -1,10 +1,11 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 class ContentPage extends React.Component {
-  render() {
+  render () {
     const { classes } = this.props;
-    return(<div className={classes.content}>{this.props.children}</div>)
+    return (<div className={classes.content}>{this.props.children}</div>);
   }
 }
 
@@ -16,4 +17,8 @@ const style = theme => ({
   }
 });
 
+ContentPage.propTypes = {
+  classes: PropTypes.object.isRequired,
+  children: PropTypes.object.isRequired
+};
 export default withStyles(style)(ContentPage);

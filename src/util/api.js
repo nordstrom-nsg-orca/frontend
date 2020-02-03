@@ -1,25 +1,23 @@
-import { postToSlack } from './reporter.js'
+import { postToSlack } from './reporter.js';
 
-export async function api(path, options) {
-  
+export async function api (path, options) {
   let url = `${process.env.REACT_APP_DB_API_URL}${path}`;
   if (['DELETE', 'PUT'].includes(options.method)) {
-    url += `/${options.data['id']}`;
+    url += `/${options.data.id}`;
     delete options.data.id;
   }
 
-  let opts = {
+  const opts = {
     method: options.method,
     headers: { Authorization: `Bearer ${options.token}` }
-  }
+  };
 
-  if (['PUT','POST'].includes(options.method))
+  if (['PUT', 'POST'].includes(options.method))
     opts.body = JSON.stringify(options.data);
-
 
   const resp = await fetch(url, opts);
 
-  if (resp.status !== 200) {
+  if (resp.status !== 200 && window.location.origin !== 'http://localhost:3000') {
     const message = `ErrorMessage:* ${resp.statusText}\n*ErrorCode:* ${resp.status}`;
     await postToSlack(window.location, message);
   }

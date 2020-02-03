@@ -7,8 +7,8 @@ const style = theme => ({
     textAlign: 'center',
     padding: '30px',
     background: theme.background,
-    color: theme.color,
-  },
+    color: theme.color
+  }
 });
 
 export default style;

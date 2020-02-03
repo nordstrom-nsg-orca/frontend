@@ -1,5 +1,5 @@
 const spaceBetweenSection = '20px';
-const titleBottomSpace = '10px';
+// const titleBottomSpace = '10px';
 const style = theme => ({
   paperStyle: {
     background: theme.background,

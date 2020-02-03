@@ -17,54 +17,52 @@ class Form extends React.Component {
     };
   }
 
-  async componentDidUpdate (){  }
-
   render () {
     const { classes } = this.props;
     return (
-      <Dialog open={ (this.props.open) } classes={{ paper:classes.dialogPaper }}>
+      <Dialog open={(this.props.open)} classes={{ paper: classes.dialogPaper }}>
         <DialogContent>
           <Grid
             container
-            direction="row"
-            justify="center"
-            alignItems="center"
+            direction='row'
+            justify='center'
+            alignItems='center'
             spacing={5}
-            style={{marginBottom: '10px'}}
+            style={{ marginBottom: '10px' }}
           >
 
-          {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
-            <Grid item md={6} key={ index }>
-              <FormControl >
-                <InputLabel className={classes.inputLabel}
-                  classes={{ focused:classes.inputFocused, root:classes.inputLabel }}>
-                  { header }
-                </InputLabel>
-                <Input onChange={ event => this.props.handleInput(header, event) }
-                    classes={{ underline: classes.dialogUnderline, root:classes.dialogInput, focused: classes.inputFocused }}
-                    value={ this.props.data ? this.props.data[header]: '' }/>
-              </FormControl>
-            </Grid>
-          )}
-
-          {this.props.action === 'DELETE' &&
-            <Grid item md={ 12 }>
-              <DialogContent>
-                <DialogContentText className={ classes.dialogInput }>
-                  Are you sure you want to delete this?
-                </DialogContentText>
-              </DialogContent>
-            </Grid>
-          }
-
+            {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
+              <Grid item md={6} key={index}>
+                <FormControl>
+                  <InputLabel
+                    className={classes.inputLabel}
+                    classes={{ focused: classes.inputFocused, root: classes.inputLabel }}
+                  >
+                    {header}
+                  </InputLabel>
+                  <Input
+                    onChange={event => this.props.onHandleInput(header, event)}
+                    classes={{ underline: classes.dialogUnderline, root: classes.dialogInput, focused: classes.inputFocused }}
+                    value={this.props.data ? this.props.data[header] : ''}
+                  />
+                </FormControl>
+              </Grid>)}
+            {this.props.action === 'DELETE' &&
+              <Grid item md={12}>
+                <DialogContent>
+                  <DialogContentText className={classes.dialogInput}>
+                    Are you sure you want to delete this?
+                  </DialogContentText>
+                </DialogContent>
+              </Grid>}
           </Grid>
         </DialogContent>
 
-        <DialogActions >
-          <Button onClick={ this.props.handleFormSubmit.bind(this, 'cancel') } color="primary">
+        <DialogActions>
+          <Button onClick={this.props.onHandleFormSubmit('cancel')} color='primary'>
             Cancel
           </Button>
-          <Button onClick={ this.props.handleFormSubmit.bind(this, this.props.action) } color="primary">
+          <Button onClick={this.props.onHandleFormSubmit(this.props.action)} color='primary'>
             Accept
           </Button>
         </DialogActions>
@@ -74,10 +72,12 @@ class Form extends React.Component {
 }
 Form.propTypes = {
   classes: PropTypes.object.isRequired,
-  handleFormSubmit: PropTypes.func,
+  onHandleFormSubmit: PropTypes.func,
   action: PropTypes.array,
   headers: PropTypes.array.isRequired,
-  data: PropTypes.object
+  data: PropTypes.object,
+  open: PropTypes.bool,
+  onHandleInput: PropTypes.func
 };
 
 export default Form;

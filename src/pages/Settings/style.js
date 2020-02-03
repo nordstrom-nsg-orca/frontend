@@ -1,15 +1,15 @@
-const topPadding = '10px';
+// const topPadding = '10px';
 const fontSize = '1.1em';
-const leftPadding = '10px';
+// const leftPadding = '10px';
 const style = theme => ({
   main: {
     // width: theme.maxWidth,
     background: theme.bodyBackground,
-    color: theme.color,
+    color: theme.color
   },
   childMain: {
-    display: "flex",
-    justifyContent: "center"
+    display: 'flex',
+    justifyContent: 'center'
   },
   themeForm: {
     fontSize: fontSize,
@@ -29,6 +29,5 @@ const style = theme => ({
   //   marginLeft: leftPadding
   // },
 });
-
 
 export default style;

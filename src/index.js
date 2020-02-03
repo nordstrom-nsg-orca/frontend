@@ -11,16 +11,16 @@ const config = {
   redirectUri: window.location.origin + '/implicit/callback',
   clientId: process.env.REACT_APP_CLIENT_ID,
   pkce: false
-}
+};
 
-function SecurityWrapper() {
-	return (
-		<Router>
-			<Security {...config}>
-				<App />
-			</Security>
-		</Router>
-	);
+function SecurityWrapper () {
+  return (
+    <Router>
+      <Security {...config}>
+        <App />
+      </Security>
+    </Router>
+  );
 }
 
 ReactDOM.render(<SecurityWrapper />, document.getElementById('root'));
