@@ -29,7 +29,7 @@ build-stage:
     paths:
       - build/
   only:
-    - master
+     - merge_requests
 
 update-version-stage:
   stage: update-version
@@ -47,10 +47,9 @@ update-version-stage:
     - git status
     - git add .
     - git commit -m "[ci skip] ${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin HEAD:master
+    - git push -o ci.skip origin HEAD:vecheka
   only:
-    - master
-
+     - merge_requests
 
 deploy-stage:
   stage: nonprod-deploy
@@ -64,4 +63,4 @@ deploy-stage:
   dependencies:
     - build-stage
   only:
-    - master
+     - master
