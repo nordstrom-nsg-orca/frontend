@@ -1,15 +1,4 @@
 const style = theme => ({
-  main: {
-    width: '100%',
-    background: theme.background,
-    color: theme.color
-  },
-  root: {
-    width: '900px',
-    margin: '0 auto',
-    background: theme.bodyBackground,
-    color: theme.color
-  },
   tableWrapper: {
     maxHeight: 440,
     overflow: 'auto',

@@ -1,7 +1,19 @@
 
 stages:
+  - lint
   - build
+  - update-version
   - nonprod-deploy
+
+eslint:
+ stage: lint
+ image: node:latest
+ before_script:
+    - npm install eslint
+ script:
+    - node_modules/eslint/bin/eslint.js .
+ # only:
+ #    - merge_requests
 
 build-stage:
   stage: build
@@ -18,6 +30,27 @@ build-stage:
       - build/
   only:
     - master
+
+update-version-stage:
+  stage: update-version
+  variables:
+    GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
+  before_script:
+    - mkdir -pvm 0700 /tmp/.ssh
+    - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
+    - chmod 0400 /tmp/.ssh/id_rsa
+  script:
+    - python version.py $CI_COMMIT_MESSAGE
+    - git config user.email $GITLAB_USER_EMAIL
+    - git config user.name $GITLAB_USER_NAME
+    - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
+    - git status
+    - git add .
+    - git commit -m "[ci skip] ${CI_COMMIT_MESSAGE}"
+    - git push -o ci.skip origin HEAD:master
+  only:
+    - master
+
 
 deploy-stage:
   stage: nonprod-deploy
