@@ -28,7 +28,7 @@ class SettingGroup extends React.Component {
 SettingGroup.propTypes = {
   classes: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  children: PropTypes.object.isRequired
+  children: PropTypes.array.isRequired
 };
 
 export default withStyles(style)(SettingGroup);

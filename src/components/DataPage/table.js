@@ -76,7 +76,7 @@ DataTable.propTypes = {
   handleAction: PropTypes.func,
   actionButtons: PropTypes.array,
   headers: PropTypes.array.isRequired,
-  data: PropTypes.array.isRequired
+  data: PropTypes.object.isRequired
 };
 
 export default DataTable;

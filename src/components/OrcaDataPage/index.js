@@ -19,6 +19,7 @@ class OrcaDataPage extends React.Component {
         loadData={this.loadData}
         crud={this.crud}
         parentId={this.props.parentId}
+        token={this.props.token}
       />
     );
   }

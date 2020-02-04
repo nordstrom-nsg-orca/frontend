@@ -69,6 +69,7 @@ class DataPage extends React.Component {
       token: this.props.token,
       data: this.state.formData
     };
+
     if (action === 'POST' && this.props.parentId)
       options.data[this.props.parentId] = this.state.parentID;
     try {
@@ -77,15 +78,15 @@ class DataPage extends React.Component {
         this.loadData();
       else this.setState({ error: true });
     } catch (err) {
-      console.log(err);
+      this.setState({ error: true });
     }
   }
 
   handleAction = (action, tableId, id, data) => () => {
     if (action === 'POST') {
       data = {};
-      for (const i in this.props.headers)
-        data[this.props.headers[i]] = '';
+      for (const i in this.state.headers)
+        data[this.state.headers[i]] = '';
     }
     this.setState({
       formOpen: true,
@@ -108,7 +109,7 @@ class DataPage extends React.Component {
 
   handleSearch = (event) => {
     let search = event.target.value;
-    search = search.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+    search = search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     if (search === '') this.setState({ displayData: this.state.data });
     else {
       // start with a copy of the full data
@@ -203,7 +204,7 @@ DataPage.propTypes = {
   loadData: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   parentId: PropTypes.string,
-  headers: PropTypes.array.isRequired
+  // headers: PropTypes.array.isRequired
 };
 
 export default withStyles(style)(DataPage);

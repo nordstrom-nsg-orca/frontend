@@ -24,12 +24,10 @@ class Navbar extends React.Component {
           login={this.props.login}
           classes={classes}
         />
-
         {this.props.auth.authenticated &&
-          <Sidebar
-            classes={classes}
-          />}
-
+        <Sidebar
+          classes={classes}
+        />}
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {this.props.children}
@@ -43,7 +41,7 @@ Navbar.propTypes = {
   classes: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
-  children: PropTypes.object.isRequired,
+  children: PropTypes.array.isRequired,
   auth: PropTypes.object.isRequired
 };
 export default withStyles(style)(Navbar);

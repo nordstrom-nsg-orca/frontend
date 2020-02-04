@@ -58,7 +58,7 @@ class Topbar extends React.Component {
             <div className={classes.user}>
               {this.props.auth.user != null &&
                 <Link to='/api/doc' target='_blank'>
-                  <Tooltip title='API Documentation' placement='down'>
+                  <Tooltip title='API Documentation' >
                     <IconButton tooltip='API Documentation' style={{ color: 'white' }}>
                       <DescriptionRoundedIcon />
                     </IconButton>
