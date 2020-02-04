@@ -31,7 +31,7 @@ update-version-stage:
     - git status
     - git add .
     - git commit -m "${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin HEAD:master
+    - git push -o ci.skip origin HEAD:$CI_COMMIT_BRANCH
   only:
      - merge_requests
 
