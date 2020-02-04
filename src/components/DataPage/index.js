@@ -203,7 +203,7 @@ DataPage.propTypes = {
   title: PropTypes.string.isRequired,
   loadData: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
-  parentId: PropTypes.string,
+  parentId: PropTypes.string
   // headers: PropTypes.array.isRequired
 };
 

@@ -25,9 +25,9 @@ class Navbar extends React.Component {
           classes={classes}
         />
         {this.props.auth.authenticated &&
-        <Sidebar
-          classes={classes}
-        />}
+          <Sidebar
+            classes={classes}
+          />}
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {this.props.children}
