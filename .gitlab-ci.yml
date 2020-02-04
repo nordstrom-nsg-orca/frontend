@@ -31,7 +31,7 @@ update-version-stage:
     - git commit -m "${CI_COMMIT_MESSAGE}"
     - git push -o ci.skip origin HEAD:master
   only:
-     - master
+     - merge_requests
 
 build-stage:
   stage: build
