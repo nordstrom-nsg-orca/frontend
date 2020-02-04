@@ -16,6 +16,7 @@ eslint:
     - merge_requests
 
 update-version-stage:
+  image: python:3.5
   stage: update-version
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
@@ -32,7 +33,7 @@ update-version-stage:
     - git checkout -b $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
     - git add .
     - git commit -m "${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME 
+    - git push -o ci.skip origin "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
   only:
      - merge_requests
 
