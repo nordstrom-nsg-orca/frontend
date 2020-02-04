@@ -32,7 +32,7 @@ update-version-stage:
     - git status
     - git add .
     - git commit -m "${CI_COMMIT_MESSAGE}"
-    - git push origin HEAD:$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME --push-option=ci.skip
+    - git push --push-option=ci.skip origin HEAD:$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME 
   only:
      - merge_requests
 
