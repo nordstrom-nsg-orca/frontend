@@ -73,7 +73,7 @@ class Form extends React.Component {
 Form.propTypes = {
   classes: PropTypes.object.isRequired,
   onHandleFormSubmit: PropTypes.func,
-  action: PropTypes.array,
+  action: PropTypes.string,
   headers: PropTypes.array.isRequired,
   data: PropTypes.object,
   open: PropTypes.bool,

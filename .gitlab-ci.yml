@@ -25,22 +25,23 @@ update-version-stage:
     - chmod 0400 /tmp/.ssh/id_rsa
   script:
     - python version.py $CI_COMMIT_MESSAGE
-    - git config user.email $GITLAB_USER_EMAIL
-    - git config user.name $GITLAB_USER_NAME
+    # - git config user.email $GITLAB_USER_EMAIL
+    # - git config user.name $GITLAB_USER_NAME
     - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
     - git status
     - git add .
-    - git commit -m "[ci skip] ${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin HEAD:vecheka
+    - git commit -m "${CI_COMMIT_MESSAGE}"
+    - git push -o ci.skip origin HEAD:master
   only:
-     - merge_requests
+     - master
 
 build-stage:
   stage: build
   image: node:latest
   before_script:
-    - chmod +x setup_env.sh
-    - ./setup_env.sh
+    - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
+    - export REACT_APP_OKTA_ISSUER=$REACT_APP_OKTA_ISSUER
+    - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
   script:
     - npm install
     - CI=false npm run build

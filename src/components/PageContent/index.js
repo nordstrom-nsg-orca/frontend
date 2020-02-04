@@ -19,6 +19,6 @@ const style = theme => ({
 
 ContentPage.propTypes = {
   classes: PropTypes.object.isRequired,
-  children: PropTypes.object.isRequired
+  children: PropTypes.array.isRequired
 };
 export default withStyles(style)(ContentPage);
