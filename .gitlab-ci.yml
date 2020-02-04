@@ -1,19 +1,19 @@
 
 stages:
-  # - lint
+  - lint
   - update-version
   - build
   - nonprod-deploy
 
-# eslint:
-#  stage: lint
-#  image: node:latest
-#  before_script:
-#     - npm install eslint
-#  script:
-#     - node_modules/eslint/bin/eslint.js src/
-#  only:
-#     - merge_requests
+eslint:
+ stage: lint
+ image: node:latest
+ before_script:
+    - npm install eslint
+ script:
+    - node_modules/eslint/bin/eslint.js src/
+ only:
+    - merge_requests
 
 update-version-stage:
   stage: update-version
@@ -26,13 +26,13 @@ update-version-stage:
     - git --version
   script:
     - python version.py $CI_COMMIT_MESSAGE
-    # - git config --global user.email "tchnsg@nordstrom.com"
-    # - git config --global user.name "app02395_robo_orca"
-    # - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
-    # - git status
-    # - git add .
-    # - git commit -m "${CI_COMMIT_MESSAGE}"
-    # - git push origin HEAD:$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME -o ci.skip
+    - git config --global user.email "tchnsg@nordstrom.com"
+    - git config --global user.name "app02395_robo_orca"
+    - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
+    - git status
+    - git add .
+    - git commit -m "${CI_COMMIT_MESSAGE}"
+    - git push origin HEAD:$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME --push-option=ci.skip
   only:
      - merge_requests
 
