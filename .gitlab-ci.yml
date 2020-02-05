@@ -25,7 +25,7 @@ update-version-stage:
     - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
     - chmod 0400 /tmp/.ssh/id_rsa
   script:
-    - python3.6 version.py $CI_COMMIT_MESSAGE
+    - python version.py $CI_COMMIT_MESSAGE
     - git config --global user.email "tchnsg@nordstrom.com"
     - git config --global user.name "app02395_robo_orca"
     - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
