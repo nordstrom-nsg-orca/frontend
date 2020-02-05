@@ -41,7 +41,7 @@ def main(args):
     version = '.'.join(xyz)
     data['version'] = version
     with open(file_path, 'w') as package_file:
-        json.dump(data, package_file)
+        json.dump(data, package_file, indent = 4)
         # package_file.close()
 
 

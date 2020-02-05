@@ -12,26 +12,28 @@ eslint:
     - npm install eslint
  script:
     - node_modules/eslint/bin/eslint.js src/
- only:
-    - merge_requests
+ # only:
+ #    - merge_requests
 
 update-version-stage:
   stage: update-version
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
   before_script:
+    - echo $CI_COMMIT_REF_NAME
     - mkdir -pvm 0700 /tmp/.ssh
     - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
     - chmod 0400 /tmp/.ssh/id_rsa
   script:
     - python version.py $CI_COMMIT_MESSAGE
+    - git config --global user.email "tchnsg@nordstrom.com"
+    - git config --global user.name "app02395_robo_orca"
     - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
-    - git status
     - git add .
     - git commit -m "${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin HEAD:master
-  only:
-     - master
+    - git push -o ci.skip origin HEAD:$CI_COMMIT_REF_NAME
+  # only:
+  #    - merge_requests
 
 build-stage:
   stage: build
