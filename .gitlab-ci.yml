@@ -12,8 +12,8 @@ eslint:
     - npm install eslint
  script:
     - node_modules/eslint/bin/eslint.js src/
- only:
-    - merge_requests
+ # only:
+ #    - merge_requests
 
 update-version-stage:
   image: "gitlab-registry.nordstrom.com/cicd/images/git"
