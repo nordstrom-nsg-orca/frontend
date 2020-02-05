@@ -20,6 +20,7 @@ update-version-stage:
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
   before_script:
+    - echo $CI_COMMIT_REF_NAME
     - mkdir -pvm 0700 /tmp/.ssh
     - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
     - chmod 0400 /tmp/.ssh/id_rsa
@@ -30,7 +31,7 @@ update-version-stage:
     - git remote set-url --push origin ssh://git@gitlab.nordstrom.com/${CI_PROJECT_PATH}
     - git add .
     - git commit -m "${CI_COMMIT_MESSAGE}"
-    - git push -o ci.skip origin "${CI_COMMIT_REF_NAME}"
+    - git push -o ci.skip origin HEAD:$CI_COMMIT_REF_NAME
   # only:
   #    - merge_requests
 
