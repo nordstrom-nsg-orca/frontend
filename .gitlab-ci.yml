@@ -32,8 +32,8 @@ update-version-stage:
     - git add .
     - git commit -m "${CI_COMMIT_MESSAGE}"
     - git push -o ci.skip origin "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
-  only:
-     - merge_requests
+  # only:
+  #    - merge_requests
 
 build-stage:
   stage: build
