@@ -12,8 +12,8 @@ eslint:
     - npm install eslint
  script:
     - node_modules/eslint/bin/eslint.js src/
- # only:
- #    - merge_requests
+ except:
+    - master
 
 update-version-stage:
   stage: update-version
@@ -32,8 +32,8 @@ update-version-stage:
     - git add .
     - git commit -m "${CI_COMMIT_MESSAGE}"
     - git push -o ci.skip origin HEAD:$CI_COMMIT_REF_NAME
-  # only:
-  #    - merge_requests
+  except:
+     - master
 
 build-stage:
   stage: build
