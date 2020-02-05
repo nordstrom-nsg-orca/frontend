@@ -13,7 +13,7 @@ eslint:
  script:
     - npx eslint src/
  only:
-  merge_requests
+  - merge_requests
 
 update-version-stage:
   stage: update-version
