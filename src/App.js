@@ -45,7 +45,7 @@ class App extends React.Component {
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
-      console.log(userinfo);
+      // console.log(userinfo);
       this.setState({
         auth: {
           authenticated: authenticated,
