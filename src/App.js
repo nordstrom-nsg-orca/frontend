@@ -15,7 +15,7 @@ import Settings from './pages/Settings';
 import { lightTheme, darkTheme } from './util/global.js';
 
 class App extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       auth: {
