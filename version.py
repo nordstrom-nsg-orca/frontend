@@ -3,6 +3,9 @@ import sys
 import re
 
 merge_message = sys.argv[1]
+
+print(merge_message)
+
 pattern = r'^Merge branch \'.+\' (.*) See merge request.*$'
 commit_message = re.search(pattern, merge_message).group(1).lower()
 prefix = re.search(r'^(.*):.*$', commit_message).group(1)
