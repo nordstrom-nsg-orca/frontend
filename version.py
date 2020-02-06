@@ -5,6 +5,9 @@ import re
 print sys.argv
 
 merge_message = sys.argv[1]
+print merge_message
+print merge_message.split('\\n\\n')
+
 commit_message = merge_message.split('\\n\\n')[1].lower()
 prefix = re.search(r'^(.*):.*$', commit_message).group(1)
 
