@@ -26,7 +26,7 @@ update-version-stage:
     - mkdir -pvm 0700 /tmp/.ssh
     - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
     - chmod 0400 /tmp/.ssh/id_rsa
-    - python --version
+    - python3 --version
   script:
     - python version.py $CI_COMMIT_MESSAGE
     - git config --global user.email "tchnsg@nordstrom.com"
