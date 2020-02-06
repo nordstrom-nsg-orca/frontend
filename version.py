@@ -5,8 +5,10 @@ import re
 print sys.argv
 
 merge_message = sys.argv[1]
-print merge_message
-print merge_message.split('\\n\\n')
+# print merge_message
+# print merge_message.strip()
+
+print re.search(r'^.*\\n\\n(.*)\\n\\n.*$', merge_message).group(1)
 
 commit_message = merge_message.split('\\n\\n')[1].lower()
 prefix = re.search(r'^(.*):.*$', commit_message).group(1)
@@ -30,3 +32,4 @@ print('new version: "' + package_json['version'] + '"')
 package_file.seek(0)
 json.dump(package_json, package_file, indent=4)
 package_file.close()
+
