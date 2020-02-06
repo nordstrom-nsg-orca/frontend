@@ -3,6 +3,7 @@ import sys
 import re
 
 merge_message = sys.argv[1]
+print type(merge_message)
 commit_message = re.search(r'^.*\n\n(.*)\n\n.*$', merge_message).group(1)
 prefix = re.search(r'^(.*):.*$', commit_message).group(1).lower()
 
@@ -25,4 +26,3 @@ print('new version: "' + package_json['version'] + '"')
 package_file.seek(0)
 json.dump(package_json, package_file, indent=4)
 package_file.close()
-
