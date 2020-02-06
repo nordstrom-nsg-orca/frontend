@@ -21,8 +21,6 @@ update-version-stage:
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
   before_script:
-    - echo $CI_COMMIT_REF_NAME
-    - echo $CI_COMMIT_MESSAGE
     - mkdir -pvm 0700 /tmp/.ssh
     - echo "$SSH_KEY" > /tmp/.ssh/id_rsa
     - chmod 0400 /tmp/.ssh/id_rsa
@@ -37,33 +35,33 @@ update-version-stage:
   only:
     - master
 
-# build-stage:
-#   stage: build
-#   image: node:latest
-#   before_script:
-#     - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
-#     - export REACT_APP_OKTA_ISSUER=$REACT_APP_OKTA_ISSUER
-#     - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
-#   script:
-#     - npm install
-#     - CI=false npm run build
-#   artifacts:
-#     expire_in: 1 hrs
-#     paths:
-#       - build/
-#   only:
-#      - master
+build-stage:
+  stage: build
+  image: node:latest
+  before_script:
+    - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
+    - export REACT_APP_OKTA_ISSUER=$REACT_APP_OKTA_ISSUER
+    - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
+  script:
+    - npm install
+    - CI=false npm run build
+  artifacts:
+    expire_in: 1 hrs
+    paths:
+      - build/
+  only:
+     - master
 
-# deploy-stage:
-#   stage: nonprod-deploy
-#   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
-#   before_script:
-#     - npm install serverless
-#     - npm install serverless-s3-sync --save
-#   script:
-#     - creds-helper -aws
-#     - AWS_PROFILE=arnawsiam046711174152rolensgcirole serverless deploy
-#   dependencies:
-#     - build-stage
-#   only:
-#      - master
+deploy-stage:
+  stage: nonprod-deploy
+  image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
+  before_script:
+    - npm install serverless
+    - npm install serverless-s3-sync --save
+  script:
+    - creds-helper -aws
+    - AWS_PROFILE=arnawsiam046711174152rolensgcirole serverless deploy
+  dependencies:
+    - build-stage
+  only:
+     - master
