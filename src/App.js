@@ -8,6 +8,7 @@ import PageContent from './components/PageContent';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Acl from './pages/ACL';
+import InfobloxGroup from './pages/InfobloxGroup';
 import Server from './pages/Server';
 import APIDoc from './pages/APIDoc';
 import Settings from './pages/Settings';
@@ -86,6 +87,7 @@ class App extends React.Component {
                 {this.state.auth.authenticated &&
                   <PageContent>
                     <Route path='/' exact component={Dashboard} />
+                    <SecureRoute path='/infobloxGroup' component={InfobloxGroup} />
                     <SecureRoute path='/acl' render={(props) => <Acl {...props} token={this.state.auth.oAuthToken} />} />
                     <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.oAuthToken} />} />
                     <SecureRoute path='/dashboard' exact component={Dashboard} />

@@ -44,6 +44,7 @@ class DataPage extends React.Component {
       const res = await this.props.loadData();
       const results = res.json[0].results;
       const data = results ? results.data : null;
+      // console.log(data);
       if (!data) this.setState({ error: true });
       else {
         this.setState({
@@ -114,13 +115,15 @@ class DataPage extends React.Component {
     else {
       // start with a copy of the full data
       const searchResults = JSON.parse(JSON.stringify(this.state.data));
-
       for (let i = this.state.data.length - 1; i >= 0; i--) {
         // loop reverse, so we can splice without offsetting indexes
         for (let j = this.state.data[i].rows.length - 1; j >= 0; j--) {
           let remove = true;
           for (let h = 0; h < this.state.headers.length; h++) {
             const header = this.state.headers[h];
+            if (!(header in this.state.data[i].rows[j])) continue;
+            if (this.state.data[i].rows[j][header] === null) continue;
+
             const value = this.state.data[i].rows[j][header].toLowerCase();
 
             // if any of the values match the search, don't delete
@@ -202,7 +205,7 @@ DataPage.propTypes = {
   crud: PropTypes.func,
   title: PropTypes.string.isRequired,
   loadData: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
+  token: PropTypes.string,
   parentId: PropTypes.string
   // headers: PropTypes.array.isRequired
 };
