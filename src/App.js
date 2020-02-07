@@ -23,25 +23,21 @@ class App extends React.Component {
         user: null,
         authenticated: false
       },
-      light: false,
-      myTimer: null
+      light: false
     };
     this.logout = this.logout.bind(this);
     this.login = this.login.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
     this.sessionTime = 1000 * 60 * 30; // 30 minutes expiration time
+    this.sessionTimer = null;
   }
 
   async componentDidMount () {
     this.checkAuthentication();
-    var timer = setInterval(this.logout, this.sessionTime);
-    this.setState({ myTimer: timer });
   }
 
   async componentDidUpdate () {
     if (!this.state.auth.authenticated) this.checkAuthentication();
-    const session = await this.props.auth._oktaAuth.session.exists();
-    if (!session) window.clearInterval(this.state.myTimer);
   }
 
   changeTheme (event, label) {
@@ -54,6 +50,7 @@ class App extends React.Component {
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
+      this.sessionTimer = setInterval(this.logout, this.sessionTime);
       this.setState({
         auth: {
           authenticated: authenticated,
@@ -70,13 +67,13 @@ class App extends React.Component {
   }
 
   async logout () {
+    window.clearInterval(this.sessionTimer);
     await this.props.auth.logout('/');
     this.setState({
       auth: {
         authenticated: false,
         user: null,
-        oAuthToken: null,
-        apiToken: null
+        oAuthToken: null
       }
     });
   }
