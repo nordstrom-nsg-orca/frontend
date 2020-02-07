@@ -1,10 +1,10 @@
 import { encode } from 'base-64';
 
 export async function getGroupsPermission () {
-  const groups = await getGroups('nsg', 'nsgseattle');
+  const groups = await getGroups('nsg', process.env.REACT_APP_INFOBLOX_PASS);
   if (!groups) return null;
 
-  const permissions = await getPermissions('nsg', 'nsgseattle');
+  const permissions = await getPermissions('nsg', process.env.REACT_APP_INFOBLOX_PASS);
   if (!permissions) return null;
 
   const permissionByRole = { };
