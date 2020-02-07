@@ -59,7 +59,7 @@ async function getPermissions (username, password) {
       method: 'GET',
       headers: { Authorization: 'Basic ' + encode(username + ':' + password) }
     };
-    const response = await fetch('/permission', opts);
+    const response = await fetch('/infoblox/permission', opts);
     return await response.json();
   } catch (err) {
     console.log(err);
@@ -74,7 +74,7 @@ async function getGroups (username, password) {
       method: 'GET',
       headers: { Authorization: 'Basic ' + encode(username + ':' + password) }
     };
-    const response = await fetch(`/admingroup?${fields}`, opts);
+    const response = await fetch(`/infoblox/admingroup?${fields}`, opts);
     return await response.json();
   } catch (err) {
     console.log(err);
