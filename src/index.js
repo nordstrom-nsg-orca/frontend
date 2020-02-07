@@ -12,11 +12,7 @@ const config = {
   clientId: process.env.REACT_APP_CLIENT_ID,
   pkce: false,
   tokenManager: {
-    autoRenew: false,
-    storage: 'sessionStorage'
-  },
-  onSessionExpired: function() {
-    console.log('HI');
+    autoRenew: false
   }
 };
 
