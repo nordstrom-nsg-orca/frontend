@@ -10,6 +10,7 @@ import Form from './form.js';
 import Table from './table.js';
 import style from './style.js';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class DataPage extends React.Component {
   constructor (props) {
@@ -22,7 +23,8 @@ class DataPage extends React.Component {
       formOpen: false,
       formHeaders: [],
       formData: null,
-      error: false
+      error: false,
+      load: true
     };
 
     this.actionButtons = [
@@ -52,7 +54,8 @@ class DataPage extends React.Component {
           displayData: data,
           headers: results.headers,
           parentheaders: results.parentheaders,
-          error: false
+          error: false,
+          load: false
         });
       }
     } catch (err) {
@@ -173,7 +176,10 @@ class DataPage extends React.Component {
                 />
               </div>
             </div>
-
+            {this.state.load &&
+              <div align='center' style={{ paddingTop: '50px' }}>
+                <CircularProgress classes={{ colorPrimary: classes.loadIcon }} />
+              </div>}
             {this.state.displayData.map((table, index) =>
               <Table
                 key={index}

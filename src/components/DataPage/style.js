@@ -74,6 +74,9 @@ const style = theme => ({
   errorIcon: {
     fontSize: '4em',
     color: 'red'
+  },
+  loadIcon: {
+    color: theme.color
   }
 });
 export default style;

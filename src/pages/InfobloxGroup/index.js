@@ -1,7 +1,6 @@
 import React from 'react';
 import DataPage from '../../components/DataPage';
-import PropTypes from 'prop-types';
-import { getGroupsPermission } from '../../util/infoblox.js';
+import { getGroupsPermission } from './infoblox.js';
 
 class InfobloxGroup extends React.Component {
   loadData = async () => {
