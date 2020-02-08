@@ -4,6 +4,6 @@ module.exports = function (app) {
     target: 'https://infoblox.nordstrom.net/wapi/v2.10.3',
     changeOrigin: true,
     secure: false,
-    pathRewrite: { '^/api/infoblox' : '' }
+    pathRewrite: { '^/api/infoblox': '' }
   }));
 };

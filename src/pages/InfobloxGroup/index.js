@@ -39,10 +39,10 @@ class InfobloxGroup extends React.Component {
     }
     return {
       json: [{
-      results: {
-        data: this.formatData(data),
-        headers: ['permission', 'resource_type', 'role']
-      }
+        results: {
+          data: this.formatData(data),
+          headers: ['permission', 'resource_type', 'role']
+        }
       }]
     };
   }
