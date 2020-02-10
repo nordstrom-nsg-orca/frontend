@@ -1,6 +1,7 @@
 import React from 'react';
 import DataPage from '../../components/DataPage';
 import { encode } from 'base-64';
+import { postToSlack } from '../../util/reporter.js';
 
 class InfobloxGroup extends React.Component {
   loadData = async () => {
@@ -60,30 +61,36 @@ class InfobloxGroup extends React.Component {
   }
 
   getPermissions = async (username, password) => {
+    let response;
     try {
       const opts = {
         method: 'GET',
         headers: { Authorization: 'Basic ' + encode(username + ':' + password) }
       };
-      const response = await fetch('/api/infoblox/permission', opts);
+      // response = await fetch('/api/infoblox/permission', opts);
+      response = await fetch('https://infoblox.nordstrom.net/wapi/v2.10.3/permission', opts);
       return await response.json();
     } catch (err) {
-      console.log(err);
+      const message = `ErrorMessage:* ${err}\n*ErrorCode:* ${response.status}`;
+      await postToSlack(window.location, message);
       return null;
     }
   }
 
   getGroups = async (username, password) => {
+    let response;
     try {
       const fields = '_return_fields=roles,name';
       const opts = {
         method: 'GET',
         headers: { Authorization: 'Basic ' + encode(username + ':' + password) }
       };
-      const response = await fetch(`/api/infoblox/admingroup?${fields}`, opts);
+      // response = await fetch(`/api/infoblox/admingroup?${fields}`, opts);
+      response = await fetch(`https://infoblox.nordstrom.net/wapi/v2.10.3/admingroup?${fields}`, opts);
       return await response.json();
     } catch (err) {
-      console.log(err);
+      const message = `ErrorMessage:* ${err}\n*ErrorCode:* ${response.status}`;
+      await postToSlack(window.location, message);
       return null;
     }
   }
