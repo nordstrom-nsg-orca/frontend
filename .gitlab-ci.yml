@@ -3,7 +3,7 @@ stages:
   - lint
   - update-version
   - build
-  # - nonprod-deploy
+  - nonprod-deploy
 
 eslint:
  stage: lint
@@ -42,12 +42,11 @@ build-stage:
     - export REACT_APP_OKTA_ISSUER=$REACT_APP_OKTA_ISSUER
     - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
     - export REACT_APP_INFOBLOX_PASS=$REACT_APP_INFOBLOX_PASS
-    - git status
     - git pull origin master
   script:
     - cat package.json
-    # - npm install
-    # - CI=false npm run build
+    - npm install
+    - CI=false npm run build
   artifacts:
     expire_in: 1 hrs
     paths:
@@ -55,16 +54,16 @@ build-stage:
   only:
      - master
 
-# deploy-stage:
-#   stage: nonprod-deploy
-#   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
-#   before_script:
-#     - npm install serverless
-#     - npm install serverless-s3-sync --save
-#   script:
-#     - creds-helper -aws
-#     - AWS_PROFILE=arnawsiam046711174152rolensgcirole serverless deploy
-#   dependencies:
-#     - build-stage
-#   only:
-#      - master
+deploy-stage:
+  stage: nonprod-deploy
+  image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
+  before_script:
+    - npm install serverless
+    - npm install serverless-s3-sync --save
+  script:
+    - creds-helper -aws
+    - AWS_PROFILE=arnawsiam046711174152rolensgcirole serverless deploy
+  dependencies:
+    - build-stage
+  only:
+     - master
