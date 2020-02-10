@@ -8,6 +8,7 @@ import PageContent from './components/PageContent';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Acl from './pages/ACL';
+import InfobloxGroup from './pages/InfobloxGroup';
 import Server from './pages/Server';
 import APIDoc from './pages/APIDoc';
 import Settings from './pages/Settings';
@@ -27,9 +28,13 @@ class App extends React.Component {
     this.logout = this.logout.bind(this);
     this.login = this.login.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
+    this.sessionTime = 1000 * 60 * 30; // 30 minutes expiration time
+    this.sessionTimer = null;
   }
 
-  async componentDidMount () { this.checkAuthentication(); }
+  async componentDidMount () {
+    this.checkAuthentication();
+  }
 
   async componentDidUpdate () {
     if (!this.state.auth.authenticated) this.checkAuthentication();
@@ -45,7 +50,7 @@ class App extends React.Component {
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
-      // console.log(userinfo);
+      this.sessionTimer = setInterval(this.logout, this.sessionTime);
       this.setState({
         auth: {
           authenticated: authenticated,
@@ -62,13 +67,13 @@ class App extends React.Component {
   }
 
   async logout () {
+    window.clearInterval(this.sessionTimer);
     await this.props.auth.logout('/');
     this.setState({
       auth: {
         authenticated: false,
         user: null,
-        oAuthToken: null,
-        apiToken: null
+        oAuthToken: null
       }
     });
   }
@@ -86,6 +91,7 @@ class App extends React.Component {
                 {this.state.auth.authenticated &&
                   <PageContent>
                     <Route path='/' exact component={Dashboard} />
+                    <SecureRoute path='/infobloxGroup' component={InfobloxGroup} />
                     <SecureRoute path='/acl' render={(props) => <Acl {...props} token={this.state.auth.oAuthToken} />} />
                     <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.oAuthToken} />} />
                     <SecureRoute path='/dashboard' exact component={Dashboard} />

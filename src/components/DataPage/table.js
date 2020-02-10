@@ -25,7 +25,6 @@ class DataTable extends React.Component {
         <div style={{ padding: '15px 0px 5px 15px', marginTop: '8px', display: 'flex' }}>
           <Typography variant='h5'>{this.props.data.name}</Typography>
         </div>
-
         <Table size='small' align='center'>
           <TableHead>
             <TableRow>

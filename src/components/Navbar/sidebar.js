@@ -14,6 +14,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import StorageIcon from '@material-ui/icons/Storage';
+import AccessibilityRoundedIcon from '@material-ui/icons/AccessibilityRounded';
 
 const pages = [
   {
@@ -25,6 +26,11 @@ const pages = [
     url: '/server',
     text: 'Edit Servers',
     icon: <StorageIcon />
+  },
+  {
+    url: '/infobloxGroup',
+    text: 'Infoblox Group Permission',
+    icon: <AccessibilityRoundedIcon />
   }
 ];
 
