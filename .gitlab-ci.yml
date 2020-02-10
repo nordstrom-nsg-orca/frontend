@@ -3,7 +3,7 @@ stages:
   - lint
   - update-version
   - build
-  # - nonprod-deploy
+  - nonprod-deploy
 
 eslint:
  stage: lint
