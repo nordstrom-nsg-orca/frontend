@@ -38,9 +38,7 @@ class DataTable extends React.Component {
 
                 {this.props.headers.map((column, index) =>
                   <TableCell size='small' key={index} className={classes.tablePaper}>
-                    {row[column.column_name] != null &&
-                      row[column.column_name].toString()
-                    }
+                    {row[column.column_name] != null && row[column.column_name].toString()}
                   </TableCell>)}
 
                 {this.props.handleAction &&
