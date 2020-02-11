@@ -11,11 +11,6 @@ import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 
 class DataTable extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {};
-  }
-
   render () {
     const { classes } = this.props;
 
@@ -30,22 +25,22 @@ class DataTable extends React.Component {
             <TableRow>
               {this.props.headers.map((column, index) => (
                 <TableCell size='small' key={index} className={classes.tablePaper}>
-                  <b>{column['column_name'].toUpperCase()}</b>
+                  <b>{column.column_name.toUpperCase()}</b>
                 </TableCell>))}
               {this.props.handleAction &&
-                <TableCell></TableCell>}
+                <TableCell />}
             </TableRow>
           </TableHead>
 
           <TableBody>
             {this.props.data.rows.map(row =>
               <TableRow key={row.id}>
-                
+
                 {this.props.headers.map((column, index) =>
                   <TableCell size='small' key={index} className={classes.tablePaper}>
-                    {row[column['column_name']].toString()}
+                    {row[column.column_name].toString()}
                   </TableCell>)}
-                
+
                 {this.props.handleAction &&
                   <TableCell size='small' style={{ width: '100px' }} className={classes.tablePaper}>
                     {this.props.actionButtons.map((action, index) =>

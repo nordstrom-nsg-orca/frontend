@@ -28,12 +28,17 @@ class Form extends React.Component {
             justify='center'
             alignItems='center'
             spacing={3}
-            style={{ margin: '5px 0px', width: '100%'}}
+            style={{ margin: '5px 0px', width: '100%' }}
           >
             {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
               <Grid item md={10} key={index}>
-                <FormInput columnName={header['column_name']} data={this.props.data} classes={classes}
-                  onHandleInput={this.props.onHandleInput} dataType={header['data_type']} />
+                <FormInput
+                  onHandleInput={this.props.onHandleInput}
+                  data={this.props.data}
+                  dataType={header.data_type}
+                  classes={classes}
+                  columnName={header.column_name}
+                />
               </Grid>)}
             {this.props.action === 'DELETE' &&
               <Grid item md={12}>

@@ -63,7 +63,7 @@ const style = theme => ({
     width: '100%'
   },
   checkBox: {
-    color: theme.color,
+    color: theme.color
   },
   cancel: {
     color: '#f95959'

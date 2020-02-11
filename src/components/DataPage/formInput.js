@@ -5,7 +5,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import PropTypes from 'prop-types';
 
 class FormInput extends React.Component {
-
   render () {
     const { classes } = this.props;
 
@@ -22,7 +21,11 @@ class FormInput extends React.Component {
       input = (
         <Input
           onChange={event => this.props.onHandleInput(this.props.columnName, event.target.value)}
-          classes={{ underline: classes.dialogUnderline, root: classes.dialogInput, focused: classes.inputFocused }}
+          classes={{
+            underline: classes.dialogUnderline,
+            root: classes.dialogInput,
+            focused: classes.inputFocused
+          }}
           value={this.props.data ? this.props.data[this.props.columnName] : ''}
         />);
     }
@@ -42,6 +45,7 @@ class FormInput extends React.Component {
 }
 FormInput.propTypes = {
   dataType: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   columnName: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
   onHandleInput: PropTypes.func

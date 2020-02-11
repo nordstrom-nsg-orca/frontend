@@ -103,14 +103,11 @@ class DataPage extends React.Component {
   }
 
   handleInput = (header, value) => {
-    console.log(value)
     var data;
     if (this.state.isAdd && this.state.formData === null) data = {};
     else data = JSON.parse(JSON.stringify(this.state.formData));
 
-    console.log(data);
     data[header] = value;
-    console.log(data);
     this.setState({ formData: data, isInput: true });
   }
 
