@@ -59,7 +59,17 @@ const style = theme => ({
     }
   },
   dialogInput: {
-    color: theme.color
+    color: theme.color,
+    width: '100%'
+  },
+  checkBox: {
+    color: theme.color,
+  },
+  cancel: {
+    color: '#f95959'
+  },
+  accept: {
+    color: '#63a063'
   },
   tablePaper: {
     marginBottom: '20px',

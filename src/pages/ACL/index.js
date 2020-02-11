@@ -8,7 +8,7 @@ class ACLList extends React.Component {
       <div>
         <OrcaDataPage
           title='ACL Management'
-          loadUrl='/table/acl_view_json'
+          loadUrl='/table/acl_view_json_test'
           crudUrl='/table/access_item'
           parentId='list_id'
           token={this.props.token}
