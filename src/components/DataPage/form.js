@@ -1,14 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import PropTypes from 'prop-types';
+
+import FormInput from './formInput.js';
 
 class Form extends React.Component {
   constructor (props) {
@@ -27,25 +27,18 @@ class Form extends React.Component {
             direction='row'
             justify='center'
             alignItems='center'
-            spacing={5}
-            style={{ marginBottom: '10px' }}
+            spacing={3}
+            style={{ margin: '5px 0px', width: '100%' }}
           >
-
             {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
-              <Grid item md={6} key={index}>
-                <FormControl>
-                  <InputLabel
-                    className={classes.inputLabel}
-                    classes={{ focused: classes.inputFocused, root: classes.inputLabel }}
-                  >
-                    {header}
-                  </InputLabel>
-                  <Input
-                    onChange={event => this.props.onHandleInput(header, event)}
-                    classes={{ underline: classes.dialogUnderline, root: classes.dialogInput, focused: classes.inputFocused }}
-                    value={this.props.data ? this.props.data[header] : ''}
-                  />
-                </FormControl>
+              <Grid item md={10} key={index}>
+                <FormInput
+                  onHandleInput={this.props.onHandleInput}
+                  data={this.props.data}
+                  dataType={header.data_type}
+                  classes={classes}
+                  columnName={header.column_name}
+                />
               </Grid>)}
             {this.props.action === 'DELETE' &&
               <Grid item md={12}>
@@ -59,10 +52,10 @@ class Form extends React.Component {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={this.props.onHandleFormSubmit('cancel')} color='primary'>
+          <Button onClick={this.props.onHandleFormSubmit('cancel')} className={classes.cancel}>
             Cancel
           </Button>
-          <Button onClick={this.props.onHandleFormSubmit(this.props.action)} color='primary'>
+          <Button onClick={this.props.onHandleFormSubmit(this.props.action)} className={classes.accept}>
             Accept
           </Button>
         </DialogActions>
