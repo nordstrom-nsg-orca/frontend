@@ -8,7 +8,7 @@ stages:
   - install
   - lint
   - version
-  - build-stage
+  - build
   - deploy
 
 install:
@@ -45,8 +45,8 @@ version:
   only:
     - master
 
-build-stage:
-  stage: build-stage
+build:
+  stage: build
   image: node:latest
   before_script:
     - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
@@ -72,6 +72,6 @@ deploy:
   script:
     - sls deploy
   dependencies:
-    - build-stage
+    - build
   only:
      - master
