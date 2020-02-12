@@ -5,6 +5,7 @@ cache:
     - node_modules/
 
 stages:
+  - install
   - lint
   - update-version
   - build
