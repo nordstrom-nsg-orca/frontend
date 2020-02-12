@@ -1,29 +1,15 @@
-cache:
-  untracked: true
-  key: "$CI_BUILD_REF_NAME"
-  paths:
-    - node_modules/
 
 stages:
-  - install
   - lint
   - update-version
   - build
-  - nonprod-deploy
-
-install:
-  stage: install
-  image: gitlab-registry.nordstrom.com/cicd/container-image-composer/buildtime/nodejs:10.15
-  script:
-    - npm install
-    - npm install serverless-s3-sync --save
+  - deploy
 
 eslint:
  stage: lint
- image: node:latest
- before_script:
-    - npm install eslint
+ image: gitlab-registry.nordstrom.com/cicd/container-image-composer/buildtime/nodejs:10.15
  script:
+    - npm install eslint
     - npx eslint src/
  only:
   - merge_requests
@@ -56,6 +42,7 @@ build-stage:
     - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
     - export REACT_APP_INFOBLOX_PASS=$REACT_APP_INFOBLOX_PASS
     - git pull origin master
+    - npm i
   script:
     - npm run build
   artifacts:
@@ -66,7 +53,7 @@ build-stage:
      - master
 
 deploy-stage:
-  stage: nonprod-deploy
+  stage: deploy
   image: gitlab-registry.nordstrom.com/cicd/container-image-composer/deployment/serverless:1.57
   before_script:
     - export AWS_ACCESS_KEY_ID=$(echo ${nsg_ci} | jq -r '.Credentials.AccessKeyId')
