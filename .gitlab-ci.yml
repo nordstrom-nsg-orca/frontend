@@ -1,22 +1,34 @@
+cache:
+  untracekd: true
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+    - node_modules/
+
 
 stages:
+  - install
   - lint
-  - update-version
+  - version
   - build
-  - nonprod-deploy
+  - deploy
 
-eslint:
+install:
+  stage: install
+  image: gitlab-registry.nordstrom.com/cicd/container-image-composer/buildtime/nodejs:10.15
+  script:
+    - npm install
+    - npm install serverless-s3-sync --save
+
+lint:
  stage: lint
  image: node:latest
- before_script:
-    - npm install eslint
  script:
     - npx eslint src/
  only:
   - merge_requests
 
-update-version-stage:
-  stage: update-version
+version:
+  stage: version
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
   before_script:
@@ -43,10 +55,7 @@ build-stage:
     - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
     - export REACT_APP_INFOBLOX_PASS=$REACT_APP_INFOBLOX_PASS
     - git pull origin master
-  script:
-    - cat package.json
-    - npm install
-    - CI=false npm run build
+    - npm run build
   artifacts:
     expire_in: 1 hrs
     paths:
@@ -61,7 +70,6 @@ deploy-stage:
     - export AWS_ACCESS_KEY_ID=$(echo ${nsg_ci} | jq -r '.Credentials.AccessKeyId')
     - export AWS_SECRET_ACCESS_KEY=$(echo ${nsg_ci} | jq -r '.Credentials.SecretAccessKey')
     - export AWS_SESSION_TOKEN=$(echo ${nsg_ci} | jq -r '.Credentials.SessionToken')
-    - npm install serverless-s3-sync --save
   script:
     - sls deploy
   dependencies:
