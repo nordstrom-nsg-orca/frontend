@@ -58,6 +58,7 @@ deploy-stage:
   stage: nonprod-deploy
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
   before_script:
+    - npm install npm@latest
     - npm install serverless
     - npm install serverless-s3-sync --save
   script:
