@@ -2,6 +2,7 @@ import json
 import sys
 import re
 
+test = False
 merge_message = sys.argv[1]
 
 # allow for testing `version.py test major|minor|patch
