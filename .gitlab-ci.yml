@@ -1,15 +1,14 @@
 cache:
-  untracekd: true
+  untracked: true
   key: "$CI_BUILD_REF_NAME"
   paths:
     - node_modules/
 
 stages:
-  - install
   - lint
-  - version
+  - update-version
   - build
-  - deploy
+  - nonprod-deploy
 
 install:
   stage: install
@@ -18,16 +17,18 @@ install:
     - npm install
     - npm install serverless-s3-sync --save
 
-lint:
+eslint:
  stage: lint
  image: node:latest
+ before_script:
+    - npm install eslint
  script:
     - npx eslint src/
  only:
   - merge_requests
 
-version:
-  stage: version
+update-version-stage:
+  stage: update-version
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
   before_script:
@@ -54,6 +55,7 @@ build-stage:
     - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
     - export REACT_APP_INFOBLOX_PASS=$REACT_APP_INFOBLOX_PASS
     - git pull origin master
+  script:
     - npm run build
   artifacts:
     expire_in: 1 hrs
@@ -62,7 +64,7 @@ build-stage:
   only:
      - master
 
-deploy:
+deploy-stage:
   stage: nonprod-deploy
   image: gitlab-registry.nordstrom.com/cicd/container-image-composer/deployment/serverless:1.57
   before_script:
@@ -72,6 +74,6 @@ deploy:
   script:
     - sls deploy
   dependencies:
-    - build
+    - build-stage
   only:
      - master
