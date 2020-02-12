@@ -57,6 +57,8 @@ build-stage:
 deploy-stage:
   stage: nonprod-deploy
   image: gitlab-registry.nordstrom.com/cicd/images/incubator/artillery:unstable
+  before_script:
+    - npm install serverless-s3-sync --save
   script:
     - creds-helper -aws
     - AWS_PROFILE=arnawsiam046711174152rolensgcirole serverless deploy
