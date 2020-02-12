@@ -4,12 +4,11 @@ cache:
   paths:
     - node_modules/
 
-
 stages:
   - install
   - lint
   - version
-  - build
+  - build-stage
   - deploy
 
 install:
@@ -46,8 +45,8 @@ version:
   only:
     - master
 
-build:
-  stage: build
+build-stage:
+  stage: build-stage
   image: node:latest
   before_script:
     - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
