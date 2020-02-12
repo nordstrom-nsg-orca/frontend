@@ -1,7 +1,7 @@
 
 stages:
   - lint
-  - update-version
+  - version
   - build
   - deploy
 
@@ -14,8 +14,8 @@ eslint:
  only:
   - merge_requests
 
-update-version-stage:
-  stage: update-version
+version:
+  stage: version
   variables:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i /tmp/.ssh/id_rsa"
   before_script:
