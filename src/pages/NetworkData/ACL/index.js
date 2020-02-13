@@ -1,9 +1,8 @@
 import React from 'react';
-import OrcaDataPage from '../../components/OrcaDataPage';
-import PropTypes from 'prop-types';
+import OrcaDataPage from 'components/OrcaDataPage';
 
 class ACLList extends React.Component {
-  render () {
+ render () {
     return (
       <div>
         <OrcaDataPage
@@ -11,14 +10,9 @@ class ACLList extends React.Component {
           loadUrl='/table/acl_view_json'
           crudUrl='/table/access_item'
           parentId='list_id'
-          token={this.props.token}
         />
       </div>
     );
   }
 }
-
-ACLList.propTypes = {
-  token: PropTypes.string.isRequired
-};
 export default ACLList;

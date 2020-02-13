@@ -9,7 +9,8 @@ class Navbar extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      currentTab: this.props.tabs[0]
     };
   }
 
@@ -22,11 +23,13 @@ class Navbar extends React.Component {
           auth={this.props.auth}
           logout={this.props.logout}
           login={this.props.login}
+          tabs={this.props.tabs}
           classes={classes}
         />
         {this.props.auth.authenticated &&
           <Sidebar
             classes={classes}
+            pages={this.state.currentTab.pages}
           />}
         <main className={classes.content}>
           <div className={classes.toolbar} />

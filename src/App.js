@@ -3,17 +3,17 @@ import { Route } from 'react-router-dom';
 import { ImplicitCallback, SecureRoute, withAuth } from '@okta/okta-react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import Navbar from './components/Navbar';
-import PageContent from './components/PageContent';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Acl from './pages/ACL';
-import InfobloxGroup from './pages/InfobloxGroup';
-import Server from './pages/Server';
-import APIDoc from './pages/APIDoc';
-import Settings from './pages/Settings';
 
-import { lightTheme, darkTheme } from './util/global.js';
+import Navbar from 'components/Navbar';
+import PageContent from 'components/PageContent';
+
+import Home from 'pages/Home';
+import Dashboard from 'pages/Dashboard';
+import APIDoc from 'pages/APIDoc';
+import Settings from 'pages/Settings';
+
+import { lightTheme, darkTheme } from 'util/global.js';
+import tabs from 'util/pages.js';
 
 class App extends React.Component {
   constructor (props) {
@@ -50,12 +50,12 @@ class App extends React.Component {
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
+      localStorage.setItem('token', oAuthToken);
       this.sessionTimer = setInterval(this.logout, this.sessionTime);
       this.setState({
         auth: {
           authenticated: authenticated,
-          user: userinfo,
-          oAuthToken: oAuthToken
+          user: userinfo
         }
       });
     }
@@ -72,8 +72,7 @@ class App extends React.Component {
     this.setState({
       auth: {
         authenticated: false,
-        user: null,
-        oAuthToken: null
+        user: null
       }
     });
   }
@@ -86,14 +85,18 @@ class App extends React.Component {
         {window.location.pathname !== '/api/doc' &&
           <ThemeProvider theme={{ ...createMuiTheme(), ...theme }}>
             <div style={{ background: theme.bodyBackground, minHeight: '100vh' }}>
-              <Navbar auth={this.state.auth} logout={this.logout} login={this.login}>
+              <Navbar auth={this.state.auth} logout={this.logout} login={this.login} tabs={tabs}>
                 {!this.state.auth.authenticated && <Route path='/' exact component={Home} />}
                 {this.state.auth.authenticated &&
                   <PageContent>
                     <Route path='/' exact component={Dashboard} />
-                    <SecureRoute path='/infobloxGroup' component={InfobloxGroup} />
-                    <SecureRoute path='/acl' render={(props) => <Acl {...props} token={this.state.auth.oAuthToken} />} />
-                    <SecureRoute path='/server' render={(props) => <Server {...props} token={this.state.auth.oAuthToken} />} />
+                    
+                    {tabs.map((tab, index) => 
+                      tab.pages.map((page, pindex) =>
+                        <SecureRoute exact path={page.url} component={page.component} />
+                      )
+                    )}
+                    
                     <SecureRoute path='/dashboard' exact component={Dashboard} />
                     <SecureRoute path='/settings' render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />} />
                   </PageContent>}

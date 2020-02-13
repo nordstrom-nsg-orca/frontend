@@ -9,7 +9,7 @@ export async function api (path, options) {
 
   const opts = {
     method: options.method,
-    headers: { Authorization: `Bearer ${options.token}` }
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   };
 
   if (['PUT', 'POST'].includes(options.method))

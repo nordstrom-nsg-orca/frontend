@@ -1,11 +1,11 @@
 import React from 'react';
-import { api } from '../../util/api.js';
-import DataPage from '../../components/DataPage';
+import { api } from 'util/api.js';
+import DataPage from 'components/DataPage';
 import PropTypes from 'prop-types';
 
 class OrcaDataPage extends React.Component {
   loadData = async () => {
-    return api(this.props.loadUrl, { method: 'GET', token: this.props.token });
+    return api(this.props.loadUrl, { method: 'GET' });
   }
 
   crud = async (options) => {
@@ -19,7 +19,6 @@ class OrcaDataPage extends React.Component {
         loadData={this.loadData}
         crud={this.crud}
         parentId={this.props.parentId}
-        token={this.props.token}
       />
     );
   }
@@ -29,7 +28,6 @@ OrcaDataPage.propTypes = {
   title: PropTypes.string.isRequired,
   loadUrl: PropTypes.string.isRequired,
   crudUrl: PropTypes.string.isRequired,
-  token: PropTypes.string.isRequired,
   parentId: PropTypes.string.isRequired
 };
 

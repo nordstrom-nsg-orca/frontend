@@ -15,12 +15,12 @@ class Topbar extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      userAnchor: null
+      userAnchor: null,
+      tabAnchor: []
     };
   }
 
   handleMenu = (e) => {
-    // console.log(this.props.auth);
     if (this.props.auth.user == null) {
       this.props.login();
       return;
@@ -28,6 +28,17 @@ class Topbar extends React.Component {
     this.setState({
       userAnchor: e.currentTarget
     });
+  }
+
+  handleMouseEnter = (index, e) => {
+    let copy = JSON.parse(JSON.stringify(this.state.tabAnchor));
+    copy[index] = e.currentTarget;
+    this.setState({ tabAnchor: copy })
+  }
+  handleMouseLeave = (index, e) => {
+    let copy = [...this.state.tabAnchor]
+    copy[index] = null;
+    this.setState({ tabAnchor: copy })
   }
 
   handleCloseMenu = () => {
@@ -54,6 +65,33 @@ class Topbar extends React.Component {
             <Link to={link}>
               <img className={classes.logo} src='/images/logo.svg' alt='NSG_LOGO' />
             </Link>
+            
+            <div style={{marginLeft:'140px'}}>
+              {this.props.tabs.map((item, index) =>
+                <div key={index} style={{display:'inline'}}>
+                  <Button index={index} color='inherit'
+                    onClick={this.handleMouseEnter.bind(this, index)}
+                  >
+                    {item.name}
+                  </Button>
+                  <Menu
+                    
+                    className={classes.menu}
+                    anchorEl={this.state.tabAnchor[index]}
+                    open={Boolean(this.state.tabAnchor[index])}
+                    onClose={this.handleMouseLeave.bind(this, index)}
+                  >
+                  {item.pages.map((page, index2) => 
+                    <MenuItem key={index2}>
+                      <Link to={page.url}>
+                        {page.name}
+                      </Link>
+                    </MenuItem>
+                  )}
+                  </Menu>
+                </div>
+              )}
+            </div>
 
             <div className={classes.user}>
               {this.props.auth.user != null &&
@@ -77,16 +115,13 @@ class Topbar extends React.Component {
               onClose={this.handleCloseMenu} onClick={this.handleCloseMenu}
             >
               <MenuItem>
-                <Link
-                  to='/settings'
+                <Link to='/settings'
                   style={{ textDecoration: 'none', color: 'inherit' }}
                 >
                   Settings
                 </Link>
               </MenuItem>
-              <MenuItem
-                onClick={this.handleLogout}
-              >
+              <MenuItem onClick={this.handleLogout}>
                 Logout
               </MenuItem>
             </Menu>

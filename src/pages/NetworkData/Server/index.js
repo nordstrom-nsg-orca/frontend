@@ -1,5 +1,5 @@
 import React from 'react';
-import OrcaDataPage from '../../components/OrcaDataPage';
+import OrcaDataPage from 'components/OrcaDataPage';
 import PropTypes from 'prop-types';
 
 class ServerList extends React.Component {

@@ -1,16 +1,18 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withAuth } from '@okta/okta-react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import Typography from '@material-ui/core/Typography';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import Form from './form.js';
 import Table from './table.js';
 import style from './style.js';
-import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 class DataPage extends React.Component {
   constructor (props) {
@@ -70,7 +72,6 @@ class DataPage extends React.Component {
 
     const options = {
       method: action,
-      token: this.props.token,
       data: this.state.formData
     };
 
@@ -211,9 +212,8 @@ DataPage.propTypes = {
   crud: PropTypes.func,
   title: PropTypes.string.isRequired,
   loadData: PropTypes.func.isRequired,
-  token: PropTypes.string,
   parentId: PropTypes.string
   // headers: PropTypes.array.isRequired
 };
 
-export default withStyles(style)(DataPage);
+export default withAuth(withStyles(style)(DataPage));
