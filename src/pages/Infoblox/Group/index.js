@@ -1,7 +1,7 @@
 import React from 'react';
-import DataPage from '../../components/DataPage';
+import DataPage from 'components/DataPage';
 import { encode } from 'base-64';
-import { postToSlack } from '../../util/reporter.js';
+import { postToSlack } from 'util/reporter.js';
 
 class InfobloxGroup extends React.Component {
   loadData = async () => {

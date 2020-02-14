@@ -9,8 +9,13 @@ class Navbar extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      currentTab: null
     };
+  }
+
+  changeSidebar = (index) => {
+    this.setState({ currentTab: this.props.tabs[index] });
   }
 
   render () {
@@ -22,15 +27,20 @@ class Navbar extends React.Component {
           auth={this.props.auth}
           logout={this.props.logout}
           login={this.props.login}
+          tabs={this.props.tabs}
           classes={classes}
+          changeSidebar={this.changeSidebar}
         />
-        {this.props.auth.authenticated &&
+        {this.props.auth.authenticated && (
           <Sidebar
             classes={classes}
-          />}
+            currentTab={this.state.currentTab}
+          />
+        )}
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {this.props.children}
+          {this.state.pages}
         </main>
       </div>
     );
@@ -42,6 +52,7 @@ Navbar.propTypes = {
   login: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  tabs: PropTypes.object.isRequired
 };
 export default withStyles(style)(Navbar);

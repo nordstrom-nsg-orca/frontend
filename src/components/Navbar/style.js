@@ -41,9 +41,6 @@ const style = theme => ({
       width: theme.spacing(9) + 1
     }
   },
-  // toolbar: {
-  //   ...theme.mixins.toolbar,
-  // },
   paper: {
     background: theme.background,
     color: theme.color
@@ -53,11 +50,6 @@ const style = theme => ({
     borderRadius: '0',
     color: theme.color
   },
-  sideBarLink: {
-    textDecoration: 'none',
-    color: theme.color
-  },
-  // topbar
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     backgroundColor: '#424242'
@@ -68,8 +60,27 @@ const style = theme => ({
     top: '-20px',
     left: '0px'
   },
+  icon: {
+    color: theme.color
+  },
   menu: {
-    marginTop: '30px'
+    marginTop: '30px',
+    color: theme.color
+  },
+  menuList: {
+    padding: 0,
+    color: theme.color
+  },
+  menuPaper: {
+    backgroundColor: theme.bodyBackground
+  },
+  menuItem: {
+    fontSize: '0.875rem',
+    color: theme.color
+  },
+  link: {
+    color: theme.color,
+    textDecoration: 'none'
   },
   user: {
     marginLeft: 'auto'

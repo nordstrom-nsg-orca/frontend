@@ -33,17 +33,18 @@ class DataTable extends React.Component {
           </TableHead>
 
           <TableBody>
-            {this.props.data.rows.map(row =>
+            {this.props.data.rows.map(row => (
               <TableRow key={row.id}>
 
-                {this.props.headers.map((column, index) =>
+                {this.props.headers.map((column, index) => (
                   <TableCell size='small' key={index} className={classes.tablePaper}>
                     {row[column.column_name] != null && row[column.column_name].toString()}
-                  </TableCell>)}
+                  </TableCell>
+                ))}
 
                 {this.props.handleAction &&
                   <TableCell size='small' style={{ width: '100px' }} className={classes.tablePaper}>
-                    {this.props.actionButtons.map((action, index) =>
+                    {this.props.actionButtons.map((action, index) => (
                       <IconButton
                         key={index}
                         size='small'
@@ -51,9 +52,11 @@ class DataTable extends React.Component {
                         onClick={this.props.handleAction(action.name, this.props.data.id, row.id, row)}
                       >
                         {action.icon}
-                      </IconButton>)}
+                      </IconButton>
+                    ))}
                   </TableCell>}
-              </TableRow>)}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         {this.props.handleAction &&

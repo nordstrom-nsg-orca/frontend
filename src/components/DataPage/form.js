@@ -30,32 +30,34 @@ class Form extends React.Component {
             spacing={3}
             style={{ margin: '5px 0px', width: '100%' }}
           >
-            {this.props.action !== 'DELETE' && this.props.headers.map((header, index) =>
+            {this.props.action !== 'DELETE' && this.props.headers.map((header, index) => (
               <Grid item md={10} key={index}>
                 <FormInput
-                  onHandleInput={this.props.onHandleInput}
+                  handleInput={this.props.handleInput}
                   data={this.props.data}
                   dataType={header.data_type}
                   classes={classes}
                   columnName={header.column_name}
                 />
-              </Grid>)}
-            {this.props.action === 'DELETE' &&
+              </Grid>
+            ))}
+            {this.props.action === 'DELETE' && (
               <Grid item md={12}>
                 <DialogContent>
                   <DialogContentText className={classes.dialogInput}>
                     Are you sure you want to delete this?
                   </DialogContentText>
                 </DialogContent>
-              </Grid>}
+              </Grid>
+            )}
           </Grid>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={this.props.onHandleFormSubmit('cancel')} className={classes.cancel}>
+          <Button onClick={this.props.handleFormSubmit('cancel')} className={classes.cancel}>
             Cancel
           </Button>
-          <Button onClick={this.props.onHandleFormSubmit(this.props.action)} className={classes.accept}>
+          <Button onClick={this.props.handleFormSubmit(this.props.action)} className={classes.accept}>
             Accept
           </Button>
         </DialogActions>
@@ -63,14 +65,15 @@ class Form extends React.Component {
     );
   }
 }
+
 Form.propTypes = {
   classes: PropTypes.object.isRequired,
-  onHandleFormSubmit: PropTypes.func,
+  handleFormSubmit: PropTypes.func,
   action: PropTypes.string,
   headers: PropTypes.array.isRequired,
   data: PropTypes.object,
   open: PropTypes.bool,
-  onHandleInput: PropTypes.func
+  handleInput: PropTypes.func
 };
 
 export default Form;

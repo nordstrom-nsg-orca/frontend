@@ -33,7 +33,7 @@ const style = theme => ({
     position: 'relative',
     left: '30px',
     top: '8px',
-    zIndex: '9999'
+    zIndex: '2'
   },
   select: {
     marginLeft: '3px'

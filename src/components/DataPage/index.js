@@ -1,16 +1,18 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withAuth } from '@okta/okta-react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import Typography from '@material-ui/core/Typography';
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import Form from './form.js';
 import Table from './table.js';
 import style from './style.js';
-import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 class DataPage extends React.Component {
   constructor (props) {
@@ -70,7 +72,6 @@ class DataPage extends React.Component {
 
     const options = {
       method: action,
-      token: this.props.token,
       data: this.state.formData
     };
 
@@ -149,7 +150,7 @@ class DataPage extends React.Component {
 
     return (
       <div>
-        {!this.state.error &&
+        {!this.state.error && (
           <div>
             <Form
               open={this.state.formOpen}
@@ -157,8 +158,8 @@ class DataPage extends React.Component {
               title={this.props.title}
               headers={this.state.formHeaders}
               data={this.state.formData}
-              onHandleInput={this.handleInput}
-              onHandleFormSubmit={this.handleFormSubmit}
+              handleInput={this.handleInput}
+              handleFormSubmit={this.handleFormSubmit}
               classes={classes}
             />
             <div style={{ display: 'flex' }}>
@@ -167,7 +168,6 @@ class DataPage extends React.Component {
               </Typography>
 
               <div style={{ marginLeft: 'auto' }}>
-
                 <SearchRoundedIcon className={classes.searchIcon} />
                 <InputBase
                   placeholder='Search'
@@ -176,11 +176,14 @@ class DataPage extends React.Component {
                 />
               </div>
             </div>
-            {this.state.load &&
+
+            {this.state.load && (
               <div align='center' style={{ paddingTop: '50px' }}>
                 <CircularProgress classes={{ colorPrimary: classes.loadIcon }} />
-              </div>}
-            {this.state.displayData.map((table, index) =>
+              </div>
+            )}
+
+            {this.state.displayData.map((table, index) => (
               <Table
                 key={index}
                 deleteTable={this.deleteTable}
@@ -189,9 +192,12 @@ class DataPage extends React.Component {
                 actionButtons={this.actionButtons}
                 handleAction={this.props.crud ? this.handleAction : null}
                 classes={classes}
-              />)}
-          </div>}
-        {this.state.error &&
+              />
+            ))}
+          </div>
+        )}
+
+        {this.state.error && (
           <div align='center'>
             <div>
               <WarningRoundedIcon className={classes.errorIcon} />
@@ -199,7 +205,8 @@ class DataPage extends React.Component {
             <div className={classes.errorMessage}>
               Opps..Something Went Wrong. We are looking into it!
             </div>
-          </div>}
+          </div>
+        )}
       </div>
 
     );
@@ -211,9 +218,7 @@ DataPage.propTypes = {
   crud: PropTypes.func,
   title: PropTypes.string.isRequired,
   loadData: PropTypes.func.isRequired,
-  token: PropTypes.string,
   parentId: PropTypes.string
-  // headers: PropTypes.array.isRequired
 };
 
-export default withStyles(style)(DataPage);
+export default withAuth(withStyles(style)(DataPage));

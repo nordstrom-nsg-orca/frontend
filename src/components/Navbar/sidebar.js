@@ -12,27 +12,6 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
-import StorageIcon from '@material-ui/icons/Storage';
-import AccessibilityRoundedIcon from '@material-ui/icons/AccessibilityRounded';
-
-const pages = [
-  {
-    url: '/acl',
-    text: 'Edit ACLs',
-    icon: <ViewHeadlineIcon />
-  },
-  {
-    url: '/server',
-    text: 'Edit Servers',
-    icon: <StorageIcon />
-  },
-  {
-    url: '/infobloxGroup',
-    text: 'Infoblox Group Permission',
-    icon: <AccessibilityRoundedIcon />
-  }
-];
 
 class Sidebar extends React.Component {
   constructor (props) {
@@ -42,7 +21,7 @@ class Sidebar extends React.Component {
     };
   }
 
-  handleToggleDrawer = () => {
+  handleDrawer = () => {
     this.setState({
       open: !this.state.open
     });
@@ -52,45 +31,54 @@ class Sidebar extends React.Component {
     const { classes } = this.props;
 
     return (
-      <Drawer
-        variant='permanent'
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: this.state.open,
-          [classes.drawerClose]: !this.state.open
-        })}
-        classes={{
-          paper: clsx(classes.paper, {
+      <div>
+        <Drawer
+          variant='permanent'
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: this.state.open,
             [classes.drawerClose]: !this.state.open
-          })
-        }}
-
-        open={this.state.open}
-      >
-        <div className={classes.toolbar} />
-        <Divider />
-        <IconButton onClick={this.handleToggleDrawer} className={classes.leftIcon}>
-          {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
-        <Divider />
-        <List>
-          {pages.map((item, index) =>
-            <Link key={index} to={item.url} className={classes.sideBarLink}>
-              <Tooltip title={this.state.open ? '' : item.text} placement='right'>
-                <ListItem button>
-                  <ListItemIcon className={classes.sideBarLink}>{item.icon}</ListItemIcon>
-                  <ListItemText>{item.text}</ListItemText>
-                </ListItem>
-              </Tooltip>
-            </Link>)}
-        </List>
-      </Drawer>
+          })}
+          classes={{
+            paper: clsx(classes.paper, {
+              [classes.drawerOpen]: this.state.open,
+              [classes.drawerClose]: !this.state.open
+            })
+          }}
+          open={this.state.open}
+        >
+          <div className={classes.toolbar} />
+          <Divider />
+          <IconButton onClick={this.handleDrawer} className={classes.leftIcon}>
+            {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+          <Divider />
+          {this.props.currentTab && (
+            <List>
+              {this.props.currentTab.pages.map((page, index) => (
+                <Link key={index} to={this.props.currentTab.url + page.url} className={classes.link}>
+                  <Tooltip title={this.state.open ? '' : page.name} placement='right'>
+                    <ListItem button>
+                      <ListItemIcon className={classes.icon}>
+                        {page.icon}
+                      </ListItemIcon>
+                      <ListItemText classes={{ primary: classes.menuItem }}>
+                        {page.name}
+                      </ListItemText>
+                    </ListItem>
+                  </Tooltip>
+                </Link>
+              ))}
+            </List>
+          )}
+        </Drawer>
+      </div>
     );
   }
 }
 
 Sidebar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  currentTab: PropTypes.object.isRequired
 };
 
 export default Sidebar;
