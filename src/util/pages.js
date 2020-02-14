@@ -11,6 +11,7 @@ import AccessibilityRoundedIcon from '@material-ui/icons/AccessibilityRounded';
 const tabs = [
   {
     name: 'Network Data',
+    url: '/data',
     pages: [
       {
         url: '/acl',
@@ -28,10 +29,11 @@ const tabs = [
   },
   {
     name: 'Infoblox',
+    url: '/infoblox',
     pages: [
       {
-        url: '/infobloxGroup',
-        name: 'Infoblox Group Permission',
+        url: '/group',
+        name: 'Group Permission',
         component: InfobloxGroup,
         icon: <AccessibilityRoundedIcon />
       }

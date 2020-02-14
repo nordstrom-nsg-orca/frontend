@@ -21,7 +21,7 @@ class Sidebar extends React.Component {
     };
   }
 
-  handleToggleDrawer = () => {
+  handleDrawer = () => {
     this.setState({
       open: !this.state.open
     });
@@ -31,45 +31,54 @@ class Sidebar extends React.Component {
     const { classes } = this.props;
 
     return (
-      <Drawer
-        variant='permanent'
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: this.state.open,
-          [classes.drawerClose]: !this.state.open
-        })}
-        classes={{
-          paper: clsx(classes.paper, {
+      <div>
+        <Drawer
+          variant='permanent'
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: this.state.open,
             [classes.drawerClose]: !this.state.open
-          })
-        }}
-
-        open={this.state.open}
-      >
-        <div className={classes.toolbar} />
-        <Divider />
-        <IconButton onClick={this.handleToggleDrawer} className={classes.leftIcon}>
-          {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
-        <Divider />
-        <List>
-          {this.props.pages.map((item, index) =>
-            <Link key={index} to={item.url} className={classes.sideBarLink}>
-              <Tooltip title={this.state.open ? '' : item.name} placement='right'>
-                <ListItem button>
-                  <ListItemIcon className={classes.sideBarLink}>{item.icon}</ListItemIcon>
-                  <ListItemText>{item.name}</ListItemText>
-                </ListItem>
-              </Tooltip>
-            </Link>)}
-        </List>
-      </Drawer>
+          })}
+          classes={{
+            paper: clsx(classes.paper, {
+              [classes.drawerOpen]: this.state.open,
+              [classes.drawerClose]: !this.state.open
+            })
+          }}
+          open={this.state.open}
+        >
+          <div className={classes.toolbar} />
+          <Divider />
+          <IconButton onClick={this.handleDrawer} className={classes.leftIcon}>
+            {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+          <Divider />
+          {this.props.currentTab && (
+            <List>
+              {this.props.currentTab.pages.map((page, index) => (
+                <Link key={index} to={this.props.currentTab.url + page.url} className={classes.link}>
+                  <Tooltip title={this.state.open ? '' : page.name} placement='right'>
+                    <ListItem button>
+                      <ListItemIcon className={classes.icon}>
+                        {page.icon}
+                      </ListItemIcon>
+                      <ListItemText classes={{ primary: classes.menuItem }}>
+                        {page.name}
+                      </ListItemText>
+                    </ListItem>
+                  </Tooltip>
+                </Link>
+              ))}
+            </List>
+          )}
+        </Drawer>
+      </div>
     );
   }
 }
 
 Sidebar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  currentTab: PropTypes.object.isRequired
 };
 
 export default Sidebar;

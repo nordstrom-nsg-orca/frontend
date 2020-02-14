@@ -2,7 +2,7 @@ import React from 'react';
 import OrcaDataPage from 'components/OrcaDataPage';
 
 class ACLList extends React.Component {
- render () {
+  render () {
     return (
       <div>
         <OrcaDataPage

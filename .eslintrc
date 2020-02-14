@@ -21,7 +21,8 @@
       "no-unused-vars": ["error", {"varsIgnorePattern": "dotenv", "args": "none"}],
       "no-useless-escape": "off",
       "curly": ["error", "multi-or-nest"],
-      "function-paren-newline": ["error", "never"],
+      "function-paren-newline": ["error", "multiline"],
+      "react/jsx-handler-names": ["off"]
     },
     "parser": "babel-eslint"
 }

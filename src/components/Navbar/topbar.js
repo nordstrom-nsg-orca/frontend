@@ -20,38 +20,30 @@ class Topbar extends React.Component {
     };
   }
 
-  handleMenu = (e) => {
+  handleUserMenu = (open) => (event) => {
     if (this.props.auth.user == null) {
       this.props.login();
       return;
     }
     this.setState({
-      userAnchor: e.currentTarget
+      userAnchor: (open) ? event.currentTarget : null
     });
   }
 
-  handleMouseEnter = (index, e) => {
-    let copy = JSON.parse(JSON.stringify(this.state.tabAnchor));
-    copy[index] = e.currentTarget;
-    this.setState({ tabAnchor: copy })
-  }
-  handleMouseLeave = (index, e) => {
-    let copy = [...this.state.tabAnchor]
-    copy[index] = null;
-    this.setState({ tabAnchor: copy })
+  handleTabMenu = (index, open) => (event) => {
+    const copy = [...this.state.tabAnchor];
+    copy[index] = (open) ? event.currentTarget : null;
+    this.setState({ tabAnchor: copy });
   }
 
-  handleCloseMenu = () => {
-    this.setState({
-      userAnchor: null
-    });
+  handleLink = (index) => () => {
+    this.props.changeSidebar(index);
+    this.handleTabMenu(index, false)(null);
   }
 
   handleLogout = () => {
     this.props.logout();
-    this.setState({
-      userAnchor: null
-    });
+    this.handleUserMenu(false, null);
   }
 
   render () {
@@ -65,44 +57,56 @@ class Topbar extends React.Component {
             <Link to={link}>
               <img className={classes.logo} src='/images/logo.svg' alt='NSG_LOGO' />
             </Link>
-            
-            <div style={{marginLeft:'140px'}}>
-              {this.props.tabs.map((item, index) =>
-                <div key={index} style={{display:'inline'}}>
-                  <Button index={index} color='inherit'
-                    onClick={this.handleMouseEnter.bind(this, index)}
-                  >
-                    {item.name}
-                  </Button>
-                  <Menu
-                    
-                    className={classes.menu}
-                    anchorEl={this.state.tabAnchor[index]}
-                    open={Boolean(this.state.tabAnchor[index])}
-                    onClose={this.handleMouseLeave.bind(this, index)}
-                  >
-                  {item.pages.map((page, index2) => 
-                    <MenuItem key={index2}>
-                      <Link to={page.url}>
-                        {page.name}
-                      </Link>
-                    </MenuItem>
-                  )}
-                  </Menu>
-                </div>
-              )}
-            </div>
+
+            {this.props.auth.authenticated && (
+              <div style={{ marginLeft: '140px' }}>
+                {this.props.tabs.map((tab, index) => (
+                  <div key={index} style={{ display: 'inline' }}>
+                    <Button
+                      index={index}
+                      color='inherit'
+                      onClick={this.handleTabMenu(index, true)}
+                    >
+                      {tab.name}
+                    </Button>
+                    <Menu
+                      autoFocus={false}
+                      className={classes.menu}
+                      classes={{ paper: classes.menuPaper, list: classes.menuList }}
+                      anchorEl={this.state.tabAnchor[index]}
+                      open={Boolean(this.state.tabAnchor[index])}
+                      onClose={this.handleTabMenu(index, false)}
+                    >
+                      {tab.pages.map((page, index2) => (
+                        <Link
+                          key={index2}
+                          to={tab.url + page.url}
+                          underline='none'
+                          className={classes.link}
+                          onClick={this.handleLink(index)}
+                        >
+                          <MenuItem key={index2} className={classes.menuItem}>
+                            {page.name}
+                          </MenuItem>
+                        </Link>
+                      ))}
+                    </Menu>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className={classes.user}>
-              {this.props.auth.user != null &&
+              {this.props.auth.user != null && (
                 <Link to='/api/doc' target='_blank'>
                   <Tooltip title='API Documentation'>
                     <IconButton tooltip='API Documentation' style={{ color: 'white' }}>
                       <DescriptionRoundedIcon />
                     </IconButton>
                   </Tooltip>
-                </Link>}
-              <Button color='inherit' onClick={this.handleMenu}>
+                </Link>
+              )}
+              <Button color='inherit' onClick={this.handleUserMenu(true)}>
                 {this.props.auth.user != null ? this.props.auth.user.name : 'Login'}
               </Button>
             </div>
@@ -111,17 +115,17 @@ class Topbar extends React.Component {
               anchorEl={this.state.userAnchor}
               keepMounted
               className={classes.menu}
+              classes={{ paper: classes.menuPaper, list: classes.menuList }}
               open={Boolean(this.state.userAnchor)}
-              onClose={this.handleCloseMenu} onClick={this.handleCloseMenu}
+              onClose={this.handleUserMenu(false)}
+              onClick={this.handleUserMenu(false)}
             >
-              <MenuItem>
-                <Link to='/settings'
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
+              <MenuItem className={classes.menuItem}>
+                <Link to='/settings' className={classes.link}>
                   Settings
                 </Link>
               </MenuItem>
-              <MenuItem onClick={this.handleLogout}>
+              <MenuItem onClick={this.handleLogout} className={classes.menuItem}>
                 Logout
               </MenuItem>
             </Menu>
@@ -134,8 +138,10 @@ class Topbar extends React.Component {
 
 Topbar.propTypes = {
   classes: PropTypes.object.isRequired,
+  changeSidebar: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
-  logout: PropTypes.func.isRequired
+  logout: PropTypes.func.isRequired,
+  tabs: PropTypes.object.isRequired
 };
 export default Topbar;
