@@ -22,15 +22,14 @@ const style = theme => ({
   },
   formControl: {
     marginBottom: '10px'
-  },
-
+  }
 });
 
 const BootstrapInput = withStyles(theme => ({
   root: {
     'label + &': {
-      marginTop: theme.spacing(3),
-    },
+      marginTop: theme.spacing(3)
+    }
   },
   input: {
     borderRadius: 4,
@@ -52,14 +51,13 @@ const BootstrapInput = withStyles(theme => ({
       'sans-serif',
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
+      '"Segoe UI Symbol"'
     ].join(','),
     '&:focus': {
       boxShadow: `${fade(theme.background, 0.25)} 0 0 0 0.2rem`,
-      borderColor: theme.color,
-    },
-  },
+      borderColor: theme.color
+    }
+  }
 }))(InputBase);
-
 
 export { style, BootstrapInput };

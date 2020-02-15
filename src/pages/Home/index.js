@@ -1,11 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import { style, BootstrapInput } from './style.js';
 import PropTypes from 'prop-types';
@@ -16,7 +13,7 @@ import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import IconButton from '@material-ui/core/IconButton';
 
 class Home extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       expanded: false
@@ -24,7 +21,7 @@ class Home extends React.Component {
   }
 
   handleExpansion = () => {
-    this.setState({expanded: !this.state.expanded});
+    this.setState({ expanded: !this.state.expanded });
   }
 
   render () {
@@ -37,11 +34,11 @@ class Home extends React.Component {
           classes={{ root: classes.expansionRoot }}
         >
           <ExpansionPanelSummary
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+            aria-controls='panel1a-content'
+            id='panel1a-header'
           >
             <Typography style={{ margin: '0 auto', marginTop: '10px' }}>
-              <Button variant="contained" color="primary">
+              <Button variant='contained' color='primary'>
                 Login with Okta
               </Button>
               <div style={{ paddingTop: '5px' }}>
@@ -57,27 +54,27 @@ class Home extends React.Component {
               <FormControl className={classes.formControl}>
                 <InputLabel
                   shrink
-                  htmlFor="bootstrap-input"
+                  htmlFor='bootstrap-input'
                   className={classes.inputLabel}
                   classes={{ focused: classes.inputFocused, root: classes.inputLabel }}
                 >
                   Username
                 </InputLabel>
-                <BootstrapInput defaultValue="" id="bootstrap-input-username" />
+                <BootstrapInput defaultValue='' id='bootstrap-input-username' />
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel
                   shrink
-                  htmlFor="bootstrap-input"
+                  htmlFor='bootstrap-input'
                   className={classes.inputLabel}
                   classes={{ focused: classes.inputFocused, root: classes.inputLabel }}
                 >
                   Password
                 </InputLabel>
-                <BootstrapInput defaultValue="" id="bootstrap-input-password" />
+                <BootstrapInput defaultValue='' id='bootstrap-input-password' />
               </FormControl>
               <div style={{ marginTop: '15px' }}>
-                <Button variant="contained" color="primary">
+                <Button variant='contained' color='primary'>
                   Login as Admin
                 </Button>
               </div>
@@ -94,37 +91,3 @@ Home.propTypes = {
   classes: PropTypes.object.isRequired
 };
 export default withStyles(style)(Home);
-// <Paper className={classes.root}>
-// <FormControl className={classes.formControl}>
-//   <InputLabel
-//     shrink
-//     htmlFor="bootstrap-input"
-//     className={classes.inputLabel}
-//     classes={{ focused: classes.inputFocused, root: classes.inputLabel }}
-//   >
-//     Username
-//   </InputLabel>
-//   <BootstrapInput defaultValue="" id="bootstrap-input-username" />
-// </FormControl>
-// <FormControl className={classes.formControl}>
-//   <InputLabel
-//     shrink
-//     htmlFor="bootstrap-input"
-//     className={classes.inputLabel}
-//     classes={{ focused: classes.inputFocused, root: classes.inputLabel }}
-//   >
-//     Password
-//   </InputLabel>
-//   <BootstrapInput defaultValue="" id="bootstrap-input-password" />
-// </FormControl>
-// <div style={{ marginTop: '15px' }}>
-//   <Button variant="contained" color="primary">
-//     Login as Admin
-//   </Button>
-// </div>
-// <div style={{ marginTop: '15px' }}>
-//   <Button variant="contained" color="primary">
-//     Login with Okta
-//   </Button>
-// </div>
-// </Paper>

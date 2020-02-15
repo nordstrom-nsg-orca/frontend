@@ -14,7 +14,7 @@ class InfobloxGroup extends React.Component {
       const opts = {
         method: 'GET',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      }
+      };
       const fields = '_return_fields=roles,name';
       response = await fetch(`${url}/admingroup?${fields}`, opts);
       let json = await response.json();
@@ -52,9 +52,9 @@ class InfobloxGroup extends React.Component {
           results: {
             data: this.formatData(data),
             headers: [
-              { column_name: "permission", data_type: "character varying" },
-              { column_name: "resource_type", data_type: "character varying" },
-              { column_name: "role", data_type: "character varying" }
+              { column_name: 'permission', data_type: 'character varying' },
+              { column_name: 'resource_type', data_type: 'character varying' },
+              { column_name: 'role', data_type: 'character varying' }
             ]
           }
         }]
@@ -65,7 +65,6 @@ class InfobloxGroup extends React.Component {
       await postToSlack(window.location, message);
       return null;
     }
-
   }
 
   formatData = (results) => {

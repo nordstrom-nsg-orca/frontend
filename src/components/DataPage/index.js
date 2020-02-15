@@ -136,7 +136,6 @@ class DataPage extends React.Component {
               if (value.search(search.toLowerCase()) > -1) remove = false;
             } else continue;
             // if any of the values match the search, don't delete
-
           }
           if (remove) searchResults[i].rows.splice(j, 1);
         }
