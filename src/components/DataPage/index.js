@@ -49,6 +49,7 @@ class DataPage extends React.Component {
       const results = res.json[0].results;
       const data = results ? results.data : null;
       // console.log(data);
+      // console.log(results.headers);
       if (!data) this.setState({ error: true });
       else {
         this.setState({
@@ -124,14 +125,18 @@ class DataPage extends React.Component {
         for (let j = this.state.data[i].rows.length - 1; j >= 0; j--) {
           let remove = true;
           for (let h = 0; h < this.state.headers.length; h++) {
-            const header = this.state.headers[h];
+            const header = this.state.headers[h].column_name;
+
             if (!(header in this.state.data[i].rows[j])) continue;
             if (this.state.data[i].rows[j][header] === null) continue;
 
-            const value = this.state.data[i].rows[j][header].toLowerCase();
-
+            let value = this.state.data[i].rows[j][header];
+            if (typeof value === 'string') {
+              value = value.toLowerCase();
+              if (value.search(search.toLowerCase()) > -1) remove = false;
+            } else continue;
             // if any of the values match the search, don't delete
-            if (value.search(search.toLowerCase()) > -1) remove = false;
+
           }
           if (remove) searchResults[i].rows.splice(j, 1);
         }

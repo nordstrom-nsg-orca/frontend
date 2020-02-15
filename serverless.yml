@@ -118,7 +118,7 @@ resources:
               QueryString: true
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate:
-            AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/5a47ab9f-04ac-405a-b1bc-cf7e45fa589a
+            AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/ecbcbeef-8eb4-44aa-8c7b-9d8a92922fb4
             SslSupportMethod: sni-only
 
     wwwnsgweb:
@@ -133,7 +133,7 @@ resources:
 
 
 custom:
-  domainName: nsg-nonprod.nordstrom.net
+  domainName: orca-nonprod.nordstrom.net
   webEndpoint: s3-website-us-west-2.amazonaws.com
   # uploads npm run build to S3
   s3Sync:
