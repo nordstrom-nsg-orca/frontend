@@ -38,7 +38,11 @@ class Home extends React.Component {
             id='panel1a-header'
           >
             <Typography style={{ margin: '0 auto', marginTop: '10px' }}>
-              <Button variant='contained' color='primary'>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={this.props.login}
+              >
                 Login with Okta
               </Button>
               <div style={{ paddingTop: '5px' }}>

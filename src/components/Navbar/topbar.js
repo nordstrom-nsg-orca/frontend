@@ -18,13 +18,14 @@ class Topbar extends React.Component {
       userAnchor: null,
       tabAnchor: []
     };
+    this.handleUserMenu = this.handleUserMenu.bind(this);
+    this.handleTabMenu = this.handleTabMenu.bind(this);
+    this.handleLink = this.handleLink.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+
   }
 
   handleUserMenu = (open) => (event) => {
-    if (this.props.auth.user == null) {
-      this.props.login();
-      return;
-    }
     this.setState({
       userAnchor: (open) ? event.currentTarget : null
     });
@@ -38,6 +39,7 @@ class Topbar extends React.Component {
 
   handleLink = (index) => () => {
     this.props.changeSidebar(index);
+    if (!index) return;
     this.handleTabMenu(index, false)(null);
   }
 
@@ -54,7 +56,7 @@ class Topbar extends React.Component {
         <CssBaseline />
         <AppBar position='fixed' className={classes.appBar}>
           <Toolbar>
-            <Link to={link}>
+            <Link to={link} onClick={this.handleLink(null)}>
               <img className={classes.logo} src='/images/logo.svg' alt='NSG_LOGO' />
             </Link>
 
@@ -107,7 +109,7 @@ class Topbar extends React.Component {
                 </Link>
               )}
               <Button color='inherit' onClick={this.handleUserMenu(true)}>
-                {this.props.auth.user != null ? this.props.auth.user.name : 'Login'}
+                {this.props.auth.user != null ? this.props.auth.user.name : ''}
               </Button>
             </div>
 

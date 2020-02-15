@@ -12,10 +12,17 @@ class Navbar extends React.Component {
       open: false,
       currentTab: null
     };
+    this.changeSidebar = this.changeSidebar.bind(this);
+  }
+
+  componentDidUpdate() {
+    console.log(this.currentTab);
   }
 
   changeSidebar = (index) => {
-    this.setState({ currentTab: this.props.tabs[index] });
+    if (index === null) this.setState({ currentTab: index });
+    else this.setState({ currentTab: this.props.tabs[index] });
+    // console.log(this.props.tabs[index]);
   }
 
   render () {
@@ -26,7 +33,6 @@ class Navbar extends React.Component {
         <Topbar
           auth={this.props.auth}
           logout={this.props.logout}
-          login={this.props.login}
           tabs={this.props.tabs}
           classes={classes}
           changeSidebar={this.changeSidebar}
@@ -49,10 +55,9 @@ class Navbar extends React.Component {
 
 Navbar.propTypes = {
   classes: PropTypes.object.isRequired,
-  login: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
   auth: PropTypes.object.isRequired,
-  tabs: PropTypes.object.isRequired
+  tabs: PropTypes.object
 };
 export default withStyles(style)(Navbar);
