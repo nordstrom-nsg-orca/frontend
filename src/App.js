@@ -82,9 +82,9 @@ class App extends React.Component {
         {window.location.pathname !== '/api/doc' && (
           <ThemeProvider theme={{ ...createMuiTheme(), ...theme }}>
             <div style={{ background: theme.bodyBackground, minHeight: '100vh' }}>
-              <Navbar auth={this.state.auth} logout={this.logout} login={this.login} tabs={tabs}>
+              <Navbar auth={this.state.auth} logout={this.logout} tabs={tabs}>
                 {!this.state.auth.authenticated && (
-                  <Route path='/' exact component={Home} />
+                  <Route path='/' exact render={(props) => <Home {...props} login={this.login} />} />
                 )}
                 {this.state.auth.authenticated && (
                   <PageContent>

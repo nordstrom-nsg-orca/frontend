@@ -6,6 +6,7 @@ import style from './style.js';
 import PropTypes from 'prop-types';
 
 class Dashboard extends React.Component {
+  componentDidMount () { console.log(window.location.pathname); }
   render () {
     const { classes } = this.props;
 
