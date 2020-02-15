@@ -60,7 +60,7 @@ class InfobloxGroup extends React.Component {
         }]
       };
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       const message = `ErrorMessage:* ${response.statusText}\n*ErrorCode:* ${response.status}`;
       await postToSlack(window.location, message);
       return null;
