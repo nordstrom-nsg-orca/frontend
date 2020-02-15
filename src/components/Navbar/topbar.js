@@ -22,7 +22,6 @@ class Topbar extends React.Component {
     this.handleTabMenu = this.handleTabMenu.bind(this);
     this.handleLink = this.handleLink.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-
   }
 
   handleUserMenu = (open) => (event) => {
@@ -142,7 +141,6 @@ Topbar.propTypes = {
   classes: PropTypes.object.isRequired,
   changeSidebar: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  login: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   tabs: PropTypes.object.isRequired
 };

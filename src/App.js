@@ -84,7 +84,7 @@ class App extends React.Component {
             <div style={{ background: theme.bodyBackground, minHeight: '100vh' }}>
               <Navbar auth={this.state.auth} logout={this.logout} tabs={tabs}>
                 {!this.state.auth.authenticated && (
-                  <Route path='/' exact   render={(props) => <Home {...props} login={this.login} />} />
+                  <Route path='/' exact render={(props) => <Home {...props} login={this.login} />} />
                 )}
                 {this.state.auth.authenticated && (
                   <PageContent>

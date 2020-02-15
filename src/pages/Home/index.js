@@ -92,6 +92,7 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  login: PropTypes.func.isRequired
 };
 export default withStyles(style)(Home);

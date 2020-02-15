@@ -15,9 +15,9 @@ class Navbar extends React.Component {
     this.changeSidebar = this.changeSidebar.bind(this);
   }
 
-  componentDidUpdate() {
-    console.log(this.currentTab);
-  }
+  // componentDidUpdate() {
+  //   console.log(this.currentTab);
+  // }
 
   changeSidebar = (index) => {
     if (index === null) this.setState({ currentTab: index });
