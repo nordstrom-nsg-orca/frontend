@@ -13,14 +13,14 @@ class FormInput extends React.Component {
       input = (
         <Checkbox
           checked={this.props.data[this.props.columnName]}
-          onChange={event => this.props.onHandleInput(this.props.columnName, event.target.checked)}
+          onChange={event => this.props.handleInput(this.props.columnName, event.target.checked)}
           className={classes.checkBox}
           color='inherit'
         />);
     } else {
       input = (
         <Input
-          onChange={event => this.props.onHandleInput(this.props.columnName, event.target.value)}
+          onChange={event => this.props.handleInput(this.props.columnName, event.target.value)}
           classes={{
             underline: classes.dialogUnderline,
             root: classes.dialogInput,
@@ -48,7 +48,7 @@ FormInput.propTypes = {
   classes: PropTypes.object.isRequired,
   columnName: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
-  onHandleInput: PropTypes.func
+  handleInput: PropTypes.func
 };
 
 export default FormInput;
