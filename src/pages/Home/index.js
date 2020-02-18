@@ -16,12 +16,26 @@ class Home extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      expanded: false
+      expanded: false,
+      username: null,
+      password: null
     };
   }
 
   handleExpansion = () => {
     this.setState({ expanded: !this.state.expanded });
+  }
+
+  handleInput = (type, event) => {
+    if (type === 'username') this.setState({ username: event.target.value });
+    else if (type === 'password') this.setState({ password: event.target.value });
+  }
+
+  handleLogin = () => {
+    // do some checking here.
+    console.log(this.state.username);
+    console.log(this.state.password);
+    console.log('Login as Admin');
   }
 
   render () {
@@ -64,7 +78,11 @@ class Home extends React.Component {
                 >
                   Username
                 </InputLabel>
-                <BootstrapInput defaultValue='' id='bootstrap-input-username' />
+                <BootstrapInput
+                  defaultValue=''
+                  id='bootstrap-input-username'
+                  onChange={event => this.handleInput('username', event)}
+                />
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel
@@ -75,10 +93,18 @@ class Home extends React.Component {
                 >
                   Password
                 </InputLabel>
-                <BootstrapInput defaultValue='' id='bootstrap-input-password' />
+                <BootstrapInput
+                  defaultValue=''
+                  id='bootstrap-input-password'
+                  onChange={event => this.handleInput('password', event)}
+                />
               </FormControl>
               <div style={{ marginTop: '15px' }}>
-                <Button variant='contained' color='primary'>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={this.handleLogin}
+                >
                   Login as Admin
                 </Button>
               </div>
