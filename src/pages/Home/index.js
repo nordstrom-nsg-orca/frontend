@@ -45,7 +45,7 @@ class Home extends React.Component {
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography style={{ margin: '0 auto', marginTop: '10px' }}>
+            <Typography style={{ margin: '0 auto', marginTop: '10px' }} component={'span'} variant={'body2'}>
               <Button
                 variant='contained'
                 color='primary'
@@ -64,7 +64,7 @@ class Home extends React.Component {
           </ExpansionPanelSummary>
 
           <ExpansionPanelDetails>
-            <Typography style={{ margin: '0 auto', marginTop: '10px' }}>
+            <Typography style={{ margin: '0 auto', marginTop: '10px' }} component={'span'} variant={'body2'}>
               <FormControl className={classes.formControl}>
                 <InputLabel
                   shrink
