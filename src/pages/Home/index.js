@@ -10,6 +10,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
+import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
 import IconButton from '@material-ui/core/IconButton';
 
 class Home extends React.Component {
@@ -29,13 +30,6 @@ class Home extends React.Component {
   handleInput = (type, event) => {
     if (type === 'username') this.setState({ username: event.target.value });
     else if (type === 'password') this.setState({ password: event.target.value });
-  }
-
-  handleLogin = () => {
-    // do some checking here.
-    console.log(this.state.username);
-    console.log(this.state.password);
-    console.log('Login as Admin');
   }
 
   render () {
@@ -59,11 +53,13 @@ class Home extends React.Component {
               >
                 Login with Okta
               </Button>
-              <div style={{ paddingTop: '5px' }}>
-                <IconButton color='inherit' onClick={() => this.handleExpansion()}>
-                  <ExpandMoreRoundedIcon />
-                </IconButton>
-              </div>
+              {!this.state.expanded &&
+                <div style={{ paddingTop: '5px' }}>
+                  <IconButton color='inherit' onClick={() => this.handleExpansion()}>
+                    <ExpandMoreRoundedIcon />
+                  </IconButton>
+                </div>}
+
             </Typography>
           </ExpansionPanelSummary>
 
@@ -80,6 +76,7 @@ class Home extends React.Component {
                 </InputLabel>
                 <BootstrapInput
                   defaultValue=''
+                  type='text'
                   id='bootstrap-input-username'
                   onChange={event => this.handleInput('username', event)}
                 />
@@ -96,6 +93,7 @@ class Home extends React.Component {
                 <BootstrapInput
                   defaultValue=''
                   id='bootstrap-input-password'
+                  type='password'
                   onChange={event => this.handleInput('password', event)}
                 />
               </FormControl>
@@ -103,11 +101,17 @@ class Home extends React.Component {
                 <Button
                   variant='contained'
                   color='primary'
-                  onClick={this.handleLogin}
+                  onClick={() => this.props.adminLogin(this.state.username, this.state.password)}
                 >
                   Login as Admin
                 </Button>
               </div>
+              {this.state.expanded &&
+                <div style={{ paddingTop: '10px' }}>
+                  <IconButton color='inherit' onClick={() => this.handleExpansion()}>
+                    <ExpandLessRoundedIcon />
+                  </IconButton>
+                </div>}
             </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -119,6 +123,7 @@ class Home extends React.Component {
 
 Home.propTypes = {
   classes: PropTypes.object.isRequired,
-  login: PropTypes.func.isRequired
+  login: PropTypes.func.isRequired,
+  adminLogin: PropTypes.func.isRequired
 };
 export default withStyles(style)(Home);

@@ -142,6 +142,6 @@ Topbar.propTypes = {
   changeSidebar: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
-  tabs: PropTypes.object.isRequired
+  tabs: PropTypes.array.isRequired
 };
 export default Topbar;

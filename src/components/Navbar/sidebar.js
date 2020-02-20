@@ -78,7 +78,7 @@ class Sidebar extends React.Component {
 
 Sidebar.propTypes = {
   classes: PropTypes.object.isRequired,
-  currentTab: PropTypes.object.isRequired
+  currentTab: PropTypes.object
 };
 
 export default Sidebar;

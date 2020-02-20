@@ -15,14 +15,22 @@ class Navbar extends React.Component {
     this.changeSidebar = this.changeSidebar.bind(this);
   }
 
-  // componentDidUpdate() {
-  //   console.log(this.currentTab);
-  // }
+  componentDidMount () {
+    if (this.state.currentTab === null) {
+      const path = window.location.pathname;
+      for (var i = 0; i < this.props.tabs.length; i++) {
+        const tab = this.props.tabs[i];
+        if (tab.url === path.substring(0, tab.url.length))
+          this.setState({ currentTab: tab });
+      }
+    }
+  }
 
   changeSidebar = (index) => {
-    if (index === null) this.setState({ currentTab: index });
-    else this.setState({ currentTab: this.props.tabs[index] });
-    // console.log(this.props.tabs[index]);
+    if (index === null)
+      this.setState({ currentTab: index });
+    else
+      this.setState({ currentTab: this.props.tabs[index] });
   }
 
   render () {
@@ -58,6 +66,6 @@ Navbar.propTypes = {
   logout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
   auth: PropTypes.object.isRequired,
-  tabs: PropTypes.object
+  tabs: PropTypes.array
 };
 export default withStyles(style)(Navbar);
