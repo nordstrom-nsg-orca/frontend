@@ -46,7 +46,7 @@ class App extends React.Component {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
       localStorage.setItem('token', 'Bearer ' + oAuthToken);
-      console.log(userinfo);
+      // console.log(userinfo);
       this.sessionTimer = setInterval(this.logout, this.sessionTime);
       this.setState({
         auth: {

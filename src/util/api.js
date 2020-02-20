@@ -17,7 +17,7 @@ export async function api (path, options) {
 
   const resp = await fetch(url, opts);
 
-  if (resp.status !== 200 && window.location.origin !== 'http://localhost:3000') {
+  if (resp.status !== 200) {
     const message = `ErrorMessage:* ${resp.statusText}\n*ErrorCode:* ${resp.status}`;
     await postToSlack(window.location, message);
   }
