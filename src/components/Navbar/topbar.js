@@ -108,9 +108,10 @@ class Topbar extends React.Component {
                   </Tooltip>
                 </Link>
               )}
-              <Button color='inherit' onClick={this.handleUserMenu(true)}>
-                {this.props.auth.user != null ? this.props.auth.user.name : ''}
-              </Button>
+              {this.props.auth.user !== null &&
+                <Button color='inherit' onClick={this.handleUserMenu(true)}>
+                  {this.props.auth.user != null ? this.props.auth.user.name : ''}
+                </Button>}
             </div>
 
             <Menu
