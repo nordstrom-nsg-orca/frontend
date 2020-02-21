@@ -15,7 +15,7 @@ class Router extends React.Component {
   }
 
   render () {
-    const RouterType = this.props.auth.isDbUser ? Route : SecureRoute;
+    const RouterType = this.props.auth.isOktaUser ? Route : SecureRoute;
     return (
       <div>
         <PageContent>

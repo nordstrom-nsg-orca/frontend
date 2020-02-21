@@ -5,11 +5,12 @@ import { withStyles } from '@material-ui/core/styles';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import InputBase from '@material-ui/core/InputBase';
+import IconButton from '@material-ui/core/IconButton';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import Typography from '@material-ui/core/Typography';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import UndoRoundedIcon from '@material-ui/icons/UndoRounded';
+import ReplayTwoToneIcon from '@material-ui/icons/ReplayTwoTone';
 import Form from './form.js';
 import Table from './table.js';
 import style from './style.js';
@@ -172,7 +173,12 @@ class DataPage extends React.Component {
               </Typography>
 
               <div style={{ marginLeft: 'auto' }}>
-                <UndoRoundedIcon />
+                <IconButton
+                  size='small'
+                  color='inherit'
+                >
+                  <ReplayTwoToneIcon style={{ fontSize: '30px' }} />
+                </IconButton>
                 <SearchRoundedIcon className={classes.searchIcon} />
                 <InputBase
                   placeholder='Search'

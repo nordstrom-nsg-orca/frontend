@@ -14,6 +14,7 @@ import { lightTheme, darkTheme } from 'util/theme.js';
 import tabs from 'util/pages.js';
 import md5 from 'md5';
 import base64 from 'base-64';
+import { api } from 'util/api.js';
 
 class App extends React.Component {
   constructor (props) {
@@ -22,7 +23,7 @@ class App extends React.Component {
       auth: {
         user: null,
         authenticated: false,
-        isDbUser: false
+        isOktaUser: false
       },
       light: false
     };
@@ -41,8 +42,8 @@ class App extends React.Component {
 
   checkAuthentication = async () => {
     const authenticated = await this.props.auth.isAuthenticated();
-    const auth = JSON.parse(localStorage.getItem('dbUserAuth'));
-    if (authenticated && !this.state.auth.user && !this.state.auth.isDbUser) {
+    const auth = JSON.parse(localStorage.getItem('oktaUserAuth'));
+    if (authenticated && !this.state.auth.user && !this.state.auth.isOktaUser) {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
       localStorage.setItem('token', 'Bearer ' + oAuthToken);
@@ -52,10 +53,10 @@ class App extends React.Component {
         auth: {
           authenticated: authenticated,
           user: userinfo,
-          isDbUser: false
+          isOktaUser: false
         }
       });
-    } else if (auth && auth.authenticated && auth.isDbUser) {
+    } else if (auth && auth.authenticated && auth.isOktaUser) {
       this.setState({
         auth: auth
       });
@@ -77,20 +78,21 @@ class App extends React.Component {
         method: 'GET',
         headers: { Authorization: `Basic ${auth}` }
       };
-      const response = await fetch(`${process.env.REACT_APP_DB_API_URL}/auth/login`, opts);
+      localStorage.setItem('token', 'Basic ' + auth);
+      const response = await api('/auth/login', opts);
+
       if (response.status === 200) {
         this.sessionTimer = setInterval(this.adminLogout, this.sessionTime);
         const authState = {
           authenticated: true,
           user: { name: username, password: password },
-          isDbUser: true
+          isOktaUser: true
         };
-        localStorage.setItem('dbUserAuth', JSON.stringify(authState));
-        localStorage.setItem('token', 'Basic ' + auth);
+        localStorage.setItem('oktaUserAuth', JSON.stringify(authState));
         this.setState({
           auth: auth
         });
-      }
+      } else localStorage.removeItem('token');
     } catch (err) {
       console.log(err);
     }
@@ -122,7 +124,7 @@ class App extends React.Component {
       auth: {
         authenticated: false,
         user: null,
-        isDbUser: false
+        isOktaUser: false
       }
     });
   }
