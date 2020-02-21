@@ -76,6 +76,7 @@ class Topbar extends React.Component {
                       classes={{ paper: classes.menuPaper, list: classes.menuList }}
                       anchorEl={this.state.tabAnchor[index]}
                       open={Boolean(this.state.tabAnchor[index])}
+                      onClick={this.handleTabMenu(index, false)}
                       onClose={this.handleTabMenu(index, false)}
                     >
                       {tab.pages.map((page, index2) => (
