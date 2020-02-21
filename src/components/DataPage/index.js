@@ -9,7 +9,7 @@ import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import Typography from '@material-ui/core/Typography';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import UndoRoundedIcon from '@material-ui/icons/UndoRounded';
 import Form from './form.js';
 import Table from './table.js';
 import style from './style.js';
@@ -172,6 +172,7 @@ class DataPage extends React.Component {
               </Typography>
 
               <div style={{ marginLeft: 'auto' }}>
+                <UndoRoundedIcon />
                 <SearchRoundedIcon className={classes.searchIcon} />
                 <InputBase
                   placeholder='Search'

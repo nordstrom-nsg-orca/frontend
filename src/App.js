@@ -97,15 +97,16 @@ class App extends React.Component {
   }
 
   adminLogout = () => {
-    localStorage.clear();
-    window.clearInterval(this.sessionTimer);
-    this.setState({
-      auth: {
-        authenticated: false,
-        user: null,
-        isDbUser: false
-      }
-    });
+    // localStorage.clear();
+    // window.clearInterval(this.sessionTimer);
+    // this.setState({
+    //   auth: {
+    //     authenticated: false,
+    //     user: null,
+    //     isDbUser: false
+    //   }
+    // });
+    this.logout();
   }
 
   login = () => {

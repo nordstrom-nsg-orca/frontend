@@ -16,9 +16,8 @@ class Navbar extends React.Component {
   }
 
   componentDidMount () {
-    if (this.state.currentTab === null) {
+    if (this.state.currentTab === null && this.props.auth.authenticated) {
       const path = window.location.pathname;
-
       for (var i = 0; i < this.props.tabs.length; i++) {
         const tab = this.props.tabs[i];
         if (tab.url === path.substring(0, tab.url.length))

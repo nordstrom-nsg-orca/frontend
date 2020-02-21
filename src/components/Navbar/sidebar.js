@@ -52,7 +52,7 @@ class Sidebar extends React.Component {
             {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
           <Divider />
-          {this.props.currentTab && (
+          {(this.props.currentTab && window.location.pathname !== '/') && (
             <List>
               {this.props.currentTab.pages.map((page, index) => (
                 <Link key={index} to={this.props.currentTab.url + page.url} className={classes.link}>
