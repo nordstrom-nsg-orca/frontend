@@ -173,12 +173,13 @@ class DataPage extends React.Component {
               </Typography>
 
               <div style={{ marginLeft: 'auto' }}>
-                <IconButton
-                  size='small'
-                  color='inherit'
-                >
-                  <ReplayTwoToneIcon style={{ fontSize: '30px' }} />
-                </IconButton>
+                {this.props.crud &&
+                  <IconButton
+                    size='small'
+                    color='inherit'
+                  >
+                    <ReplayTwoToneIcon style={{ fontSize: '30px' }} />
+                  </IconButton>}
                 <SearchRoundedIcon className={classes.searchIcon} />
                 <InputBase
                   placeholder='Search'

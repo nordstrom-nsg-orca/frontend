@@ -68,7 +68,7 @@ class App extends React.Component {
     this.setState({ light: !this.state.light });
   }
 
-  adminLogin = async (username, password) => {
+  orcaLogin = async (username, password) => {
     if (password === null || username === null) return;
     try {
       password = md5(password);
@@ -98,7 +98,7 @@ class App extends React.Component {
     }
   }
 
-  adminLogout = () => {
+  orcaLogout = () => {
     // localStorage.clear();
     // window.clearInterval(this.sessionTimer);
     // this.setState({
@@ -138,9 +138,9 @@ class App extends React.Component {
         {window.location.pathname !== '/api/doc' && (
           <ThemeProvider theme={{ ...createMuiTheme(), ...theme }}>
             <div style={{ background: theme.bodyBackground, minHeight: '100vh' }}>
-              <Navbar auth={this.state.auth} logout={this.logout} adminLogout={this.adminLogout} tabs={tabs}>
+              <Navbar auth={this.state.auth} logout={this.logout} orcaLogout={this.orcaLogout} tabs={tabs}>
                 {!this.state.auth.authenticated && (
-                  <Route path='/' exact render={(props) => <Home {...props} login={this.login} adminLogin={this.adminLogin} />} />
+                  <Route path='/' exact render={(props) => <Home {...props} login={this.login} orcaLogin={this.orcaLogin} />} />
                 )}
                 {this.state.auth.authenticated && (
                   <Router auth={this.state.auth} changeTheme={this.changeTheme} light={this.state.light} />
