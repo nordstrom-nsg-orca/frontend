@@ -23,7 +23,6 @@ class Navbar extends React.Component {
         const tab = this.props.tabs[i];
         if (tab.url === path.substring(0, tab.url.length))
           this.setState({ currentTab: tab });
-          console.log(tab);
       }
     }
   }
@@ -66,6 +65,7 @@ class Navbar extends React.Component {
 Navbar.propTypes = {
   classes: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
+  adminLogout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
   auth: PropTypes.object.isRequired,
   tabs: PropTypes.array

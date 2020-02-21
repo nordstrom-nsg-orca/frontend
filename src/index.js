@@ -14,7 +14,7 @@ const config = {
   tokenManager: {
     autoRenew: false
   },
-  scopes: ['openid','profile','groups_whitelist']
+  scopes: ['openid', 'profile', 'groups_whitelist']
 };
 
 function SecurityWrapper () {

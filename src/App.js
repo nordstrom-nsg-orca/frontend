@@ -98,6 +98,7 @@ class App extends React.Component {
 
   adminLogout = () => {
     localStorage.clear();
+    window.clearInterval(this.sessionTimer);
     this.setState({
       auth: {
         authenticated: false,
@@ -105,7 +106,6 @@ class App extends React.Component {
         isDbUser: false
       }
     });
-    alert('hi');
   }
 
   login = () => {
