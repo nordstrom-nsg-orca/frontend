@@ -9,7 +9,7 @@ export async function api (path, options) {
 
   const opts = {
     method: options.method,
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    headers: { Authorization: `${localStorage.getItem('token')}` }
   };
 
   if (['PUT', 'POST'].includes(options.method))
@@ -17,7 +17,7 @@ export async function api (path, options) {
 
   const resp = await fetch(url, opts);
 
-  if (resp.status !== 200 && window.location.origin !== 'http://localhost:3000') {
+  if (resp.status !== 200) {
     const message = `ErrorMessage:* ${resp.statusText}\n*ErrorCode:* ${resp.status}`;
     await postToSlack(window.location, message);
   }

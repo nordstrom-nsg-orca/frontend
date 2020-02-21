@@ -13,7 +13,7 @@ class InfobloxGroup extends React.Component {
       const url = `${process.env.REACT_APP_DB_API_URL}/infoblox`;
       const opts = {
         method: 'GET',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `${localStorage.getItem('token')}` }
       };
       const fields = '_return_fields=roles,name';
       response = await fetch(`${url}/admingroup?${fields}`, opts);

@@ -13,7 +13,8 @@ const config = {
   pkce: false,
   tokenManager: {
     autoRenew: false
-  }
+  },
+  scopes: ['openid', 'profile', 'groups_whitelist']
 };
 
 function SecurityWrapper () {

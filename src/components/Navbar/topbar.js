@@ -76,6 +76,7 @@ class Topbar extends React.Component {
                       classes={{ paper: classes.menuPaper, list: classes.menuList }}
                       anchorEl={this.state.tabAnchor[index]}
                       open={Boolean(this.state.tabAnchor[index])}
+                      onClick={this.handleTabMenu(index, false)}
                       onClose={this.handleTabMenu(index, false)}
                     >
                       {tab.pages.map((page, index2) => (
@@ -107,9 +108,10 @@ class Topbar extends React.Component {
                   </Tooltip>
                 </Link>
               )}
-              <Button color='inherit' onClick={this.handleUserMenu(true)}>
-                {this.props.auth.user != null ? this.props.auth.user.name : ''}
-              </Button>
+              {this.props.auth.user !== null &&
+                <Button color='inherit' onClick={this.handleUserMenu(true)}>
+                  {this.props.auth.user != null ? this.props.auth.user.name : ''}
+                </Button>}
             </div>
 
             <Menu
@@ -142,6 +144,6 @@ Topbar.propTypes = {
   changeSidebar: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
-  tabs: PropTypes.object.isRequired
+  tabs: PropTypes.array.isRequired
 };
 export default Topbar;
