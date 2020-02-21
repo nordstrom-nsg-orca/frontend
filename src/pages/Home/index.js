@@ -101,7 +101,7 @@ class Home extends React.Component {
                 <Button
                   variant='contained'
                   color='primary'
-                  onClick={() => this.props.adminLogin(this.state.username, this.state.password)}
+                  onClick={() => this.props.orcaLogin(this.state.username, this.state.password)}
                 >
                   Login as Admin
                 </Button>
@@ -124,6 +124,6 @@ class Home extends React.Component {
 Home.propTypes = {
   classes: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
-  adminLogin: PropTypes.func.isRequired
+  orcaLogin: PropTypes.func.isRequired
 };
 export default withStyles(style)(Home);

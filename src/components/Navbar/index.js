@@ -16,12 +16,13 @@ class Navbar extends React.Component {
   }
 
   componentDidMount () {
-    if (this.state.currentTab === null && this.props.auth.authenticated) {
+    if (this.state.currentTab === null) {
       const path = window.location.pathname;
       for (var i = 0; i < this.props.tabs.length; i++) {
         const tab = this.props.tabs[i];
         if (tab.url === path.substring(0, tab.url.length))
           this.setState({ currentTab: tab });
+
       }
     }
   }
@@ -40,7 +41,7 @@ class Navbar extends React.Component {
       <div className={classes.root}>
         <Topbar
           auth={this.props.auth}
-          logout={this.props.auth.isDbUser ? this.props.adminLogout : this.props.logout}
+          logout={this.props.auth.isOktaUser ? this.props.orcaLogout : this.props.logout}
           tabs={this.props.tabs}
           classes={classes}
           changeSidebar={this.changeSidebar}
@@ -64,7 +65,7 @@ class Navbar extends React.Component {
 Navbar.propTypes = {
   classes: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
-  adminLogout: PropTypes.func.isRequired,
+  orcaLogout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
   auth: PropTypes.object.isRequired,
   tabs: PropTypes.array
