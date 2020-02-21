@@ -27,6 +27,7 @@ class Sidebar extends React.Component {
     });
   }
 
+
   render () {
     const { classes } = this.props;
 
@@ -54,8 +55,8 @@ class Sidebar extends React.Component {
           <Divider />
           {this.props.currentTab && (
             <List>
-              {this.props.currentTab.pages.map((page, index) => (
-                <Link key={index} to={this.props.currentTab.url + page.url} className={classes.link}>
+              {Object.entries(this.props.tabs[this.props.currentTab].pages).map(([key, page], index) => (
+                <Link key={index} to={`/${this.props.currentTab}/${key}`} className={classes.link}>
                   <Tooltip title={this.state.open ? '' : page.name} placement='right'>
                     <ListItem button>
                       <ListItemIcon className={classes.icon}>

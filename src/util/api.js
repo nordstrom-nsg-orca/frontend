@@ -25,3 +25,7 @@ export async function api (path, options) {
   resp.json = await resp.json();
   return resp;
 }
+
+export async function getAllowedPages() {
+  return api('/auth/page', { method: 'GET' });
+}

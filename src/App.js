@@ -11,9 +11,11 @@ import Home from 'pages/Home';
 import Dashboard from 'pages/Dashboard';
 import APIDoc from 'pages/APIDoc';
 import Settings from 'pages/Settings';
+import NoAccess from 'pages/NoAccess';
 
 import { lightTheme, darkTheme } from 'util/theme.js';
-import tabs from 'util/pages.js';
+import generateTabs from 'util/pages.js';
+import { api } from 'util/api.js';
 
 class App extends React.Component {
   constructor (props) {
@@ -23,7 +25,8 @@ class App extends React.Component {
         user: null,
         authenticated: false
       },
-      light: false
+      light: false,
+      tabs: {}
     };
 
     this.sessionTime = 1000 * 60 * 30;
@@ -47,10 +50,14 @@ class App extends React.Component {
     if (authenticated && !this.state.auth.user) {
       const userinfo = await this.props.auth.getUser();
       const oAuthToken = await this.props.auth.getAccessToken();
+      const allowedPages = await api('/auth/page', { method: 'GET' });
+      const tabs = generateTabs(allowedPages.json);
+
       localStorage.setItem('token', oAuthToken);
-      console.log(oAuthToken);
       this.sessionTimer = setInterval(this.logout, this.sessionTime);
+      
       this.setState({
+        tabs: tabs,
         auth: {
           authenticated: authenticated,
           user: userinfo
@@ -83,7 +90,7 @@ class App extends React.Component {
         {window.location.pathname !== '/api/doc' && (
           <ThemeProvider theme={{ ...createMuiTheme(), ...theme }}>
             <div style={{ background: theme.bodyBackground, minHeight: '100vh' }}>
-              <Navbar auth={this.state.auth} logout={this.logout} tabs={tabs}>
+              <Navbar auth={this.state.auth} logout={this.logout} tabs={this.state.tabs}>
                 {!this.state.auth.authenticated && (
                   <Route path='/' exact render={(props) => <Home {...props} login={this.login} />} />
                 )}
@@ -91,13 +98,21 @@ class App extends React.Component {
                   <PageContent>
                     <Route path='/' exact component={Dashboard} />
 
-                    {tabs.map((tab, index) => (
-                      tab.pages.map((page, pindex) => (
-                        <SecureRoute
-                          key={pindex}
-                          exact path={tab.url + page.url}
-                          component={page.component}
-                        />
+                    {Object.entries(this.state.tabs).map(([key, tab], index) => (
+                      Object.entries(tab.pages).map(([pkey, page], pindex) => (
+                        page.allowed ? (
+                          <OrcaRoute
+                            key={(index+1)*(pindex+1)}
+                            path={`/${key}/${pkey}`}
+                            component={page.component}
+                          />
+                        ) : (
+                          <OrcaRoute
+                            key={(index+1)*(pindex+1)}
+                            path={`/${key}/${pkey}`}
+                            component={NoAccess}
+                          />
+                        )
                       ))
                     ))}
 
@@ -118,7 +133,20 @@ class App extends React.Component {
   }
 }
 
+class OrcaRoute extends React.Component {
+  render() {
+    const Comp = this.props.component;
+    return (
+      <SecureRoute
+        exact path={this.props.path}
+        component={() => <Comp test={false} />}
+      />
+    );
+  }
+}
+
 App.propTypes = {
   auth: PropTypes.object.isRequired
 };
 export default withAuth(App);
+

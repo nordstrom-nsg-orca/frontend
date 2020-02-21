@@ -48,8 +48,6 @@ class DataPage extends React.Component {
       const res = await this.props.loadData();
       const results = res.json[0].results;
       const data = results ? results.data : null;
-      console.log(data);
-      // console.log(results.headers);
       if (!data) this.setState({ error: true });
       else {
         this.setState({

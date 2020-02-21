@@ -18,10 +18,6 @@ class Topbar extends React.Component {
       userAnchor: null,
       tabAnchor: []
     };
-    this.handleUserMenu = this.handleUserMenu.bind(this);
-    this.handleTabMenu = this.handleTabMenu.bind(this);
-    this.handleLink = this.handleLink.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
   }
 
   handleUserMenu = (open) => (event) => {
@@ -36,9 +32,8 @@ class Topbar extends React.Component {
     this.setState({ tabAnchor: copy });
   }
 
-  handleLink = (index) => () => {
-    this.props.changeSidebar(index);
-    if (!index) return;
+  handleLink = (index, key) => () => {
+    this.props.changeSidebar(key);
     this.handleTabMenu(index, false)(null);
   }
 
@@ -55,44 +50,48 @@ class Topbar extends React.Component {
         <CssBaseline />
         <AppBar position='fixed' className={classes.appBar}>
           <Toolbar>
-            <Link to={link} onClick={this.handleLink(null)}>
+            <Link to={link}>
               <img className={classes.logo} src='/images/logo.svg' alt='NSG_LOGO' />
             </Link>
 
             {this.props.auth.authenticated && (
               <div style={{ marginLeft: '140px' }}>
-                {this.props.tabs.map((tab, index) => (
-                  <div key={index} style={{ display: 'inline' }}>
-                    <Button
-                      index={index}
-                      color='inherit'
-                      onClick={this.handleTabMenu(index, true)}
-                    >
-                      {tab.name}
-                    </Button>
-                    <Menu
-                      autoFocus={false}
-                      className={classes.menu}
-                      classes={{ paper: classes.menuPaper, list: classes.menuList }}
-                      anchorEl={this.state.tabAnchor[index]}
-                      open={Boolean(this.state.tabAnchor[index])}
-                      onClose={this.handleTabMenu(index, false)}
-                    >
-                      {tab.pages.map((page, index2) => (
-                        <Link
-                          key={index2}
-                          to={tab.url + page.url}
-                          underline='none'
-                          className={classes.link}
-                          onClick={this.handleLink(index)}
-                        >
-                          <MenuItem key={index2} className={classes.menuItem}>
-                            {page.name}
-                          </MenuItem>
-                        </Link>
-                      ))}
-                    </Menu>
-                  </div>
+                {Object.entries(this.props.tabs).map(([key, tab], index) => (
+                  tab.allowed && (
+                    <div key={index} style={{ display: 'inline' }}>
+                      <Button
+                        index={index}
+                        color='inherit'
+                        onClick={this.handleTabMenu(index, true)}
+                      >
+                        {tab.name}
+                      </Button>
+                      <Menu
+                        autoFocus={false}
+                        className={classes.menu}
+                        classes={{ paper: classes.menuPaper, list: classes.menuList }}
+                        anchorEl={this.state.tabAnchor[index]}
+                        open={Boolean(this.state.tabAnchor[index])}
+                        onClose={this.handleTabMenu(index, false)}
+                      >
+                        {Object.entries(tab.pages).map(([pkey, page], index2) => (
+                          page.allowed && (
+                            <Link
+                              key={index2}
+                              to={`/${key}/${pkey}`}
+                              underline='none'
+                              className={classes.link}
+                              onClick={this.handleLink(index, key)}
+                            >
+                              <MenuItem key={index2} className={classes.menuItem}>
+                                {page.name}
+                              </MenuItem>
+                            </Link>
+                          )
+                        ))}
+                      </Menu>
+                    </div>
+                  )
                 ))}
               </div>
             )}
