@@ -175,8 +175,8 @@ class DataPage extends React.Component {
               <div style={{ marginLeft: 'auto' }}>
                 {this.props.crud &&
                   <IconButton
-                  size='small'
-                  color='inherit'
+                    size='small'
+                    color='inherit'
                   >
                     <ReplayTwoToneIcon style={{ fontSize: '30px' }} />
                   </IconButton>}

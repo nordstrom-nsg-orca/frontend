@@ -22,7 +22,6 @@ class Navbar extends React.Component {
         const tab = this.props.tabs[i];
         if (tab.url === path.substring(0, tab.url.length))
           this.setState({ currentTab: tab });
-
       }
     }
   }
