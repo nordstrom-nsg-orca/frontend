@@ -9,25 +9,25 @@ import StorageIcon from '@material-ui/icons/Storage';
 import AccessibilityRoundedIcon from '@material-ui/icons/AccessibilityRounded';
 
 const tabs = {
-  'data': {
+  data: {
     name: 'Network Data',
     pages: {
-      'acl': {
+      acl: {
         name: 'ACLs',
         component: Acl,
         icon: <ViewHeadlineIcon />
       },
-      'server': {
+      server: {
         name: 'Servers',
         component: Server,
         icon: <StorageIcon />
       }
     }
   },
-  'infoblox': {
+  infoblox: {
     name: 'Infoblox',
     pages: {
-      'group': {
+      group: {
         name: 'Group Permission',
         component: InfobloxGroup,
         icon: <AccessibilityRoundedIcon />
@@ -37,10 +37,11 @@ const tabs = {
 };
 
 export default function generateTabs (allowedTabs) {
-  for (let key in tabs) {
+  if (!allowedTabs) return {};
+  for (const key in tabs) {
     const tab = tabs[key];
     let tabAllowed = false;
-    for (let pkey in tab.pages) {
+    for (const pkey in tab.pages) {
       const page = tab.pages[pkey];
       const url = `${key}/${pkey}`;
       if (typeof allowedTabs[url] === 'boolean') {

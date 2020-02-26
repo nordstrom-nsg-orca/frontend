@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Sidebar from './sidebar';
 import Topbar from './topbar';
 import style from './style.js';
-
+import CssBaseline from '@material-ui/core/CssBaseline';
 class Navbar extends React.Component {
   constructor (props) {
     super(props);
@@ -18,11 +18,20 @@ class Navbar extends React.Component {
     this.setState({ currentTab: key });
   }
 
+  componentWillReceiveProps (props) {
+    if (this.state.currentTab === null) {
+      const tab = window.location.pathname.split('/')[1];
+      if (props.tabs[tab] && props.tabs[tab].allowed)
+        this.setState({ currentTab: tab });
+    }
+  }
+
   render () {
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
+        <CssBaseline />
         <Topbar
           auth={this.props.auth}
           logout={this.props.logout}
@@ -40,7 +49,6 @@ class Navbar extends React.Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {this.props.children}
-          {this.state.pages}
         </main>
       </div>
     );

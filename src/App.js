@@ -1,21 +1,20 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { ImplicitCallback, SecureRoute, withAuth } from '@okta/okta-react';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { ImplicitCallback, withAuth } from '@okta/okta-react';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';
 
 import Navbar from 'components/Navbar';
-import PageContent from 'components/PageContent';
+import Router from 'components/Router';
 
 import Home from 'pages/Home';
-import Dashboard from 'pages/Dashboard';
 import APIDoc from 'pages/APIDoc';
-import Settings from 'pages/Settings';
-import NoAccess from 'pages/NoAccess';
 
-import { lightTheme, darkTheme } from 'util/theme.js';
+import { buildTheme } from 'util/theme.js';
 import generateTabs from 'util/pages.js';
-import { api } from 'util/api.js';
+
+import API from 'util/api.js';
 
 class App extends React.Component {
   constructor (props) {
@@ -23,12 +22,15 @@ class App extends React.Component {
     this.state = {
       auth: {
         user: null,
-        authenticated: false
+        authenticated: null,
+        isOrcaUser: false
       },
-      light: false,
-      tabs: {}
+      settings: {
+        theme: 'dark'
+      },
+      tabs: {},
+      loginError: false
     };
-
     this.sessionTime = 1000 * 60 * 30;
     this.sessionTimer = null;
   }
@@ -37,110 +39,116 @@ class App extends React.Component {
     this.checkAuthentication();
   }
 
-  componentDidUpdate = async () => {
-    if (!this.state.auth.authenticated) this.checkAuthentication();
-  }
-
-  changeTheme = (event, label) => {
-    this.setState({ light: !this.state.light });
+  componentDidUpdate = async (prevProps, prevState, snapshot) => {
+    if (this.state.auth.authenticated === null)
+      this.checkAuthentication();
   }
 
   checkAuthentication = async () => {
-    const authenticated = await this.props.auth.isAuthenticated();
-    if (authenticated && !this.state.auth.user) {
-      const userinfo = await this.props.auth.getUser();
-      const oAuthToken = await this.props.auth.getAccessToken();
-      const allowedPages = await api('/auth/page', { method: 'GET' });
-      const tabs = generateTabs(allowedPages.json);
+    let authenticated = await this.props.auth.isAuthenticated();
+    let token, user;
+    let isOrcaUser = false;
 
-      localStorage.setItem('token', oAuthToken);
-      this.sessionTimer = setInterval(this.logout, this.sessionTime);
-      
-      this.setState({
-        tabs: tabs,
-        auth: {
-          authenticated: authenticated,
-          user: userinfo
-        }
-      });
+    if (authenticated && !this.state.auth.user) {
+      user = await this.props.auth.getUser();
+      token = await this.props.auth.getAccessToken();
+      token = `Bearer ${token}`;
+    } else {
+      const orcaUser = JSON.parse(localStorage.getItem('orcaUserAuth'));
+      if (orcaUser && orcaUser.authenticated) {
+        authenticated = true;
+        isOrcaUser = true;
+        token = orcaUser.token;
+        user = orcaUser.user;
+      } else {
+        if (authenticated !== this.state.auth.authenticated)
+          this.setState({ auth: { authenticated: authenticated } });
+        return;
+      }
     }
+
+    localStorage.setItem('token', token);
+
+    const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
+    const tabs = generateTabs(allowedPages.json);
+
+    this.sessionTimer = setInterval(this.logout, this.sessionTime);
+    this.setState({
+      tabs: tabs,
+      auth: {
+        authenticated: authenticated,
+        user: user,
+        isOrcaUser: isOrcaUser
+      }
+    });
   }
 
-  login = () => {
-    if (!this.state.authenticated)
-      this.props.auth.login('/dashboard');
+  changeSetting = (event) => {
+    const target = event.currentTarget;
+    const copy = { ...this.state.settings };
+    copy[target.name] = event.target.value;
+    this.setState({ settings: copy });
+  }
+
+  login = async event => {
+    const type = event.currentTarget.name;
+    if (type === 'orca') {
+      this.setState({ loginError: false });
+      event.preventDefault();
+      const auth = await API.login(event.target.username.value, event.target.password.value);
+      if (auth)
+        this.setState({ auth: { authenticated: null } });
+      else
+        this.setState({ loginError: true });
+    } else if (type === 'okta' && !this.state.auth.authenticated)
+      this.props.auth.login('/');
   }
 
   logout = async () => {
     window.clearInterval(this.sessionTimer);
+    localStorage.clear();
     await this.props.auth.logout('/');
     this.setState({
       auth: {
         authenticated: false,
-        user: null
+        user: null,
+        isOktaUser: false
       }
     });
   }
 
   render () {
-    const theme = this.state.light ? lightTheme : darkTheme;
+    const theme = buildTheme(this.state.settings.theme);
     return (
       <div>
         <Route path='/api/doc' component={APIDoc} />
         {window.location.pathname !== '/api/doc' && (
-          <ThemeProvider theme={{ ...createMuiTheme(), ...theme }}>
-            <div style={{ background: theme.bodyBackground, minHeight: '100vh' }}>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <div style={{ background: 'theme.palette.background', minHeight: '100vh' }}>
               <Navbar auth={this.state.auth} logout={this.logout} tabs={this.state.tabs}>
-                {!this.state.auth.authenticated && (
-                  <Route path='/' exact render={(props) => <Home {...props} login={this.login} />} />
+
+                {this.state.auth.authenticated === false && (
+                  <Route
+                    exact
+                    path='/'
+                    render={(props) => <Home {...props} loginError={this.state.loginError} login={this.login} />}
+                  />
                 )}
                 {this.state.auth.authenticated && (
-                  <PageContent>
-                    <Route path='/' exact component={Dashboard} />
-
-                    {Object.entries(this.state.tabs).map(([key, tab], index) => (
-                      Object.entries(tab.pages).map(([pkey, page], pindex) => (
-                        page.allowed ? (
-                          <OrcaRoute
-                            key={(index+1)*(pindex+1)}
-                            path={`/${key}/${pkey}`}
-                            component={page.component}
-                          />
-                        ) : (
-                          <OrcaRoute
-                            key={(index+1)*(pindex+1)}
-                            path={`/${key}/${pkey}`}
-                            component={NoAccess}
-                          />
-                        )
-                      ))
-                    ))}
-
-                    <SecureRoute exact path='/dashboard' component={Dashboard} />
-                    <SecureRoute
-                      path='/settings'
-                      render={(props) => <Settings {...props} changeTheme={this.changeTheme} light={this.state.light} />}
-                    />
-                  </PageContent>
+                  <Router
+                    auth={this.state.auth}
+                    changeSetting={this.changeSetting}
+                    settings={this.state.settings}
+                    tabs={this.state.tabs}
+                  />
                 )}
                 <Route path='/implicit/callback' component={ImplicitCallback} />
               </Navbar>
             </div>
-          </ThemeProvider>
+          </MuiThemeProvider>
         )}
       </div>
-    );
-  }
-}
-
-class OrcaRoute extends React.Component {
-  render() {
-    const Comp = this.props.component;
-    return (
-      <SecureRoute
-        exact path={this.props.path}
-        component={() => <Comp test={false} />}
-      />
     );
   }
 }
@@ -149,4 +157,3 @@ App.propTypes = {
   auth: PropTypes.object.isRequired
 };
 export default withAuth(App);
-

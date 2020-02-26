@@ -11,10 +11,10 @@ const config = {
   redirectUri: window.location.origin + '/implicit/callback',
   clientId: process.env.REACT_APP_CLIENT_ID,
   pkce: false,
-  scopes: ['openid','profile','groups_whitelist', 'lan_id'],
   tokenManager: {
     autoRenew: false
-  }
+  },
+  scopes: ['openid', 'profile', 'groups_whitelist']
 };
 
 function SecurityWrapper () {

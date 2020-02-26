@@ -1,15 +1,15 @@
 import React from 'react';
-import { api } from 'util/api.js';
+import API from 'util/api.js';
 import DataPage from 'components/DataPage';
 import PropTypes from 'prop-types';
 
 class OrcaDataPage extends React.Component {
   loadData = async () => {
-    return api(this.props.loadUrl, { method: 'GET' });
+    return API.endpoint(this.props.loadUrl, { method: 'GET' });
   }
 
   crud = async (options) => {
-    return api(this.props.crudUrl, options);
+    return API.endpoint(this.props.crudUrl, options);
   }
 
   render () {

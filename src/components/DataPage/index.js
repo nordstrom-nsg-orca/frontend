@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
-import InputBase from '@material-ui/core/InputBase';
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import ReplayTwoToneIcon from '@material-ui/icons/ReplayTwoTone';
 import Form from './form.js';
 import Table from './table.js';
 import style from './style.js';
@@ -48,6 +48,7 @@ class DataPage extends React.Component {
       const res = await this.props.loadData();
       const results = res.json[0].results;
       const data = results ? results.data : null;
+
       if (!data) this.setState({ error: true });
       else {
         this.setState({
@@ -170,10 +171,15 @@ class DataPage extends React.Component {
               </Typography>
 
               <div style={{ marginLeft: 'auto' }}>
-                <SearchRoundedIcon className={classes.searchIcon} />
-                <InputBase
-                  placeholder='Search'
-                  className={classes.searchInput}
+                {this.props.crud && (
+                  <IconButton size='small'>
+                    <ReplayTwoToneIcon />
+                  </IconButton>
+                )}
+                <TextField
+                  size='small'
+                  label='search'
+                  variant='outlined'
                   onChange={this.handleSearch}
                 />
               </div>
@@ -181,7 +187,7 @@ class DataPage extends React.Component {
 
             {this.state.load && (
               <div align='center' style={{ paddingTop: '50px' }}>
-                <CircularProgress classes={{ colorPrimary: classes.loadIcon }} />
+                <CircularProgress />
               </div>
             )}
 
@@ -193,7 +199,6 @@ class DataPage extends React.Component {
                 data={table}
                 actionButtons={this.actionButtons}
                 handleAction={this.props.crud ? this.handleAction : null}
-                classes={classes}
               />
             ))}
           </div>
@@ -205,7 +210,7 @@ class DataPage extends React.Component {
               <WarningRoundedIcon className={classes.errorIcon} />
             </div>
             <div className={classes.errorMessage}>
-              Opps..Something Went Wrong. We are looking into it!
+              Oops..Something Went Wrong. We are looking into it!
             </div>
           </div>
         )}

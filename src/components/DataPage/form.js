@@ -20,7 +20,7 @@ class Form extends React.Component {
   render () {
     const { classes } = this.props;
     return (
-      <Dialog open={(this.props.open)} classes={{ paper: classes.dialogPaper }}>
+      <Dialog open={(this.props.open)}>
         <DialogContent>
           <Grid
             container
@@ -36,7 +36,6 @@ class Form extends React.Component {
                   handleInput={this.props.handleInput}
                   data={this.props.data}
                   dataType={header.data_type}
-                  classes={classes}
                   columnName={header.column_name}
                 />
               </Grid>
@@ -44,7 +43,7 @@ class Form extends React.Component {
             {this.props.action === 'DELETE' && (
               <Grid item md={12}>
                 <DialogContent>
-                  <DialogContentText className={classes.dialogInput}>
+                  <DialogContentText color='inherit'>
                     Are you sure you want to delete this?
                   </DialogContentText>
                 </DialogContent>

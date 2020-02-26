@@ -12,10 +12,8 @@ import PropTypes from 'prop-types';
 
 class DataTable extends React.Component {
   render () {
-    const { classes } = this.props;
-
     return (
-      <Paper className={classes.tablePaper}>
+      <Paper>
 
         <div style={{ padding: '15px 0px 5px 15px', marginTop: '8px', display: 'flex' }}>
           <Typography variant='h5'>{this.props.data.name}</Typography>
@@ -24,7 +22,7 @@ class DataTable extends React.Component {
           <TableHead>
             <TableRow>
               {this.props.headers.map((column, index) => (
-                <TableCell size='small' key={index} className={classes.tablePaper}>
+                <TableCell size='small' key={index}>
                   <b>{column.column_name.toUpperCase()}</b>
                 </TableCell>))}
               {this.props.handleAction &&
@@ -37,13 +35,13 @@ class DataTable extends React.Component {
               <TableRow key={row.id}>
 
                 {this.props.headers.map((column, index) => (
-                  <TableCell size='small' key={index} className={classes.tablePaper}>
+                  <TableCell size='small' key={index}>
                     {row[column.column_name] != null && row[column.column_name].toString()}
                   </TableCell>
                 ))}
 
                 {this.props.handleAction &&
-                  <TableCell size='small' style={{ width: '100px' }} className={classes.tablePaper}>
+                  <TableCell size='small' style={{ width: '100px' }}>
                     {this.props.actionButtons.map((action, index) => (
                       <IconButton
                         key={index}
@@ -62,7 +60,7 @@ class DataTable extends React.Component {
         {this.props.handleAction &&
           <div align='center'>
             <IconButton color='inherit' onClick={this.props.handleAction('POST', this.props.data.id, null, null)}>
-              <AddCircleRoundedIcon className={classes.addButton} />
+              <AddCircleRoundedIcon />
             </IconButton>
           </div>}
       </Paper>
@@ -71,7 +69,6 @@ class DataTable extends React.Component {
 }
 
 DataTable.propTypes = {
-  classes: PropTypes.object.isRequired,
   handleAction: PropTypes.func,
   actionButtons: PropTypes.array,
   headers: PropTypes.array.isRequired,

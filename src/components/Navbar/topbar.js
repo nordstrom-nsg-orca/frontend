@@ -44,13 +44,12 @@ class Topbar extends React.Component {
 
   render () {
     const { classes } = this.props;
-    const link = this.props.auth.authenticated ? '/dashboard' : '/';
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position='fixed' className={classes.appBar}>
+        <AppBar position='fixed'>
           <Toolbar>
-            <Link to={link}>
+            <Link to='/'>
               <img className={classes.logo} src='/images/logo.svg' alt='NSG_LOGO' />
             </Link>
 
@@ -61,15 +60,12 @@ class Topbar extends React.Component {
                     <div key={index} style={{ display: 'inline' }}>
                       <Button
                         index={index}
-                        color='inherit'
                         onClick={this.handleTabMenu(index, true)}
                       >
                         {tab.name}
                       </Button>
                       <Menu
                         autoFocus={false}
-                        className={classes.menu}
-                        classes={{ paper: classes.menuPaper, list: classes.menuList }}
                         anchorEl={this.state.tabAnchor[index]}
                         open={Boolean(this.state.tabAnchor[index])}
                         onClose={this.handleTabMenu(index, false)}
@@ -77,13 +73,13 @@ class Topbar extends React.Component {
                         {Object.entries(tab.pages).map(([pkey, page], index2) => (
                           page.allowed && (
                             <Link
+                              color='inherit'
                               key={index2}
                               to={`/${key}/${pkey}`}
                               underline='none'
-                              className={classes.link}
                               onClick={this.handleLink(index, key)}
                             >
-                              <MenuItem key={index2} className={classes.menuItem}>
+                              <MenuItem key={index2} color='inherit'>
                                 {page.name}
                               </MenuItem>
                             </Link>
@@ -100,32 +96,31 @@ class Topbar extends React.Component {
               {this.props.auth.user != null && (
                 <Link to='/api/doc' target='_blank'>
                   <Tooltip title='API Documentation'>
-                    <IconButton tooltip='API Documentation' style={{ color: 'white' }}>
+                    <IconButton tooltip='API Documentation'>
                       <DescriptionRoundedIcon />
                     </IconButton>
                   </Tooltip>
                 </Link>
               )}
-              <Button color='inherit' onClick={this.handleUserMenu(true)}>
-                {this.props.auth.user != null ? this.props.auth.user.name : ''}
-              </Button>
+              {this.props.auth.user !== null &&
+                <Button onClick={this.handleUserMenu(true)}>
+                  {this.props.auth.user != null ? this.props.auth.user.name : ''}
+                </Button>}
             </div>
 
             <Menu
               anchorEl={this.state.userAnchor}
               keepMounted
-              className={classes.menu}
-              classes={{ paper: classes.menuPaper, list: classes.menuList }}
               open={Boolean(this.state.userAnchor)}
               onClose={this.handleUserMenu(false)}
               onClick={this.handleUserMenu(false)}
             >
-              <MenuItem className={classes.menuItem}>
-                <Link to='/settings' className={classes.link}>
+              <Link to='/settings'>
+                <MenuItem>
                   Settings
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={this.handleLogout} className={classes.menuItem}>
+                </MenuItem>
+              </Link>
+              <MenuItem onClick={this.handleLogout}>
                 Logout
               </MenuItem>
             </Menu>

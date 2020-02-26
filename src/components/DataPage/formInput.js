@@ -1,41 +1,34 @@
 import React from 'react';
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import PropTypes from 'prop-types';
 
 class FormInput extends React.Component {
   render () {
-    const { classes } = this.props;
-
     let input = '';
     if (this.props.dataType === 'boolean') {
       input = (
         <Checkbox
+          color='primary'
           checked={this.props.data[this.props.columnName]}
           onChange={event => this.props.handleInput(this.props.columnName, event.target.checked)}
-          className={classes.checkBox}
-          color='inherit'
         />);
     } else {
       input = (
-        <Input
+        <TextField
+          size='small'
           onChange={event => this.props.handleInput(this.props.columnName, event.target.value)}
-          classes={{
-            underline: classes.dialogUnderline,
-            root: classes.dialogInput,
-            focused: classes.inputFocused
-          }}
+          type='text'
+          variant='outlined'
+          style={{ width: '100%' }}
           value={this.props.data ? this.props.data[this.props.columnName] : ''}
         />);
     }
 
     return (
       <div>
-        <InputLabel
-          className={classes.inputLabel}
-          classes={{ focused: classes.inputFocused, root: classes.inputLabel }}
-        >
+        <InputLabel>
           {this.props.columnName}
         </InputLabel>
         {input}
@@ -45,7 +38,6 @@ class FormInput extends React.Component {
 }
 FormInput.propTypes = {
   dataType: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
   columnName: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
   handleInput: PropTypes.func

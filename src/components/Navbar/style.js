@@ -1,22 +1,31 @@
 const drawerWidth = 240;
 
 const style = theme => ({
+  // navbar
   root: {
     display: 'flex',
     overflowY: 'auto'
-  },
-  toolbar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
     marginTop: '30px'
   },
+  toolbar: {
+    ...theme.mixins.toolbar
+  },
+
+  // topbar
+  logo: {
+    height: '90px',
+    position: 'absolute',
+    top: '-20px',
+    left: '0px'
+  },
+  user: {
+    marginLeft: 'auto'
+  },
+
   // sidebar
   drawer: {
     width: drawerWidth,
@@ -40,50 +49,6 @@ const style = theme => ({
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9) + 1
     }
-  },
-  paper: {
-    background: theme.background,
-    color: theme.color
-  },
-  leftIcon: {
-    width: '100%',
-    borderRadius: '0',
-    color: theme.color
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: '#424242'
-  },
-  logo: {
-    height: '90px',
-    position: 'absolute',
-    top: '-20px',
-    left: '0px'
-  },
-  icon: {
-    color: theme.color
-  },
-  menu: {
-    marginTop: '30px',
-    color: theme.color
-  },
-  menuList: {
-    padding: 0,
-    color: theme.color
-  },
-  menuPaper: {
-    backgroundColor: theme.bodyBackground
-  },
-  menuItem: {
-    fontSize: '0.875rem',
-    color: theme.color
-  },
-  link: {
-    color: theme.color,
-    textDecoration: 'none'
-  },
-  user: {
-    marginLeft: 'auto'
   }
 });
 
