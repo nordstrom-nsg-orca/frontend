@@ -59,7 +59,7 @@ class DataTable extends React.Component {
         </Table>
         {this.props.handleAction &&
           <div align='center'>
-            <IconButton color='inherit' onClick={this.props.handleAction('POST', this.props.data.id, null, null)}>
+            <IconButton color='inherit' onClick={this.props.handleAction('POST', this.props.data.id, null, {})}>
               <AddCircleRoundedIcon />
             </IconButton>
           </div>}

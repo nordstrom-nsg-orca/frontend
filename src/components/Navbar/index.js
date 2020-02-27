@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Sidebar from './sidebar';
 import Topbar from './topbar';
 import style from './style.js';
-import CssBaseline from '@material-ui/core/CssBaseline';
+
 class Navbar extends React.Component {
   constructor (props) {
     super(props);
@@ -31,7 +31,6 @@ class Navbar extends React.Component {
 
     return (
       <div className={classes.root}>
-        <CssBaseline />
         <Topbar
           auth={this.props.auth}
           logout={this.props.logout}

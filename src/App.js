@@ -39,7 +39,7 @@ class App extends React.Component {
     this.checkAuthentication();
   }
 
-  componentDidUpdate = async (prevProps, prevState, snapshot) => {
+  componentDidUpdate = async () => {
     if (this.state.auth.authenticated === null)
       this.checkAuthentication();
   }

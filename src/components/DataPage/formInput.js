@@ -11,19 +11,22 @@ class FormInput extends React.Component {
       input = (
         <Checkbox
           color='primary'
-          checked={this.props.data[this.props.columnName]}
-          onChange={event => this.props.handleInput(this.props.columnName, event.target.checked)}
-        />);
+          name={this.props.columnName}
+          defaultChecked={this.props.data[this.props.columnName]}
+          value={this.props.data[this.props.columnName]}
+        />
+      );
     } else {
       input = (
         <TextField
           size='small'
-          onChange={event => this.props.handleInput(this.props.columnName, event.target.value)}
+          name={this.props.columnName}
           type='text'
           variant='outlined'
           style={{ width: '100%' }}
-          value={this.props.data ? this.props.data[this.props.columnName] : ''}
-        />);
+          defaultValue={this.props.data[this.props.columnName] || ''}
+        />
+      );
     }
 
     return (
@@ -37,10 +40,9 @@ class FormInput extends React.Component {
   }
 }
 FormInput.propTypes = {
-  dataType: PropTypes.object.isRequired,
-  columnName: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired,
-  handleInput: PropTypes.func
+  dataType: PropTypes.string.isRequired,
+  columnName: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired
 };
 
 export default FormInput;

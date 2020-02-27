@@ -23,7 +23,6 @@ class DataPage extends React.Component {
       headers: [],
       formAction: null,
       formOpen: false,
-      formHeaders: [],
       formData: null,
       error: false,
       load: true
@@ -56,7 +55,6 @@ class DataPage extends React.Component {
           displayData: data,
           headers: results.headers,
           parentheaders: results.parentheaders,
-          error: false,
           load: false
         });
       }
@@ -65,51 +63,52 @@ class DataPage extends React.Component {
     }
   }
 
-  handleFormSubmit = (action) => async () => {
+  handleFormSubmit = async event => {
+    event.preventDefault();
     this.setState({ formOpen: false });
-    if (action === 'cancel')
-      return;
+
+    const target = event.currentTarget;
+    const data = {};
+    for (let i = 0; i < this.state.headers.length && target.name !== 'DELETE'; i++) {
+      const header = this.state.headers[i].column_name;
+      const input = target[header];
+      const value = (input.type === 'checkbox' ? input.checked : input.value);
+      data[header] = value;
+    }
+
+    if (target.name === 'POST')
+      data[this.props.parentId] = this.state.parentID;
+    if (['PUT', 'DELETE'].includes(target.name))
+      data.id = parseInt(target.id);
 
     const options = {
-      method: action,
-      data: this.state.formData
+      method: target.name,
+      data: data
     };
 
-    if (action === 'POST' && this.props.parentId)
-      options.data[this.props.parentId] = this.state.parentID;
     try {
       const resp = await this.props.crud(options);
       if (resp.ok)
         this.loadData();
-      else this.setState({ error: true });
+      else
+        this.setState({ error: true });
     } catch (err) {
       this.setState({ error: true });
     }
   }
 
+  handleFormClose = () => {
+    this.setState({ formOpen: false });
+  }
+
   handleAction = (action, tableId, id, data) => () => {
-    if (action === 'POST') {
-      data = {};
-      for (const i in this.state.headers)
-        data[this.state.headers[i]] = '';
-    }
     this.setState({
       formOpen: true,
       formAction: action,
-      formHeaders: this.state.headers,
       formData: data,
       currentID: id,
       parentID: tableId
     });
-  }
-
-  handleInput = (header, value) => {
-    var data;
-    if (this.state.isAdd && this.state.formData === null) data = {};
-    else data = JSON.parse(JSON.stringify(this.state.formData));
-
-    data[header] = value;
-    this.setState({ formData: data, isInput: true });
   }
 
   handleSearch = (event) => {
@@ -158,10 +157,9 @@ class DataPage extends React.Component {
             <Form
               open={this.state.formOpen}
               action={this.state.formAction}
-              title={this.props.title}
-              headers={this.state.formHeaders}
+              headers={this.state.headers}
               data={this.state.formData}
-              handleInput={this.handleInput}
+              handleFormClose={this.handleFormClose}
               handleFormSubmit={this.handleFormSubmit}
               classes={classes}
             />
@@ -194,7 +192,6 @@ class DataPage extends React.Component {
             {this.state.displayData.map((table, index) => (
               <Table
                 key={index}
-                deleteTable={this.deleteTable}
                 headers={this.state.headers}
                 data={table}
                 actionButtons={this.actionButtons}
@@ -206,12 +203,10 @@ class DataPage extends React.Component {
 
         {this.state.error && (
           <div align='center'>
-            <div>
-              <WarningRoundedIcon className={classes.errorIcon} />
-            </div>
-            <div className={classes.errorMessage}>
+            <WarningRoundedIcon color='error' fontSize='large' />
+            <Typography style={{ fontSize: '1.5em' }}>
               Oops..Something Went Wrong. We are looking into it!
-            </div>
+            </Typography>
           </div>
         )}
       </div>
