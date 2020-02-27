@@ -1,7 +1,8 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { ImplicitCallback, withAuth } from '@okta/okta-react';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';
 
 import Navbar from 'components/Navbar';
@@ -10,11 +11,10 @@ import Router from 'components/Router';
 import Home from 'pages/Home';
 import APIDoc from 'pages/APIDoc';
 
-import { lightTheme, darkTheme } from 'util/theme.js';
-import tabs from 'util/pages.js';
-import md5 from 'md5';
-import base64 from 'base-64';
-import { api } from 'util/api.js';
+import { buildTheme } from 'util/theme.js';
+import generateTabs from 'util/pages.js';
+
+import API from 'util/api.js';
 
 class App extends React.Component {
   constructor (props) {
@@ -22,12 +22,15 @@ class App extends React.Component {
     this.state = {
       auth: {
         user: null,
-        authenticated: false,
-        isOktaUser: false
+        authenticated: null,
+        isOrcaUser: false
       },
-      light: false
+      settings: {
+        theme: 'dark'
+      },
+      tabs: {},
+      loginError: false
     };
-
     this.sessionTime = 1000 * 60 * 30;
     this.sessionTimer = null;
   }
@@ -37,83 +40,68 @@ class App extends React.Component {
   }
 
   componentDidUpdate = async () => {
-    if (!this.state.auth.authenticated) this.checkAuthentication();
+    if (this.state.auth.authenticated === null)
+      this.checkAuthentication();
   }
 
   checkAuthentication = async () => {
-    const authenticated = await this.props.auth.isAuthenticated();
-    const auth = JSON.parse(localStorage.getItem('oktaUserAuth'));
-    if (authenticated && !this.state.auth.user && !this.state.auth.isOktaUser) {
-      const userinfo = await this.props.auth.getUser();
-      const oAuthToken = await this.props.auth.getAccessToken();
-      localStorage.setItem('token', 'Bearer ' + oAuthToken);
-      // console.log(userinfo);
-      this.sessionTimer = setInterval(this.logout, this.sessionTime);
-      this.setState({
-        auth: {
-          authenticated: authenticated,
-          user: userinfo,
-          isOktaUser: false
-        }
-      });
-    } else if (auth && auth.authenticated && auth.isOktaUser) {
-      this.setState({
-        auth: auth
-      });
-      this.sessionTimer = setInterval(this.adminLogout, this.sessionTime);
+    let authenticated = await this.props.auth.isAuthenticated();
+    let token, user;
+    let isOrcaUser = false;
+
+    if (authenticated && !this.state.auth.user) {
+      user = await this.props.auth.getUser();
+      token = await this.props.auth.getAccessToken();
+      token = `Bearer ${token}`;
+    } else {
+      const orcaUser = JSON.parse(localStorage.getItem('orcaUserAuth'));
+      if (orcaUser && orcaUser.authenticated) {
+        authenticated = true;
+        isOrcaUser = true;
+        token = orcaUser.token;
+        user = orcaUser.user;
+      } else {
+        if (authenticated !== this.state.auth.authenticated)
+          this.setState({ auth: { authenticated: authenticated } });
+        return;
+      }
     }
+
+    localStorage.setItem('token', token);
+
+    const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
+    const tabs = generateTabs(allowedPages.json);
+
+    this.sessionTimer = setInterval(this.logout, this.sessionTime);
+    this.setState({
+      tabs: tabs,
+      auth: {
+        authenticated: authenticated,
+        user: user,
+        isOrcaUser: isOrcaUser
+      }
+    });
   }
 
-  changeTheme = (event, label) => {
-    this.setState({ light: !this.state.light });
+  changeSetting = (event) => {
+    const target = event.currentTarget;
+    const copy = { ...this.state.settings };
+    copy[target.name] = event.target.value;
+    this.setState({ settings: copy });
   }
 
-  orcaLogin = async (username, password) => {
-    if (password === null || username === null) return;
-    try {
-      password = md5(password);
-      const auth = base64.encode(`${username}:${password}`);
-
-      const opts = {
-        method: 'GET',
-        headers: { Authorization: `Basic ${auth}` }
-      };
-      localStorage.setItem('token', 'Basic ' + auth);
-      const response = await api('/auth/login', opts);
-
-      if (response.status === 200) {
-        this.sessionTimer = setInterval(this.adminLogout, this.sessionTime);
-        const authState = {
-          authenticated: true,
-          user: { name: username, password: password },
-          isOktaUser: true
-        };
-        localStorage.setItem('oktaUserAuth', JSON.stringify(authState));
-        this.setState({
-          auth: auth
-        });
-      } else localStorage.removeItem('token');
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  orcaLogout = () => {
-    // localStorage.clear();
-    // window.clearInterval(this.sessionTimer);
-    // this.setState({
-    //   auth: {
-    //     authenticated: false,
-    //     user: null,
-    //     isDbUser: false
-    //   }
-    // });
-    this.logout();
-  }
-
-  login = () => {
-    if (!this.state.auth.authenticated)
-      this.props.auth.login('/dashboard');
+  login = async event => {
+    const type = event.currentTarget.name;
+    if (type === 'orca') {
+      this.setState({ loginError: false });
+      event.preventDefault();
+      const auth = await API.login(event.target.username.value, event.target.password.value);
+      if (auth)
+        this.setState({ auth: { authenticated: null } });
+      else
+        this.setState({ loginError: true });
+    } else if (type === 'okta' && !this.state.auth.authenticated)
+      this.props.auth.login('/');
   }
 
   logout = async () => {
@@ -130,25 +118,35 @@ class App extends React.Component {
   }
 
   render () {
-    const theme = this.state.light ? lightTheme : darkTheme;
-
+    const theme = buildTheme(this.state.settings.theme);
     return (
       <div>
         <Route path='/api/doc' component={APIDoc} />
         {window.location.pathname !== '/api/doc' && (
-          <ThemeProvider theme={{ ...createMuiTheme(), ...theme }}>
-            <div style={{ background: theme.bodyBackground, minHeight: '100vh' }}>
-              <Navbar auth={this.state.auth} logout={this.logout} orcaLogout={this.orcaLogout} tabs={tabs}>
-                {!this.state.auth.authenticated && (
-                  <Route path='/' exact render={(props) => <Home {...props} login={this.login} orcaLogin={this.orcaLogin} />} />
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <div style={{ background: 'theme.palette.background', minHeight: '100vh' }}>
+              <Navbar auth={this.state.auth} logout={this.logout} tabs={this.state.tabs}>
+
+                {this.state.auth.authenticated === false && (
+                  <Route
+                    exact
+                    path='/'
+                    render={(props) => <Home {...props} loginError={this.state.loginError} login={this.login} />}
+                  />
                 )}
                 {this.state.auth.authenticated && (
-                  <Router auth={this.state.auth} changeTheme={this.changeTheme} light={this.state.light} />
+                  <Router
+                    auth={this.state.auth}
+                    changeSetting={this.changeSetting}
+                    settings={this.state.settings}
+                    tabs={this.state.tabs}
+                  />
                 )}
                 <Route path='/implicit/callback' component={ImplicitCallback} />
               </Navbar>
             </div>
-          </ThemeProvider>
+          </MuiThemeProvider>
         )}
       </div>
     );

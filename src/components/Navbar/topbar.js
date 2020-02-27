@@ -18,10 +18,6 @@ class Topbar extends React.Component {
       userAnchor: null,
       tabAnchor: []
     };
-    this.handleUserMenu = this.handleUserMenu.bind(this);
-    this.handleTabMenu = this.handleTabMenu.bind(this);
-    this.handleLink = this.handleLink.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
   }
 
   handleUserMenu = (open) => (event) => {
@@ -36,9 +32,8 @@ class Topbar extends React.Component {
     this.setState({ tabAnchor: copy });
   }
 
-  handleLink = (index) => () => {
-    this.props.changeSidebar(index);
-    if (!index) return;
+  handleLink = (index, key) => () => {
+    this.props.changeSidebar(key);
     this.handleTabMenu(index, false)(null);
   }
 
@@ -49,51 +44,50 @@ class Topbar extends React.Component {
 
   render () {
     const { classes } = this.props;
-    const link = this.props.auth.authenticated ? '/dashboard' : '/';
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position='fixed' className={classes.appBar}>
+        <AppBar position='fixed'>
           <Toolbar>
-            <Link to={link} onClick={this.handleLink(null)}>
+            <Link to='/'>
               <img className={classes.logo} src='/images/logo.svg' alt='NSG_LOGO' />
             </Link>
 
             {this.props.auth.authenticated && (
               <div style={{ marginLeft: '140px' }}>
-                {this.props.tabs.map((tab, index) => (
-                  <div key={index} style={{ display: 'inline' }}>
-                    <Button
-                      index={index}
-                      color='inherit'
-                      onClick={this.handleTabMenu(index, true)}
-                    >
-                      {tab.name}
-                    </Button>
-                    <Menu
-                      autoFocus={false}
-                      className={classes.menu}
-                      classes={{ paper: classes.menuPaper, list: classes.menuList }}
-                      anchorEl={this.state.tabAnchor[index]}
-                      open={Boolean(this.state.tabAnchor[index])}
-                      onClick={this.handleTabMenu(index, false)}
-                      onClose={this.handleTabMenu(index, false)}
-                    >
-                      {tab.pages.map((page, index2) => (
-                        <Link
-                          key={index2}
-                          to={tab.url + page.url}
-                          underline='none'
-                          className={classes.link}
-                          onClick={this.handleLink(index)}
-                        >
-                          <MenuItem key={index2} className={classes.menuItem}>
-                            {page.name}
-                          </MenuItem>
-                        </Link>
-                      ))}
-                    </Menu>
-                  </div>
+                {Object.entries(this.props.tabs).map(([key, tab], index) => (
+                  tab.allowed && (
+                    <div key={index} style={{ display: 'inline' }}>
+                      <Button
+                        index={index}
+                        onClick={this.handleTabMenu(index, true)}
+                      >
+                        {tab.name}
+                      </Button>
+                      <Menu
+                        autoFocus={false}
+                        anchorEl={this.state.tabAnchor[index]}
+                        open={Boolean(this.state.tabAnchor[index])}
+                        onClose={this.handleTabMenu(index, false)}
+                      >
+                        {Object.entries(tab.pages).map(([pkey, page], index2) => (
+                          page.allowed && (
+                            <Link
+                              color='inherit'
+                              key={index2}
+                              to={`/${key}/${pkey}`}
+                              underline='none'
+                              onClick={this.handleLink(index, key)}
+                            >
+                              <MenuItem key={index2} color='inherit'>
+                                {page.name}
+                              </MenuItem>
+                            </Link>
+                          )
+                        ))}
+                      </Menu>
+                    </div>
+                  )
                 ))}
               </div>
             )}
@@ -102,14 +96,14 @@ class Topbar extends React.Component {
               {this.props.auth.user != null && (
                 <Link to='/api/doc' target='_blank'>
                   <Tooltip title='API Documentation'>
-                    <IconButton tooltip='API Documentation' style={{ color: 'white' }}>
+                    <IconButton tooltip='API Documentation'>
                       <DescriptionRoundedIcon />
                     </IconButton>
                   </Tooltip>
                 </Link>
               )}
               {this.props.auth.user !== null &&
-                <Button color='inherit' onClick={this.handleUserMenu(true)}>
+                <Button onClick={this.handleUserMenu(true)}>
                   {this.props.auth.user != null ? this.props.auth.user.name : ''}
                 </Button>}
             </div>
@@ -117,18 +111,16 @@ class Topbar extends React.Component {
             <Menu
               anchorEl={this.state.userAnchor}
               keepMounted
-              className={classes.menu}
-              classes={{ paper: classes.menuPaper, list: classes.menuList }}
               open={Boolean(this.state.userAnchor)}
               onClose={this.handleUserMenu(false)}
               onClick={this.handleUserMenu(false)}
             >
-              <MenuItem className={classes.menuItem}>
-                <Link to='/settings' className={classes.link}>
+              <Link to='/settings'>
+                <MenuItem>
                   Settings
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={this.handleLogout} className={classes.menuItem}>
+                </MenuItem>
+              </Link>
+              <MenuItem onClick={this.handleLogout}>
                 Logout
               </MenuItem>
             </Menu>
@@ -144,6 +136,6 @@ Topbar.propTypes = {
   changeSidebar: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
-  tabs: PropTypes.array.isRequired
+  tabs: PropTypes.object.isRequired
 };
 export default Topbar;

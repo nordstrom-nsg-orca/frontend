@@ -39,7 +39,7 @@ class Sidebar extends React.Component {
             [classes.drawerClose]: !this.state.open
           })}
           classes={{
-            paper: clsx(classes.paper, {
+            paper: clsx({
               [classes.drawerOpen]: this.state.open,
               [classes.drawerClose]: !this.state.open
             })
@@ -48,25 +48,27 @@ class Sidebar extends React.Component {
         >
           <div className={classes.toolbar} />
           <Divider />
-          <IconButton onClick={this.handleDrawer} className={classes.leftIcon}>
+          <IconButton onClick={this.handleDrawer} style={{ borderRadius: '0' }}>
             {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
           <Divider />
           {(this.props.currentTab && window.location.pathname !== '/') && (
-            <List>
-              {this.props.currentTab.pages.map((page, index) => (
-                <Link key={index} to={this.props.currentTab.url + page.url} className={classes.link}>
-                  <Tooltip title={this.state.open ? '' : page.name} placement='right'>
-                    <ListItem button>
-                      <ListItemIcon className={classes.icon}>
-                        {page.icon}
-                      </ListItemIcon>
-                      <ListItemText classes={{ primary: classes.menuItem }}>
-                        {page.name}
-                      </ListItemText>
-                    </ListItem>
-                  </Tooltip>
-                </Link>
+            <List color='inherit'>
+              {Object.entries(this.props.tabs[this.props.currentTab].pages).map(([key, page], index) => (
+                page.allowed && (
+                  <Link key={index} to={`/${this.props.currentTab}/${key}`} color='textPrimary'>
+                    <Tooltip title={this.state.open ? '' : page.name} placement='right'>
+                      <ListItem button>
+                        <ListItemIcon>
+                          {page.icon}
+                        </ListItemIcon>
+                        <ListItemText>
+                          {page.name}
+                        </ListItemText>
+                      </ListItem>
+                    </Tooltip>
+                  </Link>
+                )
               ))}
             </List>
           )}
@@ -78,7 +80,8 @@ class Sidebar extends React.Component {
 
 Sidebar.propTypes = {
   classes: PropTypes.object.isRequired,
-  currentTab: PropTypes.object
+  currentTab: PropTypes.string,
+  tabs: PropTypes.object.isRequired
 };
 
 export default Sidebar;

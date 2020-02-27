@@ -12,25 +12,18 @@ class Navbar extends React.Component {
       open: false,
       currentTab: null
     };
-    this.changeSidebar = this.changeSidebar.bind(this);
   }
 
-  componentDidMount () {
+  changeSidebar = (key) => {
+    this.setState({ currentTab: key });
+  }
+
+  componentWillReceiveProps (props) {
     if (this.state.currentTab === null) {
-      const path = window.location.pathname;
-      for (var i = 0; i < this.props.tabs.length; i++) {
-        const tab = this.props.tabs[i];
-        if (tab.url === path.substring(0, tab.url.length))
-          this.setState({ currentTab: tab });
-      }
+      const tab = window.location.pathname.split('/')[1];
+      if (props.tabs[tab] && props.tabs[tab].allowed)
+        this.setState({ currentTab: tab });
     }
-  }
-
-  changeSidebar = (index) => {
-    if (index === null)
-      this.setState({ currentTab: index });
-    else
-      this.setState({ currentTab: this.props.tabs[index] });
   }
 
   render () {
@@ -40,7 +33,7 @@ class Navbar extends React.Component {
       <div className={classes.root}>
         <Topbar
           auth={this.props.auth}
-          logout={this.props.auth.isOktaUser ? this.props.orcaLogout : this.props.logout}
+          logout={this.props.logout}
           tabs={this.props.tabs}
           classes={classes}
           changeSidebar={this.changeSidebar}
@@ -48,13 +41,13 @@ class Navbar extends React.Component {
         {this.props.auth.authenticated && (
           <Sidebar
             classes={classes}
+            tabs={this.props.tabs}
             currentTab={this.state.currentTab}
           />
         )}
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {this.props.children}
-          {this.state.pages}
         </main>
       </div>
     );
@@ -64,9 +57,8 @@ class Navbar extends React.Component {
 Navbar.propTypes = {
   classes: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
-  orcaLogout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
   auth: PropTypes.object.isRequired,
-  tabs: PropTypes.array
+  tabs: PropTypes.object.isRequired
 };
 export default withStyles(style)(Navbar);

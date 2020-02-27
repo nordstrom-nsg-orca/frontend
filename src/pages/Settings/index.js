@@ -20,7 +20,7 @@ class Settings extends React.Component {
       <div className={classes.main}>
         <Typography variant='h4' style={{ paddingBottom: '10px' }}> My Settings </Typography>
         <SettingGroup title='Appearance'>
-          <ThemeSelection classes={classes} changeTheme={this.props.changeTheme} light={this.props.light} />
+          <ThemeSelection classes={classes} changeSetting={this.props.changeSetting} theme={this.props.settings.theme} />
         </SettingGroup>
         <SettingGroup title='App Info'>
           <Typography className={classes.label}> Version: {process.env.REACT_APP_VERSION} </Typography>
@@ -33,7 +33,7 @@ class Settings extends React.Component {
 
 Settings.propTypes = {
   classes: PropTypes.object.isRequired,
-  changeTheme: PropTypes.func.isRequired,
-  light: PropTypes.bool.isRequired
+  changeSetting: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
 };
 export default withStyles(style)(Settings);
