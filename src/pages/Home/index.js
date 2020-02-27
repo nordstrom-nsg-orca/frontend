@@ -83,7 +83,7 @@ class Home extends React.Component {
             </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <IconButton color='inherit' onClick={() => this.handleExpansion()}>
+        <IconButton color='inherit' onClick={this.handleExpansion}>
           {this.state.expanded ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />}
         </IconButton>
       </Paper>
