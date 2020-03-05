@@ -16,3 +16,10 @@ a, a:active {
 	text-decoration: none;
 	color: inherit;
 }
+
+textarea:focus {
+  outline: none;
+}
+textarea {
+  font-family: inherit;
+}

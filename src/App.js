@@ -69,7 +69,7 @@ class App extends React.Component {
 
     localStorage.setItem('token', token);
 
-    const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
+    const allowedPages = {};//await API.endpoint('/auth/page', { method: 'GET' }) || {};
     const tabs = generateTabs(allowedPages.json);
 
     this.sessionTimer = setInterval(this.logout, this.sessionTime);
