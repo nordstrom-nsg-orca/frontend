@@ -11,7 +11,7 @@ class ContentPage extends React.Component {
 
 const style = theme => ({
   content: {
-    width: '900px',
+    maxWidth: '900px',
     margin: '0 auto'
   }
 });
