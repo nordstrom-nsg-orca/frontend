@@ -19,6 +19,7 @@ class OrcaDataPage extends React.Component {
         loadData={this.loadData}
         crud={this.crud}
         parentId={this.props.parentId}
+        write={this.props.write}
       />
     );
   }
@@ -28,7 +29,8 @@ OrcaDataPage.propTypes = {
   title: PropTypes.string.isRequired,
   loadUrl: PropTypes.string.isRequired,
   crudUrl: PropTypes.string.isRequired,
-  parentId: PropTypes.string.isRequired
+  parentId: PropTypes.string.isRequired,
+  write: PropTypes.bool.isRequired
 };
 
 export default OrcaDataPage;
