@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { ImplicitCallback, withAuth } from '@okta/okta-react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,6 +10,7 @@ import Router from 'components/Router';
 
 import Home from 'pages/Home';
 import APIDoc from 'pages/APIDoc';
+import Error from 'pages/Error';
 
 import { buildTheme } from 'util/theme.js';
 import generateTabs from 'util/pages.js';
@@ -70,7 +71,9 @@ class App extends React.Component {
     localStorage.setItem('token', token);
 
     const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
+    // console.log(allowedPages.json);
     const tabs = generateTabs(allowedPages.json);
+    console.log(tabs);
 
     this.sessionTimer = setInterval(this.logout, this.sessionTime);
     this.setState({
@@ -129,11 +132,18 @@ class App extends React.Component {
               <Navbar auth={this.state.auth} logout={this.logout} tabs={this.state.tabs}>
 
                 {this.state.auth.authenticated === false && (
-                  <Route
-                    exact
-                    path='/'
-                    render={(props) => <Home {...props} loginError={this.state.loginError} login={this.login} />}
-                  />
+                  <div>
+                    <Switch>
+                      <Route
+                        exact
+                        path='/'
+                        render={(props) => <Home {...props} loginError={this.state.loginError} login={this.login} />}
+                      />
+                      <Route
+                        render={(props) => <Error {...props} errorType='notFound' />}
+                      />
+                    </Switch>
+                  </div>
                 )}
                 {this.state.auth.authenticated && (
                   <Router
@@ -143,7 +153,11 @@ class App extends React.Component {
                     tabs={this.state.tabs}
                   />
                 )}
-                <Route path='/implicit/callback' component={ImplicitCallback} />
+                <Route
+                  path='/implicit/callback'
+                  component={ImplicitCallback}
+                />
+
               </Navbar>
             </div>
           </MuiThemeProvider>
