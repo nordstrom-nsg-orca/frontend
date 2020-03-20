@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
+import ClearIcon from '@material-ui/icons/Clear';
 
 
 class YAML extends React.Component {
@@ -32,6 +33,7 @@ class YAML extends React.Component {
 }
 
 const Arr = (props) => {
+  console.log(props.edit);
   return (
     <div style={{}}>
       {props.data.map((item, i) => (
@@ -42,7 +44,11 @@ const Arr = (props) => {
             size='small'
             onClick={props.removeItem.bind(this, props.path, i)}
           >
-            <RemoveIcon style={{fontSize:'0.875rem'}}/>
+            {props.edit === true ? (
+              <ClearIcon style={{fontSize:'0.875rem'}}/>
+            ) : (
+              <RemoveIcon style={{fontSize:'0.875rem'}}/>
+            )}
           </IconButton>
           
           {props.schema.type === 'object' ? (
@@ -53,6 +59,7 @@ const Arr = (props) => {
         </div>
       ))}
 
+      {props.edit === true && (
       <IconButton
         style={{marginLeft:'-20px'}}
         size='small'
@@ -60,6 +67,7 @@ const Arr = (props) => {
       >
         <AddIcon style={{fontSize:'0.875rem'}} />
       </IconButton>
+      )}
     </div>
   );
 }
@@ -83,8 +91,6 @@ const Input = (props) => {
 }
 
 const Obj = (props) => {
-  console.log('obj');
-  console.log(props);
   return (
     Object.entries(props.schema.properties).map(([propName, prop], j) => (
       <div key={j}>

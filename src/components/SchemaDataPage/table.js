@@ -81,15 +81,28 @@ const Obj = (props) => {
                 {...props}
                 data={props.data[propName]}
                 schema={prop}
+                path={props.path.concat([propName])}
                 name={propName}
               />
             ) :  prop.type === 'array' && prop.items.type === 'object' ? (
-            <Obj
-              {...props}
-              data={props.data[propName]}
-              schema={prop.items}
-              name={propName}
-            />
+            <div>
+              <Obj
+                {...props}
+                data={props.data[propName]}
+                schema={prop.items}
+                name={propName}
+                path={props.path.concat([propName])}
+              />
+              {props.edit === true && (
+                <IconButton
+                  style={{width:'100%', borderRadius:'0'}}
+                  size='small'
+                  onClick={props.addItem.bind(this, props.path.concat([propName]), props.schema)}
+                >
+                  <AddIcon style={{fontSize:'0.875rem'}} />
+                </IconButton>
+              )}
+            </div>
             ) : (
               props.data[propName].toString()
             )}

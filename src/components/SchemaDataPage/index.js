@@ -29,7 +29,7 @@ const schema = JSON.parse('{"$id":"test","$schema":"test","title":"test","type":
 
 
 class SchemaDataPage extends React.Component {
-  state = { data };
+  state = { data, yaml: false, edit: true };
 
   // onValueChange = event => {
   //   console.log(event);
@@ -38,6 +38,8 @@ class SchemaDataPage extends React.Component {
   // }
   
   addItem = (path, schema) => {
+    console.log(path);
+    // return;
     const copy = [...data];
 
     let newItem;
@@ -74,6 +76,7 @@ class SchemaDataPage extends React.Component {
   }
 
   render () {
+    const Comp = this.state.yaml? YAML : TABLE;
     return (
       <div>
         <div style={{ display: 'flex' }}>
@@ -82,7 +85,8 @@ class SchemaDataPage extends React.Component {
           </Typography>
 
           <div style={{ marginLeft: 'auto' }}>
-
+            <Button value="VIEW" onClick={event => this.setState({yaml: !this.state.yaml})}>VIEW</Button>
+            <Button value="EDIT" onClick={event => this.setState({edit: !this.state.edit})}>EDIT</Button>
             <TextField
               size='small'
               label='search'
@@ -94,7 +98,8 @@ class SchemaDataPage extends React.Component {
 
 
         <Paper style={{padding: '10px'}}>
-          <TABLE
+          <Comp
+            edit={this.state.edit}
             data={this.state.data}
             schema={schema}
             addItem={this.addItem}
