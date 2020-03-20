@@ -1,4 +1,4 @@
-service: nsg-cloud-frontend
+service: orca-frontend
 
 frameworkVersion: ">=1.54.0" # for CI job
 # frameworkVersion: "=1.60.3"
