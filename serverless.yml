@@ -7,8 +7,6 @@ provider:
   name: aws
   stage: ${opt:stage, 'nonprod'}
   region: us-west-2
-  environment:
-    REACT_APP_DB_API_URL: ${self:custom.domainName}/v${self:custom.apiVersion}
 
 resources:
   Resources:
