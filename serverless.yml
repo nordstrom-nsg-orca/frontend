@@ -39,7 +39,7 @@ resources:
                 OriginProtocolPolicy: http-only
             # added this here
             -
-              DomainName: { 'Fn::ImportValue': 'ApiHostname-v${self:custom.apiVersion' }
+              DomainName: { 'Fn::ImportValue': 'ApiHostname-v${self:custom.apiVersion}' }
               OriginPath: /${self:provider.stage}
               Id: APIGatewayOrigin
               CustomOriginConfig:
