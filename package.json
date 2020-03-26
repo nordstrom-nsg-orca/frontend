@@ -11,8 +11,7 @@
             "not op_mini all"
         ]
     }, 
-    "version": "0.1.38", 
-    "proxy": "https://orca-nonprod.nordstrom.net",
+    "version": "0.1.39", 
     "private": true, 
     "dependencies": {
         "crypto-js": "^4.0.0", 
