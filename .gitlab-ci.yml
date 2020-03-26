@@ -44,15 +44,13 @@ build-stage:
     - git pull origin master
     - npm i
   script:
-    - cat serverless.yml
-    # - "cat serverless.yml | grep -oP apiVersion: \K\d'"
-    # - npm run build
+    - npm run build
   artifacts:
     expire_in: 1 hrs
     paths:
       - build/
   only:
-     - master_requests
+     - master
 
 deploy:
   stage: deploy
