@@ -12,6 +12,7 @@
         ]
     }, 
     "version": "0.1.38", 
+    "proxy": "https://orca-nonprod.nordstrom.net",
     "private": true, 
     "dependencies": {
         "crypto-js": "^4.0.0", 
