@@ -45,7 +45,7 @@ build-stage:
     # - npm i
   script:
     # - npm run build
-    - cat serverless.yml | grep -oP 'apiVersion: \K\d'
+    - "cat serverless.yml | grep -oP 'apiVersion: \K\d'"
   artifacts:
     expire_in: 1 hrs
     paths:
