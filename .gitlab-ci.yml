@@ -51,7 +51,7 @@ build-stage:
     paths:
       - build/
   only:
-     - master
+     - merge_requests
 
 deploy:
   stage: deploy
