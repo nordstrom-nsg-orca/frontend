@@ -37,7 +37,6 @@ build-stage:
   stage: build
   image: node:latest
   before_script:
-    - cat serverless.yml | grep -oP 'apiVersion: \K\d'
     - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
     - export REACT_APP_OKTA_ISSUER=$REACT_APP_OKTA_ISSUER
     - export REACT_APP_DB_API_URL=$REACT_APP_DB_API_URL
@@ -45,6 +44,7 @@ build-stage:
     - git pull origin master
     - npm i
   script:
+    - "cat serverless.yml | grep -oP apiVersion: \K\d'"
     # - npm run build
   artifacts:
     expire_in: 1 hrs
