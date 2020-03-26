@@ -4,7 +4,7 @@ import base64 from 'base-64';
 
 class API {
   static URL (path) {
-    return `${process.env.REACT_APP_API_URL || ''}/v${process.env.REACT_APP_API_VERSION}${path}`;
+    return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
   }
 
   static async endpoint (path, options) {
