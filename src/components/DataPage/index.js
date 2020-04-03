@@ -147,6 +147,27 @@ class DataPage extends React.Component {
     }
   }
 
+  handleUndo = async () => {
+    const data = JSON.parse(localStorage.getItem(window.location.pathname));
+    if (data.length <= 0) return;
+    const lastDeleted = data[0];
+    data.splice(0, 1);
+    localStorage.setItem(window.location.pathname, JSON.stringify(data));
+    delete lastDeleted.id;
+    const options = {
+      method: 'POST',
+      data: lastDeleted
+    };
+    try {
+      const resp = await this.props.crud(options);
+      if (resp.ok)
+        this.loadData();
+      else this.setState({ error: true });
+    } catch (err) {
+      this.setState({ error: true });
+    }
+  }
+
   render () {
     const { classes } = this.props;
 
@@ -169,7 +190,7 @@ class DataPage extends React.Component {
               </Typography>
 
               <div style={{ marginLeft: 'auto' }}>
-                {this.props.crud && (
+                {(this.props.crud && this.props.write) && (
                   <IconButton size='small'>
                     <ReplayTwoToneIcon />
                   </IconButton>
@@ -196,6 +217,7 @@ class DataPage extends React.Component {
                 data={table}
                 actionButtons={this.actionButtons}
                 handleAction={this.props.crud ? this.handleAction : null}
+                write={this.props.write}
               />
             ))}
           </div>
@@ -220,7 +242,8 @@ DataPage.propTypes = {
   crud: PropTypes.func,
   title: PropTypes.string.isRequired,
   loadData: PropTypes.func.isRequired,
-  parentId: PropTypes.string
+  parentId: PropTypes.string,
+  write: PropTypes.bool.isRequired
 };
 
 export default withAuth(withStyles(style)(DataPage));

@@ -25,7 +25,7 @@ class DataTable extends React.Component {
                 <TableCell size='small' key={index}>
                   <b>{column.column_name.toUpperCase()}</b>
                 </TableCell>))}
-              {this.props.handleAction &&
+              {(this.props.handleAction && this.props.write) &&
                 <TableCell />}
             </TableRow>
           </TableHead>
@@ -40,7 +40,7 @@ class DataTable extends React.Component {
                   </TableCell>
                 ))}
 
-                {this.props.handleAction &&
+                {(this.props.handleAction && this.props.write) &&
                   <TableCell size='small' style={{ width: '100px' }}>
                     {this.props.actionButtons.map((action, index) => (
                       <IconButton
@@ -57,7 +57,7 @@ class DataTable extends React.Component {
             ))}
           </TableBody>
         </Table>
-        {this.props.handleAction &&
+        {(this.props.handleAction && this.props.write) &&
           <div align='center'>
             <IconButton color='inherit' onClick={this.props.handleAction('POST', this.props.data.id, null, {})}>
               <AddCircleRoundedIcon />
@@ -72,7 +72,8 @@ DataTable.propTypes = {
   handleAction: PropTypes.func,
   actionButtons: PropTypes.array,
   headers: PropTypes.array.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  write: PropTypes.bool.isRequired
 };
 
 export default DataTable;

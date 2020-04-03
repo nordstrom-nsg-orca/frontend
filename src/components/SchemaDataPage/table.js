@@ -16,25 +16,17 @@ import TableRow from '@material-ui/core/TableRow';
 
 class TABLE extends React.Component {
   render() {
-    console.log(this.props.data);
     return (
-      this.props.data.map((item, i) => (
-        this.props.schema.type === 'object' && (
-          <Obj
-            {...this.props}
-            key={i}
-            data={item}
-            path={[i]}
-          />
-        )
-      ))
+      this.props.schema.type === 'object' && (
+        <Obj {...this.props} />
+      )
     );
   }
 }
 
 const Arr = (props) => {
-  console.log('Arr');
-  console.log(props)
+  // console.log('Arr');
+  // console.log(props)
   return (
     <div></div>
   );
@@ -48,8 +40,8 @@ const Field = (props) => {
 }
 
 const Obj = (props) => {
-  console.log('Obj');
-  console.log(props);
+  // console.log('Obj');
+  // console.log(props);
   return (
     <Table size='small' style={{width:"100%"}}>
       <TableHead>
@@ -97,14 +89,14 @@ const Obj = (props) => {
                 <IconButton
                   style={{width:'100%', borderRadius:'0'}}
                   size='small'
-                  onClick={props.addItem.bind(this, props.path.concat([propName]), props.schema)}
+                  onClick={props.addObject.bind(this, props.path.concat([propName]), props.schema)}
                 >
                   <AddIcon style={{fontSize:'0.875rem'}} />
                 </IconButton>
               )}
             </div>
             ) : (
-              props.data[propName].toString()
+              props.data[propName]
             )}
             </TableCell>
           ))}

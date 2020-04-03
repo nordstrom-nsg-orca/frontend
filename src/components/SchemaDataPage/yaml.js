@@ -12,28 +12,20 @@ import ClearIcon from '@material-ui/icons/Clear';
 class YAML extends React.Component {
   render() {
     return (
-      this.props.data.map((item, i) => (
-        this.props.schema.type === 'object' && (
-          <div style={{
-              fontFamily: '"Fira code","Fira Mono", monospace',
-              fontSize: 16,
-              whiteSpace: 'pre'
-            }}>
-            <Obj
-              {...this.props}
-              key={i}
-              data={item}
-              path={[i]}
-            />
-          </div>
-        )
-      ))
+      this.props.schema.type === 'object' && (
+        <div style={{
+            fontFamily: '"Fira code","Fira Mono", monospace',
+            fontSize: 16,
+            whiteSpace: 'pre'
+          }}>
+          <Obj {...this.props} />
+        </div>
+      )
     );
   }
 }
 
 const Arr = (props) => {
-  console.log(props.edit);
   return (
     <div style={{}}>
       {props.data.map((item, i) => (
@@ -63,7 +55,7 @@ const Arr = (props) => {
       <IconButton
         style={{marginLeft:'-20px'}}
         size='small'
-        onClick={props.addItem.bind(this, props.path, props.schema)}
+        onClick={props.addObject.bind(this, props.path, props.schema)}
       >
         <AddIcon style={{fontSize:'0.875rem'}} />
       </IconButton>

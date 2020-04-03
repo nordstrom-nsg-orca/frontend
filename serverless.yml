@@ -39,7 +39,7 @@ resources:
                 OriginProtocolPolicy: http-only
             # added this here
             -
-              DomainName: { 'Fn::ImportValue': 'ApiHostname' }
+              DomainName: { 'Fn::ImportValue': 'ApiHostname-v${self:custom.apiVersion}' }
               OriginPath: /${self:provider.stage}
               Id: APIGatewayOrigin
               CustomOriginConfig:
@@ -135,6 +135,7 @@ resources:
 custom:
   domainName: orca-nonprod.nordstrom.net
   webEndpoint: s3-website-us-west-2.amazonaws.com
+  apiVersion: 1
   # uploads npm run build to S3
   s3Sync:
     - bucketName: ${self:custom.domainName}

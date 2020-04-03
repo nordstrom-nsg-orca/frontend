@@ -9,52 +9,70 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import YAML from 'components/SchemaDataPage/yaml.js';
 import TABLE from 'components/SchemaDataPage/table.js';
-
-// DEFAULT
-// const schema = JSON.parse('{"$id":"test","$schema":"test","title":"test","type":"object","properties":{"name":{"type":"string"},"vendor":{"type":"string"},"ips":{"type":"array","items":{"type":"object","required":["ip"],"properties":{"description":{"type":"string"},"ip":{"type":"string"},"delete":{"type":"boolean"}}}}}}');
-// const data = JSON.parse('[{"name":"test ACL","vendor":"arube","ips":[{"description":"test item","ip":"10.10.10.10/32","delete":true},{"description":"test item","ip":"10.10.10.10/32","delete":true},{"description":"test item","ip":"10.10.10.10/32","delete":true}]}]');
-
-//SHORT
-// const schema = JSON.parse('{"$id":"test","$schema":"test","title":"test","type":"object","properties":{"name":{"type":"string"}}}');
-// const data = JSON.parse('[{"name":"test ACL"}]');
-
-//LONG
-const data = JSON.parse('[{"name":"test ACL","vendor":"arube","ips":[{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"},{"name":"halo","ip":"10.10.10.01.10"}]}]')
-const schema = JSON.parse('{"$id":"test","$schema":"test","title":"test","type":"object","properties":{"name":{"type":"string"},"vendor":{"type":"string"},"ips":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"ip":{"type":"string"}}}}}}');
-
-// DEEP
-// const schema = JSON.parse('{"$id":"test","$schema":"test","title":"test","type":"object","properties":{"name":{"type":"string"},"anothercase":{"type":"object","properties":{"object":{"type":"string"},"another":{"type":"string"}}},"ips":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"description":{"type":"array","items":{"type":"string"}}}}}}}')
-// const data = JSON.parse('[{"name":"test ACL","anothercase":{"object":"testing","another":"one"},"ips":[{"name":"halo","description":["one","two","three"]},{"name":"alpha","description":["onasdfe","two","three"]},{"name":"seven","description":["one","two","tsfasdhree"]}]}]')
-
+import API from 'util/api.js'
 
 
 class SchemaDataPage extends React.Component {
-  state = { data, yaml: false, edit: true };
 
-  // onValueChange = event => {
-  //   console.log(event);
-  // }
-  // onKeyDown = event => {
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      schema: {},
+      yaml: true,
+      edit: true,
+      id: 240
+    };
+
+  }
+
+  componentDidMount = async () => {
+    await this.loadData();
+  }
+
+  loadData = async () => {
+    const schema = await API.GET(`schemas/${this.state.id}`);
+    const data = await API.GET(`schemas/${this.state.id}/items`);
+    this.setState({
+      data: data, 
+      schema: schema[0]['schema']
+    });
+  }
   
-  addItem = (path, schema) => {
-    console.log(path);
-    // return;
-    const copy = [...data];
+  saveData = async () => {
+    console.log('save');
+  }
 
-    let newItem;
-    if (schema.type === 'object') {
-      newItem = {};
-      for (let [k, v] of Object.entries(schema.properties)){
-        if (v.type === 'array')
-          newItem[k] = [];
-        else
-          newItem[k] = null;
-      }
+  addItem = () => {
+    const copy = [...this.state.data];
+    const newItem = {
+      id: 'POST',
+      schemaid: this.state.id,
+      data: this.buildObject(this.state.schema)
     }
+    copy.push(newItem);
+    this.setState({ data: copy })
+  }
 
+  buildObject = (schema) => {
     console.log(schema);
-    console.log(newItem);
+    const newItem = {};
+    for (let [k, v] of Object.entries(schema.properties)){
+      if (v.type === 'object')
+        newItem[k] = this.buildObject(v.properties)
+      else if (v.type === 'array')
+        newItem[k] = [];
+      else
+        newItem[k] = null;
+    }
+  }
+
+  // adds the object defined inside schema to data[path]
+  addObject = (path, schema) => {
+    // return;
+    const copy = [...this.state.data];
+
+    const newItem = this.buildObject(schema);
 
     let item = this.getItemFromPath(copy, path);
     item.push(newItem);
@@ -62,6 +80,7 @@ class SchemaDataPage extends React.Component {
     this.setState({ data: copy })
   }
 
+  // returns the item from obj[path[0]][path[1]]...
   getItemFromPath = (obj, path) => {
     for (let j = 0; j < path.length; j++)
       obj = obj[path[j]];
@@ -69,22 +88,23 @@ class SchemaDataPage extends React.Component {
   }
 
   removeItem = (path, index) => {
-    const copy = [...data];
+    const copy = [...this.state.data];
     let item = this.getItemFromPath(copy, path);
     delete item[index];
     this.setState({ data: copy })
   }
 
   render () {
-    const Comp = this.state.yaml? YAML : TABLE;
+    const View = this.state.yaml? YAML : TABLE;
     return (
       <div>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', marginBottom: '15px' }}>
           <Typography variant='h4'>
             {this.props.title}
           </Typography>
 
           <div style={{ marginLeft: 'auto' }}>
+            <Button value="SAVE" onClick={this.saveData}>SAVE</Button>
             <Button value="VIEW" onClick={event => this.setState({yaml: !this.state.yaml})}>VIEW</Button>
             <Button value="EDIT" onClick={event => this.setState({edit: !this.state.edit})}>EDIT</Button>
             <TextField
@@ -97,15 +117,34 @@ class SchemaDataPage extends React.Component {
         </div>
 
 
-        <Paper style={{padding: '10px'}}>
-          <Comp
-            edit={this.state.edit}
-            data={this.state.data}
-            schema={schema}
-            addItem={this.addItem}
-            removeItem={this.removeItem}
-          />
-        </Paper>
+        {this.state.data.length == 0 && (
+          <Paper style={{padding: '10px', textAlign: 'center'}}>
+            <Typography>
+            There doesn't appear to be anything here yet. Click the + to add an item!
+            </Typography>
+          </Paper>
+        )}        
+        
+        {this.state.data.map((item, i) => (
+          <Paper style={{padding: '10px', marginTop: '10px'}}>
+            <View
+              edit={this.state.edit}
+              data={item.data}
+              schema={this.state.schema}
+              addObject={this.addObject}
+              removeItem={this.removeItem}
+              path={[i]}
+            />
+          </Paper>
+        ))}
+
+        {this.state.edit === true && (
+          <div style={{display: 'flex', marginTop: '10px', justifyContent: 'center'}}>
+          <IconButton onClick={this.addItem}>
+            <AddIcon />
+          </IconButton>
+          </div>
+        )}
       </div>
     );
   }
