@@ -29,7 +29,7 @@ const Arr = (props) => {
   return (
     <div style={{}}>
       {props.data.map((item, i) => (
-        <div>
+        <div key={props.data.length+i}>
           <IconButton
             tabIndex="-1"
             style={{marginLeft:'-20px', float:'left'}}
@@ -75,7 +75,7 @@ const Label = (props) => {
 const Input = (props) => {
   return (
     <InputBase
-      style={{fontFamily: 'inherit', width: '100%', padding: '0px'}}
+      style={{fontFamily: 'inherit', width: '80%', padding: '0px'}}
       inputProps={{ 'aria-label': 'naked', style: {padding: '0px'}}}
       defaultValue={props.val}
     />
@@ -85,7 +85,7 @@ const Input = (props) => {
 const Obj = (props) => {
   return (
     Object.entries(props.schema.properties).map(([propName, prop], j) => (
-      <div key={j}>
+      <div key={j+props.schema.properties.length}>
         <Label name={propName} />
         {prop.type === 'array' ? (
           <div style={{marginLeft: `${4*8}px`}}>

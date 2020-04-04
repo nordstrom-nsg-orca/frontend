@@ -27,6 +27,11 @@ function buildTheme (theme) {
           color: colors.fontColor
         }
       },
+      MuiIconButton: {
+        root: {
+          padding: '3px'
+        }
+      },
       MuiOutlinedInput: {
         root: {
           color: colors.fontColor

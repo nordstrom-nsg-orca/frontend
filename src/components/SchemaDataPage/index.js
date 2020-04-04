@@ -3,12 +3,16 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import TextField from '@material-ui/core/TextField';
+
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import RemoveIcon from '@material-ui/icons/Remove';
+import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import YAML from 'components/SchemaDataPage/yaml.js';
 import TABLE from 'components/SchemaDataPage/table.js';
+
 import API from 'util/api.js'
 
 
@@ -21,6 +25,7 @@ class SchemaDataPage extends React.Component {
       schema: {},
       yaml: true,
       edit: true,
+      load: true,
       id: 240
     };
 
@@ -35,7 +40,8 @@ class SchemaDataPage extends React.Component {
     const data = await API.GET(`schemas/${this.state.id}/items`);
     this.setState({
       data: data, 
-      schema: schema[0]['schema']
+      schema: schema[0]['schema'],
+      load: false
     });
   }
   
@@ -54,17 +60,19 @@ class SchemaDataPage extends React.Component {
     this.setState({ data: copy })
   }
 
+  // builds an empty dict of schmea
   buildObject = (schema) => {
     console.log(schema);
     const newItem = {};
     for (let [k, v] of Object.entries(schema.properties)){
       if (v.type === 'object')
-        newItem[k] = this.buildObject(v.properties)
+        newItem[k] = this.buildObject(v)
       else if (v.type === 'array')
         newItem[k] = [];
       else
         newItem[k] = null;
     }
+    return newItem;
   }
 
   // adds the object defined inside schema to data[path]
@@ -88,13 +96,28 @@ class SchemaDataPage extends React.Component {
   }
 
   removeItem = (path, index) => {
-    const copy = [...this.state.data];
-    let item = this.getItemFromPath(copy, path);
-    delete item[index];
-    this.setState({ data: copy })
+    console.log(path);
+    console.log(index);
+    console.log(this.state.data);
+    var copy = [...this.state.data]
+    var item = this.getItemFromPath(copy, path);
+    // item = {"new": "values"};
+    // delete item[index];
+    // item = item.filter(function (e, i) {
+    //   // console.log(i);
+    //   // console.log(i === index);
+    //   // console.log(e);
+    //   return i !== index;
+
+    // });
+    item.splice(index, 1);
+    this.setState({ data: copy });
+     this.forceUpdate();
+    console.log(this.state.data);
   }
 
   render () {
+    console.log(this.state.data);
     const View = this.state.yaml? YAML : TABLE;
     return (
       <div>
@@ -116,8 +139,13 @@ class SchemaDataPage extends React.Component {
           </div>
         </div>
 
+        {this.state.load && (
+          <div align='center' style={{ paddingTop: '50px' }}>
+            <CircularProgress />
+          </div>
+        )}
 
-        {this.state.data.length == 0 && (
+        {(this.state.data.length == 0 && !this.state.load) && (
           <Paper style={{padding: '10px', textAlign: 'center'}}>
             <Typography>
             There doesn't appear to be anything here yet. Click the + to add an item!
@@ -126,21 +154,26 @@ class SchemaDataPage extends React.Component {
         )}        
         
         {this.state.data.map((item, i) => (
-          <Paper style={{padding: '10px', marginTop: '10px'}}>
+          <Paper style={{padding: '10px', marginTop: '10px'}} key={i+this.state.data.length}>
+            {this.state.edit == true && (
+              <IconButton onClick={this.removeItem.bind(this, [], i)} style={{float: 'right'}}>
+                <ClearIcon />
+              </IconButton>
+            )}
             <View
               edit={this.state.edit}
               data={item.data}
               schema={this.state.schema}
               addObject={this.addObject}
               removeItem={this.removeItem}
-              path={[i]}
+              path={[i, 'data']}
             />
           </Paper>
         ))}
 
         {this.state.edit === true && (
           <div style={{display: 'flex', marginTop: '10px', justifyContent: 'center'}}>
-          <IconButton onClick={this.addItem}>
+          <IconButton onClick={this.addItem} style={{position: ''}}>
             <AddIcon />
           </IconButton>
           </div>

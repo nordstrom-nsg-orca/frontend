@@ -89,7 +89,7 @@ const Obj = (props) => {
                 <IconButton
                   style={{width:'100%', borderRadius:'0'}}
                   size='small'
-                  onClick={props.addObject.bind(this, props.path.concat([propName]), props.schema)}
+                  onClick={props.addObject.bind(this, props.schema, props.path.concat([propName]))}
                 >
                   <AddIcon style={{fontSize:'0.875rem'}} />
                 </IconButton>
