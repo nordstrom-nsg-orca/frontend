@@ -29,12 +29,12 @@ const Arr = (props) => {
   return (
     <div style={{}}>
       {props.data.map((item, i) => (
-        <div key={props.data.length+i}>
+        <div key={(props.data.length)*(i+1)}>
           <IconButton
             tabIndex="-1"
             style={{marginLeft:'-20px', float:'left'}}
             size='small'
-            onClick={props.removeItem.bind(this, props.path, i)}
+            onClick={props.removeIndex.bind(this, props.path, i)}
           >
             {props.edit === true ? (
               <ClearIcon style={{fontSize:'0.875rem'}}/>
@@ -46,7 +46,7 @@ const Arr = (props) => {
           {props.schema.type === 'object' ? (
             <Obj {...props} data={item} path={props.path.concat([i])}/>
           ) : (
-            <Input {...props} name={null} val={item} />
+            <Input onBlur={props.onBlur} val={item} />
           )}
         </div>
       ))}
@@ -55,7 +55,7 @@ const Arr = (props) => {
       <IconButton
         style={{marginLeft:'-20px'}}
         size='small'
-        onClick={props.addObject.bind(this, props.path, props.schema)}
+        onClick={props.addIndex.bind(this, props.path, props.schema)}
       >
         <AddIcon style={{fontSize:'0.875rem'}} />
       </IconButton>
@@ -77,6 +77,7 @@ const Input = (props) => {
     <InputBase
       style={{fontFamily: 'inherit', width: '80%', padding: '0px'}}
       inputProps={{ 'aria-label': 'naked', style: {padding: '0px'}}}
+      onBlur={props.onBlur}
       defaultValue={props.val}
     />
   )
@@ -100,6 +101,7 @@ const Obj = (props) => {
         ) : prop.type === 'object' ? (
         <div style={{marginLeft: `${4*8}px`}}>
           <Obj
+            {...props}
             data={props.data[propName]}
             name={propName}
             path={props.path.concat([propName])}
@@ -108,8 +110,7 @@ const Obj = (props) => {
           </div>
         ) : ( 
           <Input
-            {...props}
-            name={propName}
+            onBlur={props.onBlur}
             val={props.data[propName]}
           />
         )}

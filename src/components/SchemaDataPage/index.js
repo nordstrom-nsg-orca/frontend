@@ -45,24 +45,57 @@ class SchemaDataPage extends React.Component {
     });
   }
   
+  // builds bulk reqeust from changes made to data
   saveData = async () => {
-    console.log('save');
+    const body = [];
+    for (let i = 0; i < this.state.data.length; i++) {
+      const item = this.state.data[i];
+      
+      // anything with a status has been modified.
+      if (typeof item.status !== 'undefined') {
+        const request = { method: item.status, pathParameters: { schemaId: this.state.id }};        
+        request.resource = '/schemas/{schemaId}/items';
+        
+        // no body needed in a DELETE
+        if (item.status !== 'DELETE')
+          request.body = item.data;
+
+        // modifying item requires itemId
+        if (['PUT', 'DELETE'].includes(item.status)) {
+          request.resource += '/{itemId}';
+          request.pathParameters.itemId = item.id;
+        }
+
+        body.push(request);
+      }
+    }
+
+    console.log(JSON.stringify(body, null, 2));
+    // const response = await API.BULK(body);
   }
 
+  // adds a new item to the dataset
   addItem = () => {
     const copy = [...this.state.data];
     const newItem = {
-      id: 'POST',
+      id: null,
       schemaid: this.state.id,
-      data: this.buildObject(this.state.schema)
+      data: this.buildObject(this.state.schema),
+      status: 'POST'
     }
     copy.push(newItem);
     this.setState({ data: copy })
   }
+  
+  // flags an item for DELETE
+  removeItem = (index) => {
+    var copy = [...this.state.data];
+    copy[index].status = 'DELETE';
+    this.setState({ data: copy });
+  }
 
   // builds an empty dict of schmea
   buildObject = (schema) => {
-    console.log(schema);
     const newItem = {};
     for (let [k, v] of Object.entries(schema.properties)){
       if (v.type === 'object')
@@ -75,19 +108,6 @@ class SchemaDataPage extends React.Component {
     return newItem;
   }
 
-  // adds the object defined inside schema to data[path]
-  addObject = (path, schema) => {
-    // return;
-    const copy = [...this.state.data];
-
-    const newItem = this.buildObject(schema);
-
-    let item = this.getItemFromPath(copy, path);
-    item.push(newItem);
-    
-    this.setState({ data: copy })
-  }
-
   // returns the item from obj[path[0]][path[1]]...
   getItemFromPath = (obj, path) => {
     for (let j = 0; j < path.length; j++)
@@ -95,29 +115,38 @@ class SchemaDataPage extends React.Component {
     return obj;
   }
 
-  removeItem = (path, index) => {
-    console.log(path);
-    console.log(index);
-    console.log(this.state.data);
+  // adds the object defined inside schema to an Array
+  addIndex = (path, schema) => {
+    const copy = [...this.state.data];
+    const newItem = this.buildObject(schema);
+
+    let item = this.getItemFromPath(copy, path);
+    
+    item.push(newItem);
+    copy[path[0]].status = copy[path[0]].status || 'PUT';
+    
+    this.setState({ data: copy })
+  }
+
+  // removes an index from an Array
+  removeIndex = (path, index) => {
     var copy = [...this.state.data]
     var item = this.getItemFromPath(copy, path);
-    // item = {"new": "values"};
-    // delete item[index];
-    // item = item.filter(function (e, i) {
-    //   // console.log(i);
-    //   // console.log(i === index);
-    //   // console.log(e);
-    //   return i !== index;
-
-    // });
     item.splice(index, 1);
+    copy[path[0]].status = copy[path[0]].status || 'PUT';
     this.setState({ data: copy });
-     this.forceUpdate();
-    console.log(this.state.data);
   }
+
+  onBlur = (event) => {
+    const target = event.target;
+    if (target.value !== target.defaultValue)
+      console.log('changed');
+  }
+
 
   render () {
     console.log(this.state.data);
+
     const View = this.state.yaml? YAML : TABLE;
     return (
       <div>
@@ -154,21 +183,24 @@ class SchemaDataPage extends React.Component {
         )}        
         
         {this.state.data.map((item, i) => (
-          <Paper style={{padding: '10px', marginTop: '10px'}} key={i+this.state.data.length}>
-            {this.state.edit == true && (
-              <IconButton onClick={this.removeItem.bind(this, [], i)} style={{float: 'right'}}>
-                <ClearIcon />
-              </IconButton>
-            )}
-            <View
-              edit={this.state.edit}
-              data={item.data}
-              schema={this.state.schema}
-              addObject={this.addObject}
-              removeItem={this.removeItem}
-              path={[i, 'data']}
-            />
-          </Paper>
+          item.status !== 'DELETE' && (
+            <Paper style={{padding: '10px', marginTop: '10px'}} key={(this.state.data.length)*(i+1)}>
+              {this.state.edit == true && (
+                <IconButton onClick={this.removeItem.bind(this, i)} style={{float: 'right'}}>
+                  <ClearIcon />
+                </IconButton>
+              )}
+              <View
+                edit={this.state.edit}
+                data={item.data}
+                schema={this.state.schema}
+                addIndex={this.addIndex}
+                removeIndex={this.removeIndex}
+                onBlur={this.onBlur}
+                path={[i, 'data']}
+              />
+            </Paper>
+          )
         ))}
 
         {this.state.edit === true && (
