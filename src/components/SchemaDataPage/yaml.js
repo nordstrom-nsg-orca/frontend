@@ -46,7 +46,7 @@ const Arr = (props) => {
           {props.schema.type === 'object' ? (
             <Obj {...props} data={item} path={props.path.concat([i])}/>
           ) : (
-            <Input onBlur={props.onBlur} val={item} />
+            <Input onBlur={props.onBlur} val={item} itemKey={i} path={props.path} />
           )}
         </div>
       ))}
@@ -72,13 +72,15 @@ const Label = (props) => {
   );
 }
 
+// key is needed in order to know the value has changed for a rerender
 const Input = (props) => {
   return (
     <InputBase
       style={{fontFamily: 'inherit', width: '80%', padding: '0px'}}
       inputProps={{ 'aria-label': 'naked', style: {padding: '0px'}}}
-      onBlur={props.onBlur}
+      onBlur={props.onBlur.bind(this, props.path, props.itemKey)}
       defaultValue={props.val}
+      key={props.val}
     />
   )
 }
@@ -112,6 +114,8 @@ const Obj = (props) => {
           <Input
             onBlur={props.onBlur}
             val={props.data[propName]}
+            itemKey={propName}
+            path={props.path}
           />
         )}
       </div>

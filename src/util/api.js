@@ -4,20 +4,29 @@ import base64 from 'base-64';
 
 class API {
   static URL (path) {
-    return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}/${path}`;
+    return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
   }
 
   static async GET (path, options = {}) {
+    return await API.FETCH(path, { method: 'GET' });
+  }
+
+  static async POST (path, body) {
+    return await API.FETCH(path, { method: 'POST', body: JSON.stringify(body) });
+  }
+
+  static async FETCH (path, options) {
     let url = API.URL(path);
     
-    options.headers =  { Authorization: options.auth || `${localStorage.getItem('token')}` }
-    
+    options.headers =  {
+      Authorization: options.auth || `${localStorage.getItem('token')}`
+    };
+
     const resp = await fetch(url, options);
     resp.json = await resp.json();
     
-    return resp.json;
+    return resp.json; 
   }
-
 
   static async endpoint (path, options) {
     let resp;

@@ -28,7 +28,7 @@ class SchemaDataPage extends React.Component {
       load: true,
       id: 240
     };
-
+    this.originalData = [];
   }
 
   componentDidMount = async () => {
@@ -36,11 +36,12 @@ class SchemaDataPage extends React.Component {
   }
 
   loadData = async () => {
-    const schema = await API.GET(`schemas/${this.state.id}`);
-    const data = await API.GET(`schemas/${this.state.id}/items`);
+    const schema = await API.GET(`/schemas/${this.state.id}`);
+    const data = await API.GET(`/schemas/${this.state.id}/items`);
+    this.originalData = data;
     this.setState({
       data: data, 
-      schema: schema[0]['schema'],
+      schema: schema['schema'],
       load: false
     });
   }
@@ -53,7 +54,7 @@ class SchemaDataPage extends React.Component {
       
       // anything with a status has been modified.
       if (typeof item.status !== 'undefined') {
-        const request = { method: item.status, pathParameters: { schemaId: this.state.id }};        
+        const request = { httpMethod: item.status, pathParameters: { schemaId: this.state.id }};        
         request.resource = '/schemas/{schemaId}/items';
         
         // no body needed in a DELETE
@@ -65,12 +66,12 @@ class SchemaDataPage extends React.Component {
           request.resource += '/{itemId}';
           request.pathParameters.itemId = item.id;
         }
-
         body.push(request);
       }
     }
-
-    console.log(JSON.stringify(body, null, 2));
+    console.log(body);
+    const resp = await API.POST('/bulk', body);
+    console.log(resp);
     // const response = await API.BULK(body);
   }
 
@@ -110,6 +111,8 @@ class SchemaDataPage extends React.Component {
 
   // returns the item from obj[path[0]][path[1]]...
   getItemFromPath = (obj, path) => {
+    obj[path[0]].status = obj[path[0]].status || 'PUT';
+    
     for (let j = 0; j < path.length; j++)
       obj = obj[path[j]];
     return obj;
@@ -119,28 +122,29 @@ class SchemaDataPage extends React.Component {
   addIndex = (path, schema) => {
     const copy = [...this.state.data];
     const newItem = this.buildObject(schema);
-
     let item = this.getItemFromPath(copy, path);
-    
     item.push(newItem);
-    copy[path[0]].status = copy[path[0]].status || 'PUT';
-    
     this.setState({ data: copy })
   }
 
   // removes an index from an Array
   removeIndex = (path, index) => {
-    var copy = [...this.state.data]
+    var copy = [...this.state.data];
     var item = this.getItemFromPath(copy, path);
     item.splice(index, 1);
-    copy[path[0]].status = copy[path[0]].status || 'PUT';
     this.setState({ data: copy });
   }
 
-  onBlur = (event) => {
+  // updates data on exit focus
+  onBlur = (path, key, event) => {
     const target = event.target;
-    if (target.value !== target.defaultValue)
-      console.log('changed');
+    
+    if (target.value !== target.defaultValue) {
+      var copy = [...this.state.data];
+      var item = this.getItemFromPath(copy, path);
+      item[key] = target.value;
+      this.setState({ data: copy });
+    }
   }
 
 
