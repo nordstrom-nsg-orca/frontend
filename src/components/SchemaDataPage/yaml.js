@@ -46,7 +46,13 @@ const Arr = (props) => {
           {props.schema.type === 'object' ? (
             <Obj {...props} data={item} path={props.path.concat([i])}/>
           ) : (
-            <Input onBlur={props.onBlur} val={item} itemKey={i} path={props.path} />
+            <Input
+              onBlur={props.onBlur}
+              val={item}
+              itemKey={i}
+              path={props.path}
+              schema={props.schema}
+            />
           )}
         </div>
       ))}
@@ -78,8 +84,9 @@ const Input = (props) => {
     <InputBase
       style={{fontFamily: 'inherit', width: '80%', padding: '0px'}}
       inputProps={{ 'aria-label': 'naked', style: {padding: '0px'}}}
-      onBlur={props.onBlur.bind(this, props.path, props.itemKey)}
+      onBlur={props.onBlur.bind(this, props.path, props.itemKey, props.schema)}
       defaultValue={props.val}
+      schema={'test'}
       key={props.val}
     />
   )
@@ -87,41 +94,82 @@ const Input = (props) => {
 
 const Obj = (props) => {
   return (
-    Object.entries(props.schema.properties).map(([propName, prop], j) => (
-      <div key={j+props.schema.properties.length}>
-        <Label name={propName} />
-        {prop.type === 'array' ? (
+    props.schema.order.map((propName, i) => {
+      const prop = props.schema.properties[propName];
+      return (
+        <div key={i+props.schema.properties.length}>
+          <Label name={propName} />
+          {prop.type === 'array' ? (
+            <div style={{marginLeft: `${4*8}px`}}>
+            <Arr
+              {...props}
+              data={props.data[propName]}
+              name={propName}
+              path={props.path.concat([propName])}
+              schema={prop.items}
+            />
+            </div>
+          ) : prop.type === 'object' ? (
           <div style={{marginLeft: `${4*8}px`}}>
-          <Arr
-            {...props}
-            data={props.data[propName]}
-            name={propName}
-            path={props.path.concat([propName])}
-            schema={prop.items}
-          />
-          </div>
-        ) : prop.type === 'object' ? (
-        <div style={{marginLeft: `${4*8}px`}}>
-          <Obj
-            {...props}
-            data={props.data[propName]}
-            name={propName}
-            path={props.path.concat([propName])}
-            schema={prop}
-          />
-          </div>
-        ) : ( 
-          <Input
-            onBlur={props.onBlur}
-            val={props.data[propName]}
-            itemKey={propName}
-            path={props.path}
-          />
-        )}
-      </div>
-    ))
-  );  
+            <Obj
+              {...props}
+              data={props.data[propName]}
+              name={propName}
+              path={props.path.concat([propName])}
+              schema={prop}
+            />
+            </div>
+          ) : ( 
+            <Input
+              onBlur={props.onBlur}
+              val={props.data[propName]}
+              itemKey={propName}
+              path={props.path}
+              schema={prop}
+            />
+          )}
+        </div>
+      );
+    })
+  );
 }
+
+
+  // return (
+  //   Object.entries(props.schema.properties).map(([propName, prop], j) => (
+  //     <div key={j+props.schema.properties.length}>
+  //       <Label name={propName} />
+  //       {prop.type === 'array' ? (
+  //         <div style={{marginLeft: `${4*8}px`}}>
+  //         <Arr
+  //           {...props}
+  //           data={props.data[propName]}
+  //           name={propName}
+  //           path={props.path.concat([propName])}
+  //           schema={prop.items}
+  //         />
+  //         </div>
+  //       ) : prop.type === 'object' ? (
+  //       <div style={{marginLeft: `${4*8}px`}}>
+  //         <Obj
+  //           {...props}
+  //           data={props.data[propName]}
+  //           name={propName}
+  //           path={props.path.concat([propName])}
+  //           schema={prop}
+  //         />
+  //         </div>
+  //       ) : ( 
+  //         <Input
+  //           onBlur={props.onBlur}
+  //           val={props.data[propName]}
+  //           itemKey={propName}
+  //           path={props.path}
+  //         />
+  //       )}
+  //     </div>
+  //   ))
+  // );  
 
 
 export default YAML;

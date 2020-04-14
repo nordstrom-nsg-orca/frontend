@@ -38,6 +38,7 @@ class SchemaDataPage extends React.Component {
   loadData = async () => {
     const schema = await API.GET(`/schemas/${this.state.id}`);
     const data = await API.GET(`/schemas/${this.state.id}/items`);
+    
     this.originalData = data;
     this.setState({
       data: data, 
@@ -69,9 +70,10 @@ class SchemaDataPage extends React.Component {
         body.push(request);
       }
     }
-    console.log(body);
+    // console.log(body);
+    
     const resp = await API.POST('/bulk', body);
-    console.log(resp);
+    // console.log(resp);
     // const response = await API.BULK(body);
   }
 
@@ -110,7 +112,10 @@ class SchemaDataPage extends React.Component {
   }
 
   // returns the item from obj[path[0]][path[1]]...
-  getItemFromPath = (obj, path) => {
+  getItemFromPath = (path, obj) => {
+    
+    // this function only called when the something has changed,
+    // so update the status
     obj[path[0]].status = obj[path[0]].status || 'PUT';
     
     for (let j = 0; j < path.length; j++)
@@ -122,7 +127,7 @@ class SchemaDataPage extends React.Component {
   addIndex = (path, schema) => {
     const copy = [...this.state.data];
     const newItem = this.buildObject(schema);
-    let item = this.getItemFromPath(copy, path);
+    let item = this.getItemFromPath(path, copy);
     item.push(newItem);
     this.setState({ data: copy })
   }
@@ -130,28 +135,44 @@ class SchemaDataPage extends React.Component {
   // removes an index from an Array
   removeIndex = (path, index) => {
     var copy = [...this.state.data];
-    var item = this.getItemFromPath(copy, path);
+    var item = this.getItemFromPath(path, copy);
     item.splice(index, 1);
     this.setState({ data: copy });
   }
 
+  // attempts to cast value as the datatype from path
+  parseType = (value, schema) => {
+    if (schema.type === 'boolean') {
+      let lower = value.toLowerCase();
+      if (!['true','false'].includes(lower))
+        throw "PARSE ERROR - boolean";
+      return lower === 'true';
+    }
+    return value;
+  }
+
   // updates data on exit focus
-  onBlur = (path, key, event) => {
+  onBlur = (path, key, schema, event) => {
     const target = event.target;
     
     if (target.value !== target.defaultValue) {
-      var copy = [...this.state.data];
-      var item = this.getItemFromPath(copy, path);
-      item[key] = target.value;
-      this.setState({ data: copy });
+      const copy = [...this.state.data];
+      var item = this.getItemFromPath(path, copy);
+      
+      try {
+        const value = this.parseType(target.value, schema);
+        item[key] = value;
+        this.setState({ data: copy });
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
 
   render () {
-    console.log(this.state.data);
-
     const View = this.state.yaml? YAML : TABLE;
+    
     return (
       <div>
         <div style={{ display: 'flex', marginBottom: '15px' }}>
