@@ -1,4 +1,4 @@
-import React from 'react';
+ximport React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -184,8 +184,8 @@ class SchemaDataPage extends React.Component {
    let error = false;
     if (isSave) {
       console.log('Saving');
-      console.log(this.insertData.value);
       let data = null;
+
       let isJSON = true;
 
       try {
@@ -208,24 +208,21 @@ class SchemaDataPage extends React.Component {
          this.setState({ insertError: error });
          return;
       }
-      console.log(data);
        // call Bulk API 
       const response = await this.saveData(data);
       console.log(response);
-      let message = [];
+      let message = '';
       for (let i = 0; i < response.length; i++) {
          if (response[i].statusCode === 400) {
             error = true;
-            message.push(data[i]);
+            if (!isJSON) 
+               message += yaml.stringify(data[i], 4) + '\n'; 
+            else 
+               message += JSON.stringify(data[i], null, 2) + '\n'; 
          }
       }
-      if (error) {
-         if (isJSON)
-            message = JSON.stringify(message, null, 2);
-         else 
-            message = yaml.stringify(message, 4)
-         this.setState({ insertData: message, insertError: error });
-      }
+      if (error) 
+         this.setState({ insertData: message });
     }
    
     if (!error)
@@ -236,6 +233,12 @@ class SchemaDataPage extends React.Component {
     // console.log(this.state.data);
     const { classes } = this.props;
     const View = this.state.yaml ? YAML : TABLE;
+    let insertData;
+    if (this.state.insertData) {
+      insertData = (
+         <span> Hello </span>;
+      )
+    }
     return (
       <div>
         <div style={{ display: 'flex', marginBottom: '15px' }}>
@@ -315,15 +318,9 @@ class SchemaDataPage extends React.Component {
            <IconButton aria-label="close" className={classes.closeButton} onClick={event => this.handleInsert(event, false)}>
              <CloseIcon />
            </IconButton>
-           { (!this.state.insertData && this.state.insertError) &&
+           { this.state.insertError &&
 
             <span style={{ color: 'red' }}> Bad data format </span> 
-
-           }
-
-           { (this.state.insertData && this.state.insertError) &&
-
-            <span style={{ color: 'red' }}> Failed to insert data </span> 
 
            }
          </DialogTitle>
@@ -337,18 +334,8 @@ class SchemaDataPage extends React.Component {
                name='insertInput'
                inputRef={event => this.insertData = event}
                placeholder="Paste Your Data Here"
+               value={this.state.insertData}
              />
-           { (this.state.insertData && this.state.insertError) &&
-
-            <Typography>
-              <span style={{ color: 'red' }}> Bad lines below: </span> 
-              <pre>
-                {this.state.insertData}
-              </pre>
-            </Typography> 
-
-           }
-             
            </DialogContent>
            <DialogActions>
              <Button autoFocus type='submit' color="primary">

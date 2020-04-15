@@ -17,20 +17,21 @@ class API {
 
   static async FETCH (path, options) {
     let url = API.URL(path);
-    
+
     options.headers =  {
       Authorization: options.auth || `${localStorage.getItem('token')}`
     };
 
     const resp = await fetch(url, options);
     resp.json = await resp.json();
-    
-    return resp.json; 
+
+    return resp.json;
   }
 
   static async endpoint (path, options) {
     let resp;
     let url = API.URL(path);
+    // console.log(url);
 
     if (['DELETE', 'PUT'].includes(options.method)) {
       url += `/${options.data.id}`;
@@ -56,6 +57,7 @@ class API {
       await postToSlack(window.location, message);
       return resp;
     }
+    // console.log(resp);
 
     resp.json = await resp.json();
     return resp;

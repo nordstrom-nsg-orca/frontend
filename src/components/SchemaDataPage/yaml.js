@@ -28,7 +28,8 @@ class YAML extends React.Component {
 const Arr = (props) => {
   return (
     <div style={{}}>
-      {props.data.map((item, i) => (
+    {props.data !== undefined &&
+      props.data.map((item, i) => (
         <div key={(props.data.length)*(i+1)}>
           <IconButton
             tabIndex="-1"
@@ -42,14 +43,16 @@ const Arr = (props) => {
               <RemoveIcon style={{fontSize:'0.875rem'}}/>
             )}
           </IconButton>
-          
+
           {props.schema.type === 'object' ? (
             <Obj {...props} data={item} path={props.path.concat([i])}/>
           ) : (
             <Input onBlur={props.onBlur} val={item} itemKey={i} path={props.path} />
           )}
         </div>
-      ))}
+      ))
+    }
+
 
       {props.edit === true && (
       <IconButton
@@ -104,23 +107,23 @@ const Obj = (props) => {
         <div style={{marginLeft: `${4*8}px`}}>
           <Obj
             {...props}
-            data={props.data[propName]}
+            data={props.data !== undefined ? props.data[propName]: null}
             name={propName}
             path={props.path.concat([propName])}
             schema={prop}
           />
           </div>
-        ) : ( 
+        ) : (
           <Input
             onBlur={props.onBlur}
-            val={props.data[propName]}
+            val={props.data !== undefined ? props.data[propName]: null}
             itemKey={propName}
             path={props.path}
           />
         )}
       </div>
     ))
-  );  
+  );
 }
 
 
