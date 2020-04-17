@@ -2,7 +2,6 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -49,12 +48,13 @@ class SchemaDataPage extends React.Component {
 
   loadData = async () => {
     const schema = await API.GET(`/schemas/${this.state.id}`);
+    console.log(schema);
     const data = await API.GET(`/schemas/${this.state.id}/items`);
     this.originalData = data;
-    // console.log(data);
+
     this.setState({
       data: data,
-      schema: schema[0].schema,
+      schema: schema.schema,
       load: false
     });
   }
@@ -65,7 +65,7 @@ class SchemaDataPage extends React.Component {
     let data;
     if (bulkData)
       data = bulkData;
-    else 
+    else
       data = this.state.data;
 
     for (let i = 0; i < data.length; i++) {
@@ -103,6 +103,8 @@ class SchemaDataPage extends React.Component {
       data: body
     }
     const resp = await API.endpoint('/bulk', options);
+    if (resp.status !== 200)
+      return resp.json();
     return resp.json;
   }
 
@@ -178,13 +180,13 @@ class SchemaDataPage extends React.Component {
     }
   }
 
-  // saves bulk insert 
+  // saves bulk insert
   handleInsert = async (event, isSave) => {
    event.preventDefault();
    let error = false;
     if (isSave) {
       console.log('Saving');
-      console.log(this.insertData.value);
+      // console.log(this.insertData.value);
       let data = null;
       let isJSON = true;
 
@@ -205,29 +207,32 @@ class SchemaDataPage extends React.Component {
       // verify data is an object and not null
       if (typeof data !== 'object' || !data) {
          error = true;
-         this.setState({ insertError: error });
+         this.setState({ insertError: error, insertData: null });
          return;
       }
-      console.log(data);
-       // call Bulk API 
+      // console.log(data);
+       // call Bulk API
       const response = await this.saveData(data);
       console.log(response);
-      let message = [];
+      let errors = [];
       for (let i = 0; i < response.length; i++) {
-         if (response[i].statusCode === 400) {
+        const info = response[i];
+         if ('error' in info) {
             error = true;
-            message.push(data[i]);
+            const temp = data[i];
+            temp.errors = info.error.message;
+            if (isJSON)
+              errors.push(JSON.stringify([temp], null, 2));
+            else
+              errors.push(yaml.stringify([temp], 4));
          }
       }
+      console.log(errors);
       if (error) {
-         if (isJSON)
-            message = JSON.stringify(message, null, 2);
-         else 
-            message = yaml.stringify(message, 4)
-         this.setState({ insertData: message, insertError: error });
+         this.setState({ insertData: errors, insertError: error });
       }
     }
-   
+
     if (!error)
       this.setState({ insert: false, insertError: false, insertData: null });
 }
@@ -285,7 +290,7 @@ class SchemaDataPage extends React.Component {
                 schema={this.state.schema}
                 addIndex={this.addIndex}
                 removeIndex={this.removeIndex}
-                onBlur={this.onBlur} 
+                onBlur={this.onBlur}
                 path={[i, 'data']}
               />
             </Paper>
@@ -301,37 +306,37 @@ class SchemaDataPage extends React.Component {
         )}
 
 
-       
-       <Dialog 
-         onClose={event => this.handleInsert(event, false)} 
-         aria-labelledby="customized-dialog-title" 
-         open={this.state.insert} 
+
+       <Dialog
+         onClose={event => this.handleInsert(event, false)}
+         aria-labelledby="customized-dialog-title"
+         open={this.state.insert}
          fullWidth={true}
          maxWidth='lg'
          classes={{ paper: classes.dialogPaper }}
        >
          <DialogTitle id="customized-dialog-title" onClose={event => this.handleInsert(event, false)}>
-           Insert Data (JSON/YAML) 
+           Insert Data (JSON/YAML)
            <IconButton aria-label="close" className={classes.closeButton} onClick={event => this.handleInsert(event, false)}>
              <CloseIcon />
            </IconButton>
            { (!this.state.insertData && this.state.insertError) &&
 
-            <span style={{ color: 'red' }}> Bad data format </span> 
+            <span style={{ color: 'red' }}> Bad data format </span>
 
            }
 
            { (this.state.insertData && this.state.insertError) &&
 
-            <span style={{ color: 'red' }}> Failed to insert data </span> 
+            <span style={{ color: 'red' }}> Failed to insert data </span>
 
            }
          </DialogTitle>
          <form onSubmit={event => this.handleInsert(event, true)} name='insert' id='insert' style={{ height: '500px' }}>
            <DialogContent classes={{ root: classes.dialogContent }}>
-             <Input 
-               multiline 
-               fullWidth 
+             <Input
+               multiline
+               fullWidth
                disableUnderline
                type='text'
                name='insertInput'
@@ -339,16 +344,13 @@ class SchemaDataPage extends React.Component {
                placeholder="Paste Your Data Here"
              />
            { (this.state.insertData && this.state.insertError) &&
-
             <Typography>
-              <span style={{ color: 'red' }}> Bad lines below: </span> 
-              <pre>
+              <span style={{ fontWeight: 'bold' }}> Bad lines below: </span>
+              <pre style={{ color: 'red' }}>
                 {this.state.insertData}
               </pre>
-            </Typography> 
+            </Typography>}
 
-           }
-             
            </DialogContent>
            <DialogActions>
              <Button autoFocus type='submit' color="primary">
@@ -357,7 +359,7 @@ class SchemaDataPage extends React.Component {
            </DialogActions>
          </form>
         </Dialog>
-   
+
       </div>
     );
   }
