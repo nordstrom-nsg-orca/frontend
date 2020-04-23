@@ -1,11 +1,13 @@
 const style = theme => ({
     dialogPaper: {
-        minHeight: '80vh',
-        maxHeight: '80vh',
+        minHeight: '90vh',
+        maxHeight: '90vh',
+        fontFamily: 'monospace, monospace'
     },
     dialogContent: {
-		minHeight: '70vh',
-	    maxHeight: '70vh'
+	    minHeight: '80vh',
+	    maxHeight: '80vh',
+      overflowY: 'hidden'
     },
     closeButton: {
 	    position: 'absolute',

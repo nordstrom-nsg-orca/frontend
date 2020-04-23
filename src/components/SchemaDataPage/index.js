@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,7 +22,7 @@ import TABLE from 'components/SchemaDataPage/table.js';
 
 import API from 'util/api.js';
 import style from './style.js';
-import yaml from 'yamljs';
+import yaml from 'yaml';
 
 
 class SchemaDataPage extends React.Component {
@@ -36,8 +37,8 @@ class SchemaDataPage extends React.Component {
       load: true,
       insert: false,
       insertError: false,
-      insertData: null,
-      id: 240
+      errorData: null,
+      id: 5
     };
     this.originalData = [];
   }
@@ -48,10 +49,10 @@ class SchemaDataPage extends React.Component {
 
   loadData = async () => {
     const schema = await API.GET(`/schemas/${this.state.id}`);
-    console.log(schema);
+    // console.log(schema);
     const data = await API.GET(`/schemas/${this.state.id}/items`);
     this.originalData = data;
-
+    // console.log(data);
     this.setState({
       data: data,
       schema: schema.schema,
@@ -184,7 +185,7 @@ class SchemaDataPage extends React.Component {
   handleInsert = async (event, isSave) => {
    event.preventDefault();
    let error = false;
-    if (isSave) {
+   if (isSave) {
       console.log('Saving');
       // console.log(this.insertData.value);
       let data = null;
@@ -194,48 +195,74 @@ class SchemaDataPage extends React.Component {
          data = JSON.parse(this.insertData.value);
       } catch (err) {
          // do something
+         isJSON = false;
       }
 
       // try parsing it as yaml
-      try {
-         data = yaml.parse(this.insertData.value);
-         isJSON = false;
-      } catch (err) {
-         // console.log(err);
+      if (!isJSON) {
+        try {
+           data = yaml.parse(this.insertData.value);
+           isJSON = false;
+        } catch (err) {
+           // console.log(err);
+        }
       }
+
 
       // verify data is an object and not null
       if (typeof data !== 'object' || !data) {
          error = true;
-         this.setState({ insertError: error, insertData: null });
+         this.setState({ insertError: error, errorData: null });
          return;
       }
-      // console.log(data);
+      console.log(data);
        // call Bulk API
       const response = await this.saveData(data);
-      console.log(response);
+      if (response.length === 0) {
+        this.setState({ insertError: true });
+        return;
+      }
       let errors = [];
       for (let i = 0; i < response.length; i++) {
         const info = response[i];
          if ('error' in info) {
             error = true;
-            const temp = data[i];
+            const temp = {
+              data: data[i]
+            };
             temp.errors = info.error.message;
-            if (isJSON)
-              errors.push(JSON.stringify([temp], null, 2));
-            else
-              errors.push(yaml.stringify([temp], 4));
+            if (isJSON) {
+              // errors.push(JSON.stringify([temp], null, 2));
+              temp.isJSON = true;
+            } else {
+              temp.isJSON = false;
+              // errors.push(yaml.stringify([temp], { indent: 2, indentSeq: false, prettyErrors: true }));
+            }
+            errors.push(temp);
          }
       }
       console.log(errors);
       if (error) {
-         this.setState({ insertData: errors, insertError: error });
+         this.setState({ errorData: errors, insertError: error });
       }
     }
 
     if (!error)
       this.setState({ insert: false, insertError: false, insertData: null });
-}
+  }
+
+  handleTabCharacter = async (event) => {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      const start = event.currentTarget.selectionStart;
+      const end = event.currentTarget.selectionEnd;
+      console.log(start);
+      console.log(end);
+      this.insertData.value = this.insertData.value.substring(0, start) + '    ' + this.insertData.value.substring(end);
+      // put caret at right position again
+      event.currentTarget.selectionStart = event.currentTarget.selectionEnd = start + 4;
+    }
+  }
 
   render () {
     // console.log(this.state.data);
@@ -243,7 +270,7 @@ class SchemaDataPage extends React.Component {
     const View = this.state.yaml ? YAML : TABLE;
     return (
       <div>
-        <div style={{ display: 'flex', marginBottom: '15px' }}>
+        <div style={{ display: 'flex', marginBottom: '15px', fontFamily: 'monospace, monospace' }}>
           <Typography variant='h4'>
             {this.props.title}
           </Typography>
@@ -305,51 +332,60 @@ class SchemaDataPage extends React.Component {
           </div>
         )}
 
-
-
        <Dialog
-         onClose={event => this.handleInsert(event, false)}
          aria-labelledby="customized-dialog-title"
          open={this.state.insert}
          fullWidth={true}
          maxWidth='lg'
          classes={{ paper: classes.dialogPaper }}
        >
-         <DialogTitle id="customized-dialog-title" onClose={event => this.handleInsert(event, false)}>
-           Insert Data (JSON/YAML)
+         <DialogTitle
+           id='customized-dialog-title'
+           onClose={event => this.handleInsert(event, false)}
+         >
+           <span style={{ fontFamily: 'monospace, monospace' }}> Insert Data (JSON/YAML) </span>
            <IconButton aria-label="close" className={classes.closeButton} onClick={event => this.handleInsert(event, false)}>
              <CloseIcon />
            </IconButton>
-           { (!this.state.insertData && this.state.insertError) &&
+           {(!this.state.errorData && this.state.insertError) &&
+            <span style={{ color: 'red', fontFamily: 'monospace, monospace', fontWeight: 'bold' }}> Bad Data Format </span>}
 
-            <span style={{ color: 'red' }}> Bad data format </span>
+           {(this.state.errorData && this.state.insertError) &&
+            <span style={{ color: 'red', fontFamily: 'monospace, monospace', fontWeight: 'bold' }}> Failed to Insert Data </span>}
 
-           }
-
-           { (this.state.insertData && this.state.insertError) &&
-
-            <span style={{ color: 'red' }}> Failed to insert data </span>
-
-           }
          </DialogTitle>
-         <form onSubmit={event => this.handleInsert(event, true)} name='insert' id='insert' style={{ height: '500px' }}>
+         <form onSubmit={event => this.handleInsert(event, true)} name='insert' id='insert'>
            <DialogContent classes={{ root: classes.dialogContent }}>
+             <InputLabel> Data </InputLabel>
              <Input
                multiline
                fullWidth
                disableUnderline
+               autoFocus
                type='text'
                name='insertInput'
                inputRef={event => this.insertData = event}
                placeholder="Paste Your Data Here"
+               inputProps={{
+                style: { fontSize: 15 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace', overflow: 'auto', minHeight: '45vh', maxHeight: '45vh' }
+               }}
+               onKeyDown={event => this.handleTabCharacter(event)}
              />
-           { (this.state.insertData && this.state.insertError) &&
-            <Typography>
-              <span style={{ fontWeight: 'bold' }}> Bad lines below: </span>
-              <pre style={{ color: 'red' }}>
-                {this.state.insertData}
-              </pre>
-            </Typography>}
+             {(this.state.errorData && this.state.insertError) &&
+               <Typography style={{ borderTop: '1px solid white', minHeight: '30vh', maxHeight: '30vh', overflow: 'auto' }}>
+                 <span style={{ fontWeight: 'bold', color: 'red', fontSize: 17 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace', marginTop: '10px' }}> Bad Lines Below: </span>
+                 {this.state.errorData.map(err =>
+                  <div style={{ fontSize: 15 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace' }}>
+                    <pre>
+                      {yaml.stringify([err.data], { indent: 2, indentSeq: false, prettyErrors: true })}
+                    </pre>
+                    <pre style={{ color: 'red' }}>
+                      {yaml.stringify({ 'errors': err.errors }, { indent: 2, indentSeq: true, prettyErrors: true })}
+                    </pre>
+                  </div>
+                 )}
+               </Typography>
+             }
 
            </DialogContent>
            <DialogActions>
@@ -366,3 +402,10 @@ class SchemaDataPage extends React.Component {
 }
 
 export default withStyles(style)(SchemaDataPage);
+// {(this.state.insertData && this.state.insertError) &&
+//  <Typography style={{ borderTop: '1px solid white' }}>
+//    <span style={{ fontWeight: 'bold', color: 'red', fontSize: 17 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace', marginTop: '10px' }}> Bad Lines Below: </span>
+//    <pre style={{ fontSize: 15 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace' }}>
+//      {this.state.insertData}
+//    </pre>
+//  </Typography>}

@@ -17,21 +17,28 @@ class API {
 
   static async FETCH (path, options) {
     let url = API.URL(path);
-
+    
     options.headers =  {
       Authorization: options.auth || `${localStorage.getItem('token')}`
     };
 
-    const resp = await fetch(url, options);
-    resp.json = await resp.json();
+    let resp;
+    try {
+      resp = await fetch(url, options);
+      // resp.json = await resp.json();
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
 
-    return resp.json;
+    resp = await resp.json();
+    console.log(resp);
+    return resp;
   }
 
   static async endpoint (path, options) {
     let resp;
     let url = API.URL(path);
-    // console.log(url);
 
     if (['DELETE', 'PUT'].includes(options.method)) {
       url += `/${options.data.id}`;
@@ -48,7 +55,8 @@ class API {
 
     try {
       resp = await fetch(url, opts);
-    } catch {
+    } catch (err) {
+      console.log(err);
       return null;
     }
 
