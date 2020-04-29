@@ -73,7 +73,7 @@ class App extends React.Component {
 
     const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
     // console.log(allowedPages);
-    const tabs = generateTabs(allowedPages.json);
+    const tabs = await generateTabs(allowedPages.json);
     // console.log(tabs);
 
     // const option = {

@@ -12,7 +12,7 @@ class Dashboard extends React.Component {
   render () {
     return (
       <div>
-          <SchemaDataPage title='Testing' />
+          <SchemaDataPage title='Testing' id={5} />
       </div>
     );
   }

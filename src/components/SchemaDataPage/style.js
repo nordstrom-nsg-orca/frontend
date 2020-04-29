@@ -1,8 +1,7 @@
 const style = theme => ({
     dialogPaper: {
         minHeight: '90vh',
-        maxHeight: '90vh',
-        fontFamily: 'monospace, monospace'
+        maxHeight: '90vh'
     },
     dialogContent: {
 	    minHeight: '80vh',

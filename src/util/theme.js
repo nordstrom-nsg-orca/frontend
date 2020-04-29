@@ -73,6 +73,11 @@ function buildTheme (theme) {
         sizeSmall: {
           padding: '2px 24px 2px 16px'
         }
+      },
+      MuiInput: {
+        input: {
+          border: `1px solid ${colors.fontColor}`
+        }
       }
 
     }
