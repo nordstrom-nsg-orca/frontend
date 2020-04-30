@@ -82,7 +82,6 @@ class BulkView extends React.Component {
                 <div>
                 <span style={{ fontWeight: 'bold', color: 'red', fontSize: 17 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace', marginTop: '10px' }}> Bad Lines Below: </span>
                 <Typography style={{ minHeight: '30vh', maxHeight: '30vh', overflow: 'auto' }}>
-
                   {this.props.errorData.map(err =>
                    <div style={{ fontSize: 15 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace' }}>
                      <pre>
