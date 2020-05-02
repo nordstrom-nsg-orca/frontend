@@ -4,7 +4,9 @@ import base64 from 'base-64';
 
 class API {
   static URL (path) {
-    return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
+    // return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
+    const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001': window.location.origin;
+    return `${origin}/${process.env.REACT_APP_STAGE}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
   }
 
   static async GET (path, options = {}) {
@@ -17,15 +19,23 @@ class API {
 
   static async FETCH (path, options) {
     let url = API.URL(path);
-    
+
     options.headers =  {
       Authorization: options.auth || `${localStorage.getItem('token')}`
     };
 
-    const resp = await fetch(url, options);
-    resp.json = await resp.json();
-    
-    return resp.json; 
+    let resp;
+    try {
+      resp = await fetch(url, options);
+      // resp.json = await resp.json();
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+
+    resp = await resp.json();
+    // console.log(resp);
+    return resp;
   }
 
   static async endpoint (path, options) {
@@ -47,7 +57,8 @@ class API {
 
     try {
       resp = await fetch(url, opts);
-    } catch {
+    } catch (err) {
+      console.log(err);
       return null;
     }
 
@@ -56,6 +67,7 @@ class API {
       await postToSlack(window.location, message);
       return resp;
     }
+    // console.log(resp);
 
     resp.json = await resp.json();
     return resp;

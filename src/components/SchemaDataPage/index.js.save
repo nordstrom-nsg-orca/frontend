@@ -1,22 +1,28 @@
-import React from 'react';
+ximport React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import InputBase from '@material-ui/core/InputBase';
 import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import Input from '@material-ui/core/Input';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
+import CloseIcon from '@material-ui/icons/Close'
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import YAML from 'components/SchemaDataPage/yaml.js';
 import TABLE from 'components/SchemaDataPage/table.js';
-import Bulk from 'components/SchemaDataPage/bulkView.js';
 
 import API from 'util/api.js';
 import style from './style.js';
-import yaml from 'yaml';
+import yaml from 'yamljs';
 
 
 class SchemaDataPage extends React.Component {
@@ -31,8 +37,8 @@ class SchemaDataPage extends React.Component {
       load: true,
       insert: false,
       insertError: false,
-      errorData: null,
-      id: 5
+      insertData: null,
+      id: 240
     };
     this.originalData = [];
   }
@@ -42,19 +48,14 @@ class SchemaDataPage extends React.Component {
   }
 
   loadData = async () => {
-    // console.log(this.state.id);
-    const schema = await API.GET(`/schemas/${this.props.id}`);
-    // console.log(schema);
-    if (typeof schema !== 'object') return;
-    const data = await API.GET(`/schemas/${this.props.id}/items`);
-    if (!Array.isArray(data)) return;
+    const schema = await API.GET(`/schemas/${this.state.id}`);
+    const data = await API.GET(`/schemas/${this.state.id}/items`);
     this.originalData = data;
     // console.log(data);
     this.setState({
       data: data,
-      schema: schema.schema,
-      load: false,
-      id: this.props.id
+      schema: schema[0].schema,
+      load: false
     });
   }
 
@@ -64,7 +65,7 @@ class SchemaDataPage extends React.Component {
     let data;
     if (bulkData)
       data = bulkData;
-    else
+    else 
       data = this.state.data;
 
     for (let i = 0; i < data.length; i++) {
@@ -102,8 +103,6 @@ class SchemaDataPage extends React.Component {
       data: body
     }
     const resp = await API.endpoint('/bulk', options);
-    if (resp.status !== 200)
-      return resp.json();
     return resp.json;
   }
 
@@ -179,84 +178,70 @@ class SchemaDataPage extends React.Component {
     }
   }
 
-  // saves bulk insert
-  handleInsert = async (event, insertData) => {
+  // saves bulk insert 
+  handleInsert = async (event, isSave) => {
    event.preventDefault();
    let error = false;
-   if (insertData) {
+    if (isSave) {
       console.log('Saving');
       let data = null;
+
       let isJSON = true;
 
       try {
-         data = JSON.parse(insertData.value);
+         data = JSON.parse(this.insertData.value);
       } catch (err) {
          // do something
-         isJSON = false;
       }
 
       // try parsing it as yaml
-      if (!isJSON) {
-        try {
-           data = yaml.parse(insertData.value);
-           isJSON = false;
-        } catch (err) {
-           // console.log(err);
-        }
+      try {
+         data = yaml.parse(this.insertData.value);
+         isJSON = false;
+      } catch (err) {
+         // console.log(err);
       }
 
       // verify data is an object and not null
       if (typeof data !== 'object' || !data) {
          error = true;
-         this.setState({ insertError: error, errorData: null });
+         this.setState({ insertError: error });
          return;
       }
-      // console.log(data);
-       // call Bulk API
+       // call Bulk API 
       const response = await this.saveData(data);
-      // console.log(response);
-      if (response.length === 0) {
-        this.setState({ insertError: true });
-        return;
-      }
-      let errors = [];
+      console.log(response);
+      let message = '';
       for (let i = 0; i < response.length; i++) {
-        const info = response[i];
-         if ('error' in info) {
+         if (response[i].statusCode === 400) {
             error = true;
-            const temp = {
-              data: data[i]
-            };
-            temp.errors = info.error.message;
-            if (isJSON) {
-              // errors.push(JSON.stringify([temp], null, 2));
-              temp.isJSON = true;
-            } else {
-              temp.isJSON = false;
-              // errors.push(yaml.stringify([temp], { indent: 2, indentSeq: false, prettyErrors: true }));
-            }
-            errors.push(temp);
+            if (!isJSON) 
+               message += yaml.stringify(data[i], 4) + '\n'; 
+            else 
+               message += JSON.stringify(data[i], null, 2) + '\n'; 
          }
       }
-      console.log(errors);
-      if (error) {
-         this.setState({ errorData: errors, insertError: error });
-      }
+      if (error) 
+         this.setState({ insertData: message });
     }
-
-    if (!error) {
+   
+    if (!error)
       this.setState({ insert: false, insertError: false, insertData: null });
-      this.loadData();
-    }
-  }
+}
 
   render () {
     // console.log(this.state.data);
     const { classes } = this.props;
     const View = this.state.yaml ? YAML : TABLE;
+    let insertData;
+    if (this.state.insertData) {
+      insertData = (
+         <span> Hello </span>;
+      )
+    }
     return (
       <div>
-        <div style={{ display: 'flex', marginBottom: '15px', fontFamily: 'monospace, monospace' }}>
+        <div style={{ display: 'flex', marginBottom: '15px' }}>
           <Typography variant='h4'>
             {this.props.title}
           </Typography>
@@ -303,7 +288,7 @@ class SchemaDataPage extends React.Component {
                 schema={this.state.schema}
                 addIndex={this.addIndex}
                 removeIndex={this.removeIndex}
-                onBlur={this.onBlur}
+                onBlur={this.onBlur} 
                 path={[i, 'data']}
               />
             </Paper>
@@ -317,15 +302,49 @@ class SchemaDataPage extends React.Component {
           </IconButton>
           </div>
         )}
-        <Bulk
-          classes={classes}
-          saveData={this.saveData}
-          insert={this.state.insert}
-          insertError={this.state.insertError}
-          errorData={this.state.errorData}
-          handleInsert={this.handleInsert}
-        />
 
+
+       
+       <Dialog 
+         onClose={event => this.handleInsert(event, false)} 
+         aria-labelledby="customized-dialog-title" 
+         open={this.state.insert} 
+         fullWidth={true}
+         maxWidth='lg'
+         classes={{ paper: classes.dialogPaper }}
+       >
+         <DialogTitle id="customized-dialog-title" onClose={event => this.handleInsert(event, false)}>
+           Insert Data (JSON/YAML) 
+           <IconButton aria-label="close" className={classes.closeButton} onClick={event => this.handleInsert(event, false)}>
+             <CloseIcon />
+           </IconButton>
+           { this.state.insertError &&
+
+            <span style={{ color: 'red' }}> Bad data format </span> 
+
+           }
+         </DialogTitle>
+         <form onSubmit={event => this.handleInsert(event, true)} name='insert' id='insert' style={{ height: '500px' }}>
+           <DialogContent classes={{ root: classes.dialogContent }}>
+             <Input 
+               multiline 
+               fullWidth 
+               disableUnderline
+               type='text'
+               name='insertInput'
+               inputRef={event => this.insertData = event}
+               placeholder="Paste Your Data Here"
+               value={this.state.insertData}
+             />
+           </DialogContent>
+           <DialogActions>
+             <Button autoFocus type='submit' color="primary">
+               Save
+             </Button>
+           </DialogActions>
+         </form>
+        </Dialog>
+   
       </div>
     );
   }
