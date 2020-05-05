@@ -8,32 +8,31 @@ import PageContent from 'components/PageContent';
 import Dashboard from 'pages/Dashboard';
 import Settings from 'pages/Settings';
 import Error from 'pages/Error';
+import API from 'util/api.js';
+import SchemaDataPage from 'components/SchemaDataPage';
 
 class Router extends React.Component {
+
   render () {
     const RouterType = this.props.auth.isOrcaUser ? Route : SecureRoute;
     return (
       <div>
         <PageContent>
           <Switch>
-            {Object.entries(this.props.tabs).map(([key, tab], index) => (
-              Object.entries(tab.pages).map(([pkey, page], pindex) => (
-                page.allowed ? (
-                  <RouterType
-                    key={pindex}
-                    path={`/${key}/${pkey}`}
-                    component={page.component}
-                  />
-                ) : (
-                  <RouterType
-                    key={pindex}
-                    path={`/${key}/${pkey}`}
-                    render={(props) => <Error {...props} errorType='noAccess' />}
-                  />
-                )
-              ))
+            {this.props.schemas.map((schema, index) => (
+              <RouterType
+                key={index}
+                path={`/schemas/${schema.id}`}
+                
+                //TODO pass full schema instead, this will save SchemaDataPage from calling the API for the schema
+                render={(props) => <SchemaDataPage id={schema.id} name={schema.name} />} 
+              />
             ))}
 
+            <RouterType
+              exact path='/schemas'
+              render={(props) => <SchemaDataPage name={'Edit Schemas'} />} 
+            />
             <RouterType
               exact path='/'
               component={Dashboard}
@@ -42,6 +41,8 @@ class Router extends React.Component {
               path='/settings'
               render={(props) => <Settings {...props} changeSetting={this.props.changeSetting} settings={this.props.settings} />}
             />
+
+            {/* TODO fix slight flash of 404 page  */}
             <RouterType
               render={(props) => <Error {...props} errorType='notFound' />}
             />
@@ -56,6 +57,6 @@ Router.propTypes = {
   auth: PropTypes.object.isRequired,
   changeSetting: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
-  tabs: PropTypes.object.isRequired
+  // tabs: PropTypes.object.isRequired
 };
 export default Router;

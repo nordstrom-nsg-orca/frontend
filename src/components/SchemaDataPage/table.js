@@ -46,14 +46,15 @@ const Obj = (props) => {
     <Table size='small' style={{width:"100%"}}>
       <TableHead>
         <TableRow>
-          {Object.entries(props.schema.properties).map(([propName, prop], j) => (
-              <TableCell style={{fontWeight:'bold', color:'#26c6da'}}>
-                {propName}
-              </TableCell>
+          {props.schema.order.map((propName, i) => (
+            <TableCell style={{fontWeight:'bold', color:'#26c6da'}}>
+              {propName}
+            </TableCell>
           ))}
         </TableRow>
       </TableHead>
-    
+      
+      {/* need to update this part with the ordered props, forgot what this does though*/}
       {Array.isArray(props.data) ? (
         props.data.map((item, i) => (
           <TableRow>
@@ -66,40 +67,43 @@ const Obj = (props) => {
         ))
       ) : (
         <TableRow>
-          {Object.entries(props.schema.properties).map(([propName, prop], j) => (
-            <TableCell>
-            {prop.type === 'object' ? (
-              <Obj
-                {...props}
-                data={props.data[propName]}
-                schema={prop}
-                path={props.path.concat([propName])}
-                name={propName}
-              />
-            ) :  prop.type === 'array' && prop.items.type === 'object' ? (
-            <div>
-              <Obj
-                {...props}
-                data={props.data[propName]}
-                schema={prop.items}
-                name={propName}
-                path={props.path.concat([propName])}
-              />
-              {props.edit === true && (
-                <IconButton
-                  style={{width:'100%', borderRadius:'0'}}
-                  size='small'
-                  onClick={props.addIndex.bind(this, props.schema, props.path.concat([propName]))}
-                >
-                  <AddIcon style={{fontSize:'0.875rem'}} />
-                </IconButton>
-              )}
-            </div>
-            ) : (
-              props.data[propName]
-            )}
-            </TableCell>
-          ))}
+          {props.schema.order.map((propName, i) => {
+            const prop = props.schema.properties[propName];
+            return (
+              <TableCell>
+                {prop.type === 'object' ? (
+                  <Obj
+                    {...props}
+                    data={props.data[propName]}
+                    schema={prop}
+                    path={props.path.concat([propName])}
+                    name={propName}
+                  />
+                ) :  prop.type === 'array' && prop.items.type === 'object' ? (
+                <div>
+                  <Obj
+                    {...props}
+                    data={props.data[propName]}
+                    schema={prop.items}
+                    name={propName}
+                    path={props.path.concat([propName])}
+                  />
+                  {props.edit === true && (
+                    <IconButton
+                      style={{width:'100%', borderRadius:'0'}}
+                      size='small'
+                      onClick={props.addIndex.bind(this, props.schema, props.path.concat([propName]))}
+                    >
+                      <AddIcon style={{fontSize:'0.875rem'}} />
+                    </IconButton>
+                  )}
+                </div>
+                ) : (
+                  props.data[propName]
+                )}
+              </TableCell>
+            );
+          })}
         </TableRow>
       )}
     </Table>

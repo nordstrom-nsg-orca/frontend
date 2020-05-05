@@ -46,15 +46,17 @@ function buildTheme (theme) {
           padding: '0px'
         }
       },
-      MuiPopover: {
-        root: {
-          marginTop: '30px'
-        }
-      },
+      // TODO FIX USER DROPDOWN POSITIONING - MESSES UP SCHEMA TYPE
+      // MuiMenu: {
+      //   paper: {
+      //     marginTop: '30px'
+      //   }
+      // },
       MuiList: {
         root: {
-          padding: '0 !important',
-          color: colors.fontColor
+          color: colors.fontColor,
+          backgroundColor: colors.bodyBackground,
+          border: '2px solid ' + colors.background
         }
       },
       MuiListItem: {
@@ -66,12 +68,21 @@ function buildTheme (theme) {
         root: {
           fontSize: '0.875rem',
           color: colors.fontColor,
-          textDecoration: 'none'
+          textDecoration: 'none',
+          padding: '2px 8px !important',
+          '&:hover': {
+            backgroundColor: colors.background
+          }
         }
       },
       MuiTableCell: {
         sizeSmall: {
           padding: '2px 24px 2px 16px'
+        }
+      },
+      MuiSelect: {
+        icon: {
+          color: colors.fontColor
         }
       }
 

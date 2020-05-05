@@ -2,22 +2,25 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 
+const font = {
+  fontFamily: '"Fira code","Fira Mono", monospace',
+  fontSize: 16,
+  whiteSpace: 'pre'
+}
 
 class YAML extends React.Component {
   render() {
     return (
       this.props.schema.type === 'object' && (
-        <div style={{
-            fontFamily: '"Fira code","Fira Mono", monospace',
-            fontSize: 16,
-            whiteSpace: 'pre'
-          }}>
+        <div style={{...font}}>
           <Obj {...this.props} />
         </div>
       )
@@ -80,30 +83,73 @@ const Label = (props) => {
 
 // key is needed in order to know the value has changed for a rerender
 const Input = (props) => {
-  return (
-    <InputBase
-      style={{fontFamily: 'inherit', width: '80%', padding: '0px'}}
-      inputProps={{ 'aria-label': 'naked', style: {padding: '0px'}}}
-      onBlur={props.onBlur.bind(this, props.path, props.itemKey, props.schema)}
-      defaultValue={props.val}
-      schema={'test'}
-      key={props.val}
-    />
-  )
+  // if it is an ENUM, render a select with the options
+  if (Array.isArray(props.schema.enum)) {
+    return (
+      <Select
+      MenuProps={{
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "left"
+        },
+        getContentAnchorEl: null
+      }}
+        disableUnderline
+        style={{fontFamily: 'inherit'}}
+        SelectDisplayProps={{ style:{padding:'0px 24px 0px 0px'} }}
+        onChange={props.selectChange.bind(this, props.path, props.itemKey, props.schema, props.val)}
+        value={props.val}
+      >
+        {props.schema.enum.map(item => (
+          <MenuItem style={{...font, cursor:'pointer'}} value={item}>{item}</MenuItem>
+        ))}
+      </Select>
+    );
+  } else {
+    return (
+      <InputBase
+        style={{fontFamily: 'inherit', width: '80%', padding: '0px'}}
+        inputProps={{ 'aria-label': 'naked', style: {padding: '0px'}}}
+        onBlur={props.onBlur.bind(this, props.path, props.itemKey, props.schema)}
+        defaultValue={props.val}
+        schema={'test'}
+        key={props.val}
+      />
+    );
+  }
 }
 
 const Obj = (props) => {
+  // console.log('\n\nOBJ')
   return (
     props.schema.order.map((propName, i) => {
-      const prop = props.schema.properties[propName];
+      let prop = props.schema.properties[propName];
+      
+      // onlyIf is used to only require a field base on the value of another
+      // currently only used by Schema Schema (type=array => require)
+      // NEEDS TO BE BEFORE $REF CHECK TO AVOID INFINITE LOOP (self ref schemas)
+      if (prop.onlyIf) {
+        const key = Object.keys(prop.onlyIf)[0];
+        if (props.data[key] !== prop.onlyIf[key])
+          return;
+      }
+
+      // if the prop is a reference, get the referenced object
+      if (prop.$ref)
+        prop = props.getRef(prop.$ref);
+
+      // UUIDS are only defined for schemas made from the API
+      const labelName = (typeof props.uuids[propName] !== 'undefined')? props.uuids[propName] : propName;
+
       return (
-        <div key={i+props.schema.properties.length}>
-          <Label name={propName} />
+        <div key={prop.data}>
+          <Label name={labelName} />
+          {/* <Label name={props.uuids[propName]} /> */}
           {prop.type === 'array' ? (
             <div style={{marginLeft: `${4*8}px`}}>
             <Arr
               {...props}
-              data={props.data[propName]}
+              data={props.data[propName] || []}
               name={propName}
               path={props.path.concat([propName])}
               schema={prop.items}
@@ -113,63 +159,28 @@ const Obj = (props) => {
           <div style={{marginLeft: `${4*8}px`}}>
             <Obj
               {...props}
-              data={props.data[propName]}
+              data={props.data[propName] || {}} // TODO FIX NULL DATA
               name={propName}
               path={props.path.concat([propName])}
               schema={prop}
             />
             </div>
-          ) : ( 
+          ) : ['integer','boolean','string'].includes(prop.type) ? ( 
             <Input
               onBlur={props.onBlur}
+              selectChange={props.selectChange}
               val={props.data[propName]}
               itemKey={propName}
               path={props.path}
               schema={prop}
             />
+          ) : (
+            <div>ERROR - UNKNOWN type</div>
           )}
         </div>
       );
     })
   );
-}
-
-
-  // return (
-  //   Object.entries(props.schema.properties).map(([propName, prop], j) => (
-  //     <div key={j+props.schema.properties.length}>
-  //       <Label name={propName} />
-  //       {prop.type === 'array' ? (
-  //         <div style={{marginLeft: `${4*8}px`}}>
-  //         <Arr
-  //           {...props}
-  //           data={props.data[propName]}
-  //           name={propName}
-  //           path={props.path.concat([propName])}
-  //           schema={prop.items}
-  //         />
-  //         </div>
-  //       ) : prop.type === 'object' ? (
-  //       <div style={{marginLeft: `${4*8}px`}}>
-  //         <Obj
-  //           {...props}
-  //           data={props.data[propName]}
-  //           name={propName}
-  //           path={props.path.concat([propName])}
-  //           schema={prop}
-  //         />
-  //         </div>
-  //       ) : ( 
-  //         <Input
-  //           onBlur={props.onBlur}
-  //           val={props.data[propName]}
-  //           itemKey={propName}
-  //           path={props.path}
-  //         />
-  //       )}
-  //     </div>
-  //   ))
-  // );  
-
+} 
 
 export default YAML;

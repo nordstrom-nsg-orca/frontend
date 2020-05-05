@@ -10,6 +10,12 @@ import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import YAML from 'components/SchemaDataPage/yaml.js';
 import TABLE from 'components/SchemaDataPage/table.js';
 
@@ -24,9 +30,9 @@ class SchemaDataPage extends React.Component {
       data: [],
       schema: {},
       yaml: true,
-      edit: true,
+      edit: false,
       load: true,
-      id: 240
+      dialog: false,
     };
     this.originalData = [];
   }
@@ -36,13 +42,20 @@ class SchemaDataPage extends React.Component {
   }
 
   loadData = async () => {
-    const schema = await API.GET(`/schemas/${this.state.id}`);
-    const data = await API.GET(`/schemas/${this.state.id}/items`);
+    let schema, data;
     
+    if (typeof this.props.id === 'number') { 
+      schema = await API.GET(`/schemas/${this.props.id}`);
+      data = await API.GET(`/schemas/${this.props.id}/items`);
+    } else {
+      schema = await API.GET('/schema');
+      data = await API.GET('/schemas');
+    }
+
     this.originalData = data;
     this.setState({
       data: data, 
-      schema: schema['schema'],
+      schema: schema,
       load: false
     });
   }
@@ -55,24 +68,43 @@ class SchemaDataPage extends React.Component {
       
       // anything with a status has been modified.
       if (typeof item.status !== 'undefined') {
-        const request = { httpMethod: item.status, pathParameters: { schemaId: this.state.id }};        
-        request.resource = '/schemas/{schemaId}/items';
         
-        // no body needed in a DELETE
-        if (item.status !== 'DELETE')
-          request.body = item.data;
+        // TODO clean up this if/else
+        if (typeof this.props.id === 'number') {
+          const request = { httpMethod: item.status, pathParameters: { schemaId: this.props.id }};        
+          request.resource = '/schemas/{schemaId}/items';
+          
+          // no body needed in a DELETE
+          if (item.status !== 'DELETE')
+            request.body = item.data;
 
-        // modifying item requires itemId
-        if (['PUT', 'DELETE'].includes(item.status)) {
-          request.resource += '/{itemId}';
-          request.pathParameters.itemId = item.id;
+          // modifying item requires itemId
+          if (['PUT', 'DELETE'].includes(item.status)) {
+            request.resource += '/{itemId}';
+            request.pathParameters.itemId = item.id;
+          }
+          body.push(request);
+        } else {
+          const request = { httpMethod: item.status };        
+          request.resource = '/schemas';
+          
+          // no body needed in a DELETE
+          if (item.status !== 'DELETE')
+            request.body = item.data;
+
+          // modifying item requires itemId
+          if (['PUT', 'DELETE'].includes(item.status)) {
+            request.resource += '/{schemaId}';
+            request.pathParameters = { schemaId : item.id };
+          }
+          body.push(request);
         }
-        body.push(request);
       }
     }
-    // console.log(body);
-    
+    console.log('savebody');
+    console.log(body);
     const resp = await API.POST('/bulk', body);
+    this.setState({ dialog: true });
     // console.log(resp);
     // const response = await API.BULK(body);
   }
@@ -82,10 +114,12 @@ class SchemaDataPage extends React.Component {
     const copy = [...this.state.data];
     const newItem = {
       id: null,
-      schemaid: this.state.id,
-      data: this.buildObject(this.state.schema),
+      schemaid: this.props.id,
+      data: this.buildObject(this.state.schema.schema),
       status: 'POST'
     }
+    console.log('addItem newItem');
+    console.log(newItem);
     copy.push(newItem);
     this.setState({ data: copy })
   }
@@ -93,17 +127,34 @@ class SchemaDataPage extends React.Component {
   // flags an item for DELETE
   removeItem = (index) => {
     var copy = [...this.state.data];
-    copy[index].status = 'DELETE';
+    
+    // a POST is a new row that hasn't been added yet, so it can't be deleted
+    if (copy[index].status === 'POST')
+      copy.splice(index,1);
+    else
+      copy[index].status = 'DELETE';
+    
     this.setState({ data: copy });
   }
 
-  // builds an empty dict of schmea
-  buildObject = (schema) => {
+  // builds an empty dict of schema
+  buildObject = (schema, stop = false) => {
     const newItem = {};
-    for (let [k, v] of Object.entries(schema.properties)){
-      if (v.type === 'object')
-        newItem[k] = this.buildObject(v)
-      else if (v.type === 'array')
+    let isRef = false;
+
+    for (let [k, v] of Object.entries(schema.properties)){      
+
+      // TODO
+      // don't create items that are onlyIf, this protects from infinite loop with self ref schemas
+      // BUG: when making a new schema, items/properties have left over vals from changing types, causing save errors
+      if (v.onlyIf)
+        continue;
+
+      if (v.type === 'object') {
+        console.log('object' + isRef)
+        newItem[k] = this.buildObject(v, isRef)
+        
+      } else if (v.type === 'array')
         newItem[k] = [];
       else
         newItem[k] = null;
@@ -112,22 +163,33 @@ class SchemaDataPage extends React.Component {
   }
 
   // returns the item from obj[path[0]][path[1]]...
-  getItemFromPath = (path, obj) => {
-    
-    // this function only called when the something has changed,
-    // so update the status
+  // type is the default type if the obj is not found
+  getItemFromPath = (path, obj, type) => {
+    // this function only called when the something has changed, so mark object as changed
     obj[path[0]].status = obj[path[0]].status || 'PUT';
-    
-    for (let j = 0; j < path.length; j++)
+
+    for (let j = 0; j < path.length; j++) {
+
+      if (obj[path[j]] == null) {
+        obj[path[j]] = type;
+        console.log('getItem NULL');
+      }
+      
+
       obj = obj[path[j]];
+    }
     return obj;
   }
 
   // adds the object defined inside schema to an Array
   addIndex = (path, schema) => {
     const copy = [...this.state.data];
-    const newItem = this.buildObject(schema);
-    let item = this.getItemFromPath(path, copy);
+    let item = this.getItemFromPath(path, copy, []);
+    let newItem = null;
+    
+    if (schema.type == 'object')
+      newItem = this.buildObject(schema);
+
     item.push(newItem);
     this.setState({ data: copy })
   }
@@ -151,33 +213,57 @@ class SchemaDataPage extends React.Component {
     return value;
   }
 
-  // updates data on exit focus
-  onBlur = (path, key, schema, event) => {
-    const target = event.target;
-    
-    if (target.value !== target.defaultValue) {
-      const copy = [...this.state.data];
-      var item = this.getItemFromPath(path, copy);
-      
-      try {
-        const value = this.parseType(target.value, schema);
-        item[key] = value;
-        this.setState({ data: copy });
-      } catch (e) {
-        console.log(e);
-      }
+  // updates the state key at path with value
+  updateValue = (path, key, value, schema) => {
+    const copy = [...this.state.data];
+    var item = this.getItemFromPath(path, copy, {});
+
+    try {
+      const parsedValue = this.parseType(value, schema);
+      item[key] = parsedValue;
+      this.setState({ data: copy });
+    // TODO alert error
+    } catch (e) {
+      console.log(e);
     }
   }
 
+  // updates data on exit focus
+  onBlur = (path, key, schema, event) => {
+    const target = event.target;
+    if (target.value !== target.defaultValue)
+      this.updateValue(path, key, target.value, schema);
+  }
+  
+  // whenever a select is clicked, update if new value
+  selectChange = (path, key, schema, oldValue, event) => {
+    const target = event.target;
+    if (target.value !== oldValue)
+      this.updateValue(path, key, target.value, schema);
+  }
+
+  // if there is a reference in a schema, return the reference object
+  // this should only happen when creating new schemas
+  getRef = (ref) => {
+    const refs = ref.split('/');
+    let schema = { ...this.state.schema.schema };
+    
+    for (var i = 1; i < refs.length; i++)
+      schema = schema[refs[i]]
+    
+    return schema;
+  }
 
   render () {
+    console.log('\n---- ---- ---- ---- RE RENDER ---- ---- ---- ----');
+    console.log(this.state);
     const View = this.state.yaml? YAML : TABLE;
     
     return (
       <div>
         <div style={{ display: 'flex', marginBottom: '15px' }}>
           <Typography variant='h4'>
-            {this.props.title}
+            {this.props.name}
           </Typography>
 
           <div style={{ marginLeft: 'auto' }}>
@@ -210,6 +296,7 @@ class SchemaDataPage extends React.Component {
         {this.state.data.map((item, i) => (
           item.status !== 'DELETE' && (
             <Paper style={{padding: '10px', marginTop: '10px'}} key={(this.state.data.length)*(i+1)}>
+            {/* <Paper style={{padding: '10px', marginTop: '10px'}} key={item.data}></Paper> */}
               {this.state.edit == true && (
                 <IconButton onClick={this.removeItem.bind(this, i)} style={{float: 'right'}}>
                   <ClearIcon />
@@ -218,10 +305,13 @@ class SchemaDataPage extends React.Component {
               <View
                 edit={this.state.edit}
                 data={item.data}
-                schema={this.state.schema}
+                schema={this.state.schema.schema}
+                uuids={this.state.schema.uuids}
+                getRef={this.getRef}
                 addIndex={this.addIndex}
                 removeIndex={this.removeIndex}
                 onBlur={this.onBlur}
+                selectChange={this.selectChange}
                 path={[i, 'data']}
               />
             </Paper>
@@ -235,6 +325,22 @@ class SchemaDataPage extends React.Component {
           </IconButton>
           </div>
         )}
+
+        <Dialog
+          open={this.state.dialog}
+          onClose={event => {console.log('close')}}
+        >
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              save finished
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={event => this.setState({ dialog: false })}>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

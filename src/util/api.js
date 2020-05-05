@@ -4,7 +4,8 @@ import base64 from 'base-64';
 
 class API {
   static URL (path) {
-    return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
+    const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001': window.location.origin;
+    return `${origin}/nonprod/api/v${process.env.REACT_APP_API_VERSION}${path}`;
   }
 
   static async GET (path, options = {}) {
