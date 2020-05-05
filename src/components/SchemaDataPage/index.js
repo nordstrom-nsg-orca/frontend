@@ -1,15 +1,15 @@
 import React from 'react';
+import yaml from 'yaml';
 import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import TextField from '@material-ui/core/TextField';
-
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -18,8 +18,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import YAML from 'components/SchemaDataPage/yaml.js';
 import TABLE from 'components/SchemaDataPage/table.js';
-
+import Bulk from 'components/SchemaDataPage/bulkView.js';
 import API from 'util/api.js'
+
+//TODO REMOVE STYLE FILE
+import style from './style.js';
+
+
 
 
 class SchemaDataPage extends React.Component {
@@ -33,6 +38,9 @@ class SchemaDataPage extends React.Component {
       edit: false,
       load: true,
       dialog: false,
+      insert: false,
+      insertError: false,
+      errorData: null
     };
     this.originalData = [];
   }
@@ -69,7 +77,7 @@ class SchemaDataPage extends React.Component {
       // anything with a status has been modified.
       if (typeof item.status !== 'undefined') {
         
-        // TODO clean up this if/else
+        // TODO clean up this if/else into a single block
         if (typeof this.props.id === 'number') {
           const request = { httpMethod: item.status, pathParameters: { schemaId: this.props.id }};        
           request.resource = '/schemas/{schemaId}/items';
@@ -101,12 +109,10 @@ class SchemaDataPage extends React.Component {
         }
       }
     }
-    console.log('savebody');
+    
     console.log(body);
     const resp = await API.POST('/bulk', body);
     this.setState({ dialog: true });
-    // console.log(resp);
-    // const response = await API.BULK(body);
   }
 
   // adds a new item to the dataset
@@ -255,10 +261,9 @@ class SchemaDataPage extends React.Component {
   }
 
   render () {
-    console.log('\n---- ---- ---- ---- RE RENDER ---- ---- ---- ----');
-    console.log(this.state);
     const View = this.state.yaml? YAML : TABLE;
-    
+    const { classes } = this.props;
+
     return (
       <div>
         <div style={{ display: 'flex', marginBottom: '15px' }}>
@@ -270,6 +275,7 @@ class SchemaDataPage extends React.Component {
             <Button value="SAVE" onClick={this.saveData}>SAVE</Button>
             <Button value="VIEW" onClick={event => this.setState({yaml: !this.state.yaml})}>VIEW</Button>
             <Button value="EDIT" onClick={event => this.setState({edit: !this.state.edit})}>EDIT</Button>
+            <Button value="BULK" onClick={event => this.setState({ insert: true })}>BULK</Button>
             <TextField
               size='small'
               label='search'
@@ -341,9 +347,19 @@ class SchemaDataPage extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Bulk
+          schemaId={this.props.id}
+          classes={classes}
+          insert={this.state.insert}
+          insertError={this.state.insertError}
+          errorData={this.state.errorData}
+          closeInsert={event => this.setState({insert:false})}
+        />
+
       </div>
     );
   }
 }
 
-export default SchemaDataPage;
+export default withStyles(style)(SchemaDataPage);

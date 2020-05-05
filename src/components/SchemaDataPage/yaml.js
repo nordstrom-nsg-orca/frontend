@@ -32,6 +32,8 @@ const Arr = (props) => {
   return (
     <div style={{}}>
       {props.data.map((item, i) => (
+        // TODO FIX ALL THESE WEIRD KEYS I MADE BEFORE I KNEW YOU COULD DO THIS
+        //      <div key={item}> 
         <div key={(props.data.length)*(i+1)}>
           <IconButton
             tabIndex="-1"
@@ -87,13 +89,13 @@ const Input = (props) => {
   if (Array.isArray(props.schema.enum)) {
     return (
       <Select
-      MenuProps={{
-        anchorOrigin: {
-          vertical: "bottom",
-          horizontal: "left"
-        },
-        getContentAnchorEl: null
-      }}
+        MenuProps={{
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left"
+          },
+          getContentAnchorEl: null
+        }}
         disableUnderline
         style={{fontFamily: 'inherit'}}
         SelectDisplayProps={{ style:{padding:'0px 24px 0px 0px'} }}
@@ -120,11 +122,11 @@ const Input = (props) => {
 }
 
 const Obj = (props) => {
-  // console.log('\n\nOBJ')
   return (
     props.schema.order.map((propName, i) => {
       let prop = props.schema.properties[propName];
-      
+
+
       // onlyIf is used to only require a field base on the value of another
       // currently only used by Schema Schema (type=array => require)
       // NEEDS TO BE BEFORE $REF CHECK TO AVOID INFINITE LOOP (self ref schemas)
@@ -139,11 +141,11 @@ const Obj = (props) => {
         prop = props.getRef(prop.$ref);
 
       // UUIDS are only defined for schemas made from the API
-      const labelName = (typeof props.uuids[propName] !== 'undefined')? props.uuids[propName] : propName;
+      // const labelName = (typeof props.uuids[propName] !== 'undefined')? props.uuids[propName] : propName;
 
       return (
         <div key={prop.data}>
-          <Label name={labelName} />
+          <Label name={propName} />
           {/* <Label name={props.uuids[propName]} /> */}
           {prop.type === 'array' ? (
             <div style={{marginLeft: `${4*8}px`}}>
