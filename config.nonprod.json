@@ -1,0 +1,5 @@
+{
+  "domainName": "orca-nonprod.nordstrom.net",
+  "apiVersion": 1000,
+  "certificate": "arn:aws:acm:us-east-1:046711174152:certificate/ecbcbeef-8eb4-44aa-8c7b-9d8a92922fb4"
+}

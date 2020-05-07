@@ -1,0 +1,5 @@
+{
+  "domainName": "orca.nordstrom.net",
+  "apiVersion": 1,
+  "certificate": "arn:aws:acm:us-east-1:046711174152:certificate/239db6b3-60d5-4314-82c1-5376a3726319"
+}

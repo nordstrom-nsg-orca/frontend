@@ -76,44 +76,6 @@ class App extends React.Component {
     const tabs = await generateTabs(allowedPages.json);
     // console.log(tabs);
 
-    // const option = {
-    //   method: 'POST',
-    //   data:
-    //   [
-    //     {
-    //       httpMethod: 'POST',
-    //       resource: 'schemas',
-    //       body: {
-    //         name: 'test',
-    //         properties: [{
-    //           name: 'name',
-    //           type: 'string',
-    //           required: true
-    //         }, {
-    //           name: 'Array',
-    //           type: 'array',
-    //           required: false,
-    //           items: {
-    //             type: 'object',
-    //             properties: [{
-    //               name: 'name',
-    //               type: 'string',
-    //               required: true
-    //             }]
-    //           }
-    //         }]
-    //       }
-    //     },
-    //     {
-    //       httpMethod: 'GET',
-    //       resource: 'schemas/{schemaId}/items',
-    //       pathParameters: { schemaId: 240 }
-    //     }
-    // ]
-    // };
-    // const bulk = await API.endpoint('/bulk', option);
-    // console.log(bulk.json);
-
     this.sessionTimer = setInterval(this.logout, this.sessionTime);
     this.setState({
       tabs: tabs,
