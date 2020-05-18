@@ -12,7 +12,10 @@ class Dashboard extends React.Component {
   render () {
     return (
       <div>
-          <SchemaDataPage title='Testing' />
+        <Paper style={{ textAlign: 'center', padding: '16px' }}>
+          <Typography variant='h4'>WELCOME TO ORCA (WIP)!</Typography>
+          <img src='images/ORCA.png' />
+        </Paper>
       </div>
     );
   }

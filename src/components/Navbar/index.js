@@ -39,7 +39,7 @@ class Navbar extends React.Component {
           classes={classes}
           changeSidebar={this.changeSidebar}
         />
-        {this.props.auth.authenticated && (
+        {false && ( //this.props.auth.authenticated && (
           <Sidebar
             classes={classes}
             // tabs={this.props.tabs}
@@ -59,7 +59,7 @@ Navbar.propTypes = {
   classes: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
-  auth: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
   // tabs: PropTypes.object.isRequired
 };
 export default withStyles(style)(Navbar);

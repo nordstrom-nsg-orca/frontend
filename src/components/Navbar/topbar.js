@@ -61,23 +61,21 @@ class Topbar extends React.Component {
               <img className={classes.logo} src='/images/logo.svg' alt='NSG_LOGO' />
             </Link>
 
-          
-
             {this.props.auth.authenticated && (
               <div style={{ marginLeft: '140px' }}>
                 <Button onClick={this.handleSchemaMenu(true)}>Schemas</Button>
                 <Menu
-                  style={{marginTop: '24px'}}
+                  style={{ marginTop: '24px' }}
                   anchorEl={this.state.schemaAnchor}
                   keepMounted
                   open={Boolean(this.state.schemaAnchor)}
                   onClose={this.handleSchemaMenu(false)}
                   onClick={this.handleSchemaMenu(false)}
                 >
-                  <Link to={'/schemas'} underline='none'>
+                  <Link to='/schemas' underline='none'>
                     <MenuItem>EDIT SCHEMAS</MenuItem>
                   </Link>
-                  <Divider style={{backgroundColor: '#808080', margin:'3px'}} />
+                  <Divider style={{ backgroundColor: '#808080', margin: '3px' }} />
                   {this.props.schemas.map((schema, index) => (
                     <Link
                       color='inherit'
@@ -146,7 +144,7 @@ class Topbar extends React.Component {
             </div>
 
             <Menu
-              style={{marginTop: '24px'}}
+              style={{ marginTop: '24px' }}
               anchorEl={this.state.userAnchor}
               keepMounted
               open={Boolean(this.state.userAnchor)}

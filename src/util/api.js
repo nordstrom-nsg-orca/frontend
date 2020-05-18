@@ -4,7 +4,7 @@ import base64 from 'base-64';
 
 class API {
   static URL (path) {
-    const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001': window.location.origin;
+    const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001' : window.location.origin;
     return `${origin}/nonprod/api/v${process.env.REACT_APP_API_VERSION}${path}`;
   }
 
@@ -17,16 +17,16 @@ class API {
   }
 
   static async FETCH (path, options) {
-    let url = API.URL(path);
-    
-    options.headers =  {
+    const url = API.URL(path);
+
+    options.headers = {
       Authorization: options.auth || `${localStorage.getItem('token')}`
     };
 
     const resp = await fetch(url, options);
     resp.json = await resp.json();
-    
-    return resp.json; 
+
+    return resp.json;
   }
 
   static async endpoint (path, options) {

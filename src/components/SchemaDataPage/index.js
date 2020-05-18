@@ -39,8 +39,9 @@ class SchemaDataPage extends React.Component {
       load: true,
       dialog: false,
       insert: false,
-      insertError: false,
-      errorData: null
+      insertError: false, //TODO is this needed?
+      errorData: null,
+      saveError: null
     };
     this.originalData = [];
   }
@@ -112,6 +113,7 @@ class SchemaDataPage extends React.Component {
     
     console.log(body);
     const resp = await API.POST('/bulk', body);
+    console.log(resp);
     this.setState({ dialog: true });
   }
 
@@ -338,7 +340,11 @@ class SchemaDataPage extends React.Component {
         >
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              save finished
+              {this.state.saveError === true ? (
+                "Save failed"
+              ) : this.state.saveError === false ? (
+                "Save successful"
+              ) : ("")}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

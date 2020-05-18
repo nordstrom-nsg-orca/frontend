@@ -12,7 +12,6 @@ import API from 'util/api.js';
 import SchemaDataPage from 'components/SchemaDataPage';
 
 class Router extends React.Component {
-
   render () {
     const RouterType = this.props.auth.isOrcaUser ? Route : SecureRoute;
     return (
@@ -23,15 +22,15 @@ class Router extends React.Component {
               <RouterType
                 key={index}
                 path={`/schemas/${schema.id}`}
-                
-                //TODO pass full schema instead, this will save SchemaDataPage from calling the API for the schema
-                render={(props) => <SchemaDataPage id={schema.id} name={schema.name} />} 
+
+                // TODO pass full schema instead, this will save SchemaDataPage from calling the API for the schema
+                render={(props) => <SchemaDataPage id={schema.id} name={schema.name} />}
               />
             ))}
 
             <RouterType
               exact path='/schemas'
-              render={(props) => <SchemaDataPage name={'Edit Schemas'} />} 
+              render={(props) => <SchemaDataPage name='Edit Schemas' />}
             />
             <RouterType
               exact path='/'
@@ -56,7 +55,7 @@ class Router extends React.Component {
 Router.propTypes = {
   auth: PropTypes.object.isRequired,
   changeSetting: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired
   // tabs: PropTypes.object.isRequired
 };
 export default Router;

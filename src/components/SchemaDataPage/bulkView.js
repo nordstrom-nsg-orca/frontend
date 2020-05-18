@@ -11,9 +11,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close'
+import CloseIcon from '@material-ui/icons/Close';
 
-import API from 'util/api.js'
+import API from 'util/api.js';
 
 /*
 TODO
@@ -26,7 +26,7 @@ TODO
 */
 
 class BulkView extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
     };
@@ -36,7 +36,7 @@ class BulkView extends React.Component {
     event.preventDefault();
     const str = event.target.insertInput.value;
     let parsed, isJSON, error;
-    let body = [];
+    const body = [];
 
     try {
       parsed = JSON.parse(str);
@@ -50,17 +50,17 @@ class BulkView extends React.Component {
         return;
       }
     }
-    
+
     if (typeof parsed !== 'object' || !parsed) {
       error = true;
       this.setState({ insertError: error, errorData: null });
       return;
     }
 
-    for (let item of parsed) {
+    for (const item of parsed) {
       body.push({
         httpMethod: 'POST',
-        resource: `/schemas/{schemaId}/items`,
+        resource: '/schemas/{schemaId}/items',
         pathParameters: { schemaId: this.props.schemaId },
         body: item
       });
@@ -86,9 +86,9 @@ class BulkView extends React.Component {
     return (
       <div>
         <Dialog
-          aria-labelledby="customized-dialog-title"
+          aria-labelledby='customized-dialog-title'
           open={this.props.insert}
-          fullWidth={true}
+          fullWidth
           maxWidth='lg'
           classes={{ paper: classes.dialogPaper }}
         >
@@ -97,14 +97,14 @@ class BulkView extends React.Component {
             onClose={event => this.props.handleInsert(event, null)}
           >
             <span style={{ fontFamily: 'monospace, monospace' }}> Insert Data (JSON/YAML) </span>
-            <IconButton aria-label="close" className={classes.closeButton} onClick={this.props.closeInsert}>
+            <IconButton aria-label='close' className={classes.closeButton} onClick={this.props.closeInsert}>
               <CloseIcon />
             </IconButton>
             {(!this.props.errorData && this.props.insertError) &&
-             <span style={{ color: 'red', fontFamily: 'monospace, monospace', fontWeight: 'bold' }}> Bad Data Format </span>}
+              <span style={{ color: 'red', fontFamily: 'monospace, monospace', fontWeight: 'bold' }}> Bad Data Format </span>}
 
             {(this.props.errorData && this.props.insertError) &&
-             <span style={{ color: 'red', fontFamily: 'monospace, monospace', fontWeight: 'bold' }}> Failed to Insert Data </span>}
+              <span style={{ color: 'red', fontFamily: 'monospace, monospace', fontWeight: 'bold' }}> Failed to Insert Data </span>}
 
           </DialogTitle>
           <form onSubmit={this.insert} name='insert' id='insert'>
@@ -118,37 +118,36 @@ class BulkView extends React.Component {
                 type='text'
                 name='insertInput'
                 inputRef={event => this.insertData = event}
-                placeholder="Paste Your Data Here"
+                placeholder='Paste Your Data Here'
                 inputProps={{
-                 style: { fontSize: 15 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace', overflow: 'auto', minHeight: '45vh', maxHeight: '95vh' }
+                  style: { fontSize: 15, letterSpacing: '0.1em', fontFamily: 'monospace, monospace', overflow: 'auto', minHeight: '45vh', maxHeight: '95vh' }
                 }}
                 onKeyDown={event => this.handleTabCharacter(event)}
               />
               {(this.props.errorData && this.props.insertError) &&
                 <div>
-                <span style={{ fontWeight: 'bold', color: 'red', fontSize: 17 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace', marginTop: '10px' }}> Bad Lines Below: </span>
-                <Typography style={{ minHeight: '30vh', maxHeight: '30vh', overflow: 'auto' }}>
-                  {this.props.errorData.map(err =>
-                   <div style={{ fontSize: 15 , letterSpacing: '0.1em', fontFamily: 'monospace, monospace' }}>
-                     <pre>
-                       {!err.isJSON ? yaml.stringify([err.data], { indent: 2, indentSeq: false, prettyErrors: true }) : JSON.stringify(err.data, null, 4)}
-                     </pre>
-                     <pre style={{ color: 'red' }}>
-                       {yaml.stringify({ 'errors': err.errors }, { indent: 2, indentSeq: true, prettyErrors: true })}
-                     </pre>
-                   </div>
-                  )}
-                </Typography>
+                  <span style={{ fontWeight: 'bold', color: 'red', fontSize: 17, letterSpacing: '0.1em', fontFamily: 'monospace, monospace', marginTop: '10px' }}> Bad Lines Below: </span>
+                  <Typography style={{ minHeight: '30vh', maxHeight: '30vh', overflow: 'auto' }}>
+                    {this.props.errorData.map(err =>
+                      <div style={{ fontSize: 15, letterSpacing: '0.1em', fontFamily: 'monospace, monospace' }}>
+                        <pre>
+                          {!err.isJSON ? yaml.stringify([err.data], { indent: 2, indentSeq: false, prettyErrors: true }) : JSON.stringify(err.data, null, 4)}
+                        </pre>
+                        <pre style={{ color: 'red' }}>
+                          {yaml.stringify({ errors: err.errors }, { indent: 2, indentSeq: true, prettyErrors: true })}
+                        </pre>
+                      </div>)}
+                  </Typography>
                 </div>}
 
             </DialogContent>
             <DialogActions>
-              <Button autoFocus type='submit' color="primary">
+              <Button autoFocus type='submit' color='primary'>
                 Save
               </Button>
             </DialogActions>
           </form>
-         </Dialog>
+        </Dialog>
 
       </div>
     );
