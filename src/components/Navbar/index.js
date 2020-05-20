@@ -39,7 +39,7 @@ class Navbar extends React.Component {
           classes={classes}
           changeSidebar={this.changeSidebar}
         />
-        {false && ( //this.props.auth.authenticated && (
+        {false && ( //this.props.auth.authenticated && ( TEMPORARILY REMOVE UNTIL PAGES IMPLEMENTED
           <Sidebar
             classes={classes}
             // tabs={this.props.tabs}

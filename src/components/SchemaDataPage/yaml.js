@@ -57,6 +57,7 @@ const Arr = (props) => {
               itemKey={i}
               path={props.path}
               schema={props.schema}
+              edit={props.edit}
             />
           )}
         </div>
@@ -75,18 +76,29 @@ const Arr = (props) => {
   );
 };
 
+// Label return the property name AND the value if not in edit mode
 const Label = (props) => {
   return (
     <span style={{ marginRight: '8px' }}>
-      <span style={{ color: '#26c6da' }}>{props.name}</span>:
+      {typeof props.name !== 'undefined' ? (
+        <span><span style={{ color: '#26c6da' }}>{props.name}</span>:</span>
+      ) : (
+        <span>{String(props.val)}</span>
+      )}
+      
     </span>
   );
 };
 
 // key is needed in order to know the value has changed for a rerender
 const Input = (props) => {
+
+  if (!props.edit) {
+    return (
+      <Label val={props.val}/>
+    );
   // if it is an ENUM, render a select with the options
-  if (Array.isArray(props.schema.enum)) {
+  } else if (Array.isArray(props.schema.enum)) {
     return (
       <Select
         MenuProps={{
@@ -105,6 +117,26 @@ const Input = (props) => {
         {props.schema.enum.map(item => (
           <MenuItem style={{ ...font, cursor: 'pointer' }} value={item}>{item}</MenuItem>
         ))}
+      </Select>
+    );
+  } else if (props.schema.type === 'boolean') {
+    return (
+      <Select
+        MenuProps={{
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left'
+          },
+          getContentAnchorEl: null
+        }}
+        disableUnderline
+        style={{ fontFamily: 'inherit' }}
+        SelectDisplayProps={{ style: { padding: '0px 24px 0px 0px' } }}
+        onChange={props.selectChange.bind(this, props.path, props.itemKey, props.schema, props.val)}
+        value={props.val}
+      >
+        <MenuItem style={{ ...font, cursor: 'pointer' }} value={true}>true</MenuItem>
+        <MenuItem style={{ ...font, cursor: 'pointer' }} value={false}>false</MenuItem>
       </Select>
     );
   } else {
@@ -173,6 +205,7 @@ const Obj = (props) => {
               itemKey={propName}
               path={props.path}
               schema={prop}
+              edit={props.edit}
             />
           ) : (
             <div>ERROR - UNKNOWN type</div>

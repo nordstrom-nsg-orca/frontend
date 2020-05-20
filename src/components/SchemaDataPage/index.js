@@ -36,11 +36,11 @@ class SchemaDataPage extends React.Component {
       schema: {},
       yaml: true,
       edit: false,
-      load: true,
+      loading: true,
       dialog: false,
       insert: false,
       insertError: false, //TODO is this needed?
-      errorData: null,
+      errorData: null,    //TODO 3 error vars? one should suffice with an error message var also
       saveError: null
     };
     this.originalData = [];
@@ -65,12 +65,13 @@ class SchemaDataPage extends React.Component {
     this.setState({
       data: data, 
       schema: schema,
-      load: false
+      loading: false
     });
   }
   
   // builds bulk reqeust from changes made to data
   saveData = async () => {
+    this.setState({ loading: true })
     const body = [];
     for (let i = 0; i < this.state.data.length; i++) {
       const item = this.state.data[i];
@@ -111,10 +112,17 @@ class SchemaDataPage extends React.Component {
       }
     }
     
-    console.log(body);
     const resp = await API.POST('/bulk', body);
-    console.log(resp);
-    this.setState({ dialog: true });
+    
+    const error = false;
+    for (const i of resp) {
+      if (i.error) {
+        error = true
+        break;
+      }
+    }
+    
+    // this.setState({ dialog: true });
   }
 
   // adds a new item to the dataset
@@ -211,13 +219,8 @@ class SchemaDataPage extends React.Component {
   }
 
   // attempts to cast value as the datatype from path
+  // TODO implement once regex and other things allowed. 
   parseType = (value, schema) => {
-    if (schema.type === 'boolean') {
-      let lower = value.toLowerCase();
-      if (!['true','false'].includes(lower))
-        throw "PARSE ERROR - boolean";
-      return lower === 'true';
-    }
     return value;
   }
 
@@ -275,28 +278,28 @@ class SchemaDataPage extends React.Component {
 
           <div style={{ marginLeft: 'auto' }}>
             <Button value="SAVE" onClick={this.saveData}>SAVE</Button>
-            <Button value="VIEW" onClick={event => this.setState({yaml: !this.state.yaml})}>VIEW</Button>
+            {/* <Button value="VIEW" onClick={event => this.setState({yaml: !this.state.yaml})}>VIEW</Button> */}
             <Button value="EDIT" onClick={event => this.setState({edit: !this.state.edit})}>EDIT</Button>
             <Button value="BULK" onClick={event => this.setState({ insert: true })}>BULK</Button>
-            <TextField
+            {/* <TextField
               size='small'
               label='search'
               variant='outlined'
               onChange={this.handleSearch}
-            />
+            /> */}
           </div>
         </div>
 
-        {this.state.load && (
+        {this.state.loading && (
           <div align='center' style={{ paddingTop: '50px' }}>
             <CircularProgress />
           </div>
         )}
 
-        {(this.state.data.length == 0 && !this.state.load) && (
+        {(this.state.data.length == 0 && !this.state.loading) && (
           <Paper style={{padding: '10px', textAlign: 'center'}}>
             <Typography>
-            There doesn't appear to be anything here yet. Click the + to add an item!
+              There doesn't appear to be anything here yet. {this.state.edit ? 'Click the + to add an item!' : ''}
             </Typography>
           </Paper>
         )}        
