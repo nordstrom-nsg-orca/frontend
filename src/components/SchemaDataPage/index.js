@@ -36,11 +36,11 @@ class SchemaDataPage extends React.Component {
       schema: {},
       yaml: true,
       edit: false,
-      loading: true,
+      load: true,
       dialog: false,
       insert: false,
       insertError: false, //TODO is this needed?
-      errorData: null,    //TODO 3 error vars? one should suffice with an error message var also
+      errorData: null,
       saveError: null
     };
     this.originalData = [];
@@ -65,13 +65,12 @@ class SchemaDataPage extends React.Component {
     this.setState({
       data: data, 
       schema: schema,
-      loading: false
+      load: false
     });
   }
   
   // builds bulk reqeust from changes made to data
   saveData = async () => {
-    this.setState({ loading: true })
     const body = [];
     for (let i = 0; i < this.state.data.length; i++) {
       const item = this.state.data[i];
@@ -114,15 +113,18 @@ class SchemaDataPage extends React.Component {
     
     const resp = await API.POST('/bulk', body);
     
-    const error = false;
+
+    let error = false;
     for (const i of resp) {
       if (i.error) {
         error = true
+        console.log('SAVE RESPONSE: ');
+        console.log(JSON.stringify(resp, null, 2));
         break;
       }
     }
     
-    // this.setState({ dialog: true });
+    this.setState({ dialog: true, saveError: error });
   }
 
   // adds a new item to the dataset
@@ -219,7 +221,7 @@ class SchemaDataPage extends React.Component {
   }
 
   // attempts to cast value as the datatype from path
-  // TODO implement once regex and other things allowed. 
+  // TODO implement once regex and other things allowed.
   parseType = (value, schema) => {
     return value;
   }
@@ -290,13 +292,13 @@ class SchemaDataPage extends React.Component {
           </div>
         </div>
 
-        {this.state.loading && (
+        {this.state.load && (
           <div align='center' style={{ paddingTop: '50px' }}>
             <CircularProgress />
           </div>
         )}
 
-        {(this.state.data.length == 0 && !this.state.loading) && (
+        {(this.state.data.length == 0 && !this.state.load) && (
           <Paper style={{padding: '10px', textAlign: 'center'}}>
             <Typography>
               There doesn't appear to be anything here yet. {this.state.edit ? 'Click the + to add an item!' : ''}
@@ -339,20 +341,20 @@ class SchemaDataPage extends React.Component {
 
         <Dialog
           open={this.state.dialog}
-          onClose={event => {console.log('close')}}
+          onClose={event => {this.setState({dialog: false}); this.loadData()}}
         >
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+            <DialogContentText style={{color:'inherit'}}>
               {this.state.saveError === true ? (
-                "Save failed"
-              ) : this.state.saveError === false ? (
-                "Save successful"
-              ) : ("")}
+                "Save failed. Invalid Schema. View console for more information"
+              ) : (
+                "Save successful" 
+              )}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={event => this.setState({ dialog: false })}>
-              Agree
+              OK
             </Button>
           </DialogActions>
         </Dialog>

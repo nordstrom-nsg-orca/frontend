@@ -171,7 +171,7 @@ Topbar.propTypes = {
   classes: PropTypes.object.isRequired,
   changeSidebar: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  logout: PropTypes.func.isRequired,
-  tabs: PropTypes.object.isRequired
+  logout: PropTypes.func.isRequired
+  // tabs: PropTypes.object.isRequired
 };
 export default Topbar;
