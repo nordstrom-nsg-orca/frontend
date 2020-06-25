@@ -39,7 +39,7 @@ resources:
                 OriginProtocolPolicy: http-only
             # added this here
             -
-              DomainName: { 'Fn::ImportValue': 'ApiHostname-v${self:custom.apiVersion}' }
+              DomainName: { 'Fn::ImportValue': 'OrcaAPI-v${self:custom.apiVersion}-${self:provider.stage}' }
               OriginPath: /${self:provider.stage}
               Id: APIGatewayOrigin
               CustomOriginConfig:
@@ -118,7 +118,7 @@ resources:
               QueryString: true
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate:
-            AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/ecbcbeef-8eb4-44aa-8c7b-9d8a92922fb4
+            AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/239db6b3-60d5-4314-82c1-5376a3726319
             SslSupportMethod: sni-only
 
     wwwnsgweb:
@@ -133,9 +133,9 @@ resources:
 
 
 custom:
-  domainName: orca-nonprod.nordstrom.net
+  domainName: orca.nordstrom.net
   webEndpoint: s3-website-us-west-2.amazonaws.com
-  apiVersion: 1
+  apiVersion: 3
   # uploads npm run build to S3
   s3Sync:
     - bucketName: ${self:custom.domainName}

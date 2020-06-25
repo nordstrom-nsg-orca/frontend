@@ -12,10 +12,7 @@ class Dashboard extends React.Component {
             This is only a temporary Dashboard while the real Dashboard features are in development.
           </Typography>
           <Typography style={{marginTop: '30px'}}>
-            This version of Orca allows complete freedom of building schemas for custom data storage. In order to get started building a schema, click the SCHEMAS tab and select EDIT SCHEMAS to view all the current schemas!
-          </Typography>
-          <Typography style={{marginTop: '8px'}}>
-            Click the edit button in order to make changes to Schemas or to create a new one. The + symbolizes Adding and the - symbolizes deleting. Changes aren't saved until you click the Save button. 
+            This version of Orca allows you to build custom schemas for custom data storage. In order to get started, click the SCHEMAS tab and select EDIT SCHEMAS!
           </Typography>
           <Typography style={{marginTop: '8px'}}>
             The design of Schemas is based off of <a target="_blank" href="https://json-schema.org/" style={{textDecoration:'underline'}}>JSON Schema</a>. The schema's created here are processed into JSON Schema definitions which are used for data validation. An understanding of JSON Schema isn't required to use Orca, though.
@@ -30,7 +27,7 @@ class Dashboard extends React.Component {
             Creating a Schema is similar to creating a SQL Table. A column in SQL is similar to a Property in Orca. Properties in Orca differ in that they allow for properties to contain objects instead of just primitive data types. 
           </Typography>
           <Typography style={{marginTop: '8px'}}>
-            When you create a new Schema, two values are first available to edit. The <code>name</code> is the name of the Schema. This is the same name used to retrieve the data with the ansible plugins.
+            When you create a new Schema, two values are first available to edit. The <code>name</code> is self explanatory. This is the same name used to retrieve the data with the ansible plugins.
           </Typography>
           <Typography style={{marginTop: '8px'}}>
             The next value is <code>properties</code> and this is an array of objects. Each property object requires at least three values: <code>name</code>, <code>type</code>, <code>required</code>.
