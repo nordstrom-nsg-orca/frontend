@@ -15,7 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 import API from 'util/api.js';
-
+// import style from './style.js';
 /*
 TODO
     REMOVE ALL UNNEEDED ATTRIBUTES
