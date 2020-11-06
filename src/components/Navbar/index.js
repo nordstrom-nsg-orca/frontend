@@ -19,11 +19,11 @@ class Navbar extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (this.state.currentTab === null) {
-      const tab = window.location.pathname.split('/')[1];
-      if (props.tabs[tab] && props.tabs[tab].allowed)
-        this.setState({ currentTab: tab });
-    }
+    // if (this.state.currentTab === null) {
+    //   const tab = window.location.pathname.split('/')[1];
+    //   if (props.tabs[tab] && props.tabs[tab].allowed)
+    //     this.setState({ currentTab: tab });
+    // }
   }
 
   render () {
@@ -34,14 +34,15 @@ class Navbar extends React.Component {
         <Topbar
           auth={this.props.auth}
           logout={this.props.logout}
-          tabs={this.props.tabs}
+          schemas={this.props.schemas}
+          // tabs={this.props.tabs}
           classes={classes}
           changeSidebar={this.changeSidebar}
         />
-        {this.props.auth.authenticated && (
+        {false && ( //this.props.auth.authenticated && ( TEMPORARILY REMOVE UNTIL PAGES IMPLEMENTED
           <Sidebar
             classes={classes}
-            tabs={this.props.tabs}
+            // tabs={this.props.tabs}
             currentTab={this.state.currentTab}
           />
         )}
@@ -58,7 +59,7 @@ Navbar.propTypes = {
   classes: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
   children: PropTypes.array.isRequired,
-  auth: PropTypes.object.isRequired,
-  tabs: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired
+  // tabs: PropTypes.object.isRequired
 };
 export default withStyles(style)(Navbar);

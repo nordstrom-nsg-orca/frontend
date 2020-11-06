@@ -71,14 +71,14 @@ class App extends React.Component {
     localStorage.setItem('token', token);
     // console.log(token);
 
-    const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
-    // console.log(allowedPages);
-    const tabs = await generateTabs(allowedPages.json);
+    // const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
+    // const tabs = generateTabs(allowedPages.json);
     // console.log(tabs);
-
+    const schemas = await API.GET('/schemas');
+    console.log(schemas);
     this.sessionTimer = setInterval(this.logout, this.sessionTime);
     this.setState({
-      tabs: tabs,
+      schemas: schemas,
       auth: {
         authenticated: authenticated,
         user: user,
@@ -130,7 +130,7 @@ class App extends React.Component {
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
             <div style={{ background: 'theme.palette.background', minHeight: '100vh' }}>
-              <Navbar auth={this.state.auth} logout={this.logout} tabs={this.state.tabs}>
+              <Navbar auth={this.state.auth} logout={this.logout} schemas={this.state.schemas}>
 
                 {this.state.auth.authenticated === false && (
                   <div>
@@ -151,7 +151,7 @@ class App extends React.Component {
                     auth={this.state.auth}
                     changeSetting={this.changeSetting}
                     settings={this.state.settings}
-                    tabs={this.state.tabs}
+                    schemas={this.state.schemas}
                   />
                 )}
                 <Route
