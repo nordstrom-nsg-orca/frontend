@@ -5,6 +5,8 @@ import base64 from 'base-64';
 class API {
   static URL (path) {
     const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001/nonprod' : window.location.origin;
+    // console.log(origin);
+    // return `https://orca-nonprod.nordstrom.net/api/v1000${path}`;
     return `${origin}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
   }
 
