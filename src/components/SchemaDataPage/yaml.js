@@ -176,8 +176,11 @@ const Obj = (props) => {
       // NEEDS TO BE BEFORE $REF CHECK TO AVOID INFINITE LOOP (self ref schemas)
       if (prop.onlyIf) {
         const key = Object.keys(prop.onlyIf)[0];
-        if (props.data[key] !== prop.onlyIf[key])
-          return;
+        if (props.data[key] !== prop.onlyIf[key]) {
+          return (
+            <div> </div>
+          );
+        }
       }
 
       // if the prop is a reference, get the referenced object
