@@ -1,11 +1,11 @@
 import React from 'react';
-import yaml from 'yaml';
+// import yaml from 'yaml';
 import { withRouter } from 'react-router';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
+// import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -15,8 +15,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormGroup from '@material-ui/core/FormGroup';
+// import DialogTitle from '@material-ui/core/DialogTitle';
+// import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import SaveRoundedIcon from '@material-ui/icons/SaveRounded';
@@ -25,15 +25,13 @@ import InsertDriveFileRoundedIcon from '@material-ui/icons/InsertDriveFileRounde
 import YAML from 'components/SchemaDataPage/yaml.js';
 import TABLE from 'components/SchemaDataPage/table.js';
 import Bulk from 'components/SchemaDataPage/bulkView.js';
-import API from 'util/api.js'
+import API from 'util/api.js';
 
-//TODO REMOVE STYLE FILE
+// TODO REMOVE STYLE FILE
 import style from './style.js';
 
-
 class SchemaDataPage extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       data: [],
@@ -43,37 +41,34 @@ class SchemaDataPage extends React.Component {
       load: true,
       dialog: false,
       insert: false,
-      insertError: false, //TODO is this needed?
+      insertError: false, // TODO is this needed?
       errorMessage: null,
       errorData: null,
       saveError: null,
       changes: false,
-      unsavedData: null,
+      unsavedData: null
     };
     this.initail = this.state;
     this.originalData = [];
   }
 
   componentWillUnmount = async () => {
-
     if (this.state.changes) {
-      console.log('I dont want to leave')
+      console.log('I dont want to leave');
       if (!window.confirm('You have unsaved changes. Are you sure you want to leave?')) {
         // This is the hard part. You can naively say "go back", but you can't be 100% sure
         // that will take them to the location they came from. It's just a guess.
         // this.props.history.push(this.props.location.pathname);
         localStorage.setItem('schemaState', JSON.stringify(this.state));
         this.props.history.goBack();
-      } else {
+      } else
         localStorage.setItem('schemaState', null);
-      }
     } else {
       this.props.history.goForward();
       localStorage.setItem('schemaState', null);
       console.log(this.props.history);
     }
   }
-
 
   componentDidMount = async () => {
     await this.loadData();
@@ -112,21 +107,20 @@ class SchemaDataPage extends React.Component {
   // builds bulk reqeust from changes made to data
   saveData = async () => {
     const body = [];
-    let data = this.state.data;
+    const data = this.state.data;
     console.log(data);
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
 
-      const request = {
-         resource: '/schemas/{schemaId}/items',
-         pathParameters: { schemaId: this.state.id }
-      };
+      // const request = {
+      //   resource: '/schemas/{schemaId}/items',
+      //   pathParameters: { schemaId: this.state.id }
+      // };
       // anything with a status has been modified.
       if (typeof item.status !== 'undefined') {
-
         // TODO clean up this if/else into a single block
         if (typeof this.props.id === 'number') {
-          const request = { httpMethod: item.status, pathParameters: { schemaId: this.props.id }};
+          const request = { httpMethod: item.status, pathParameters: { schemaId: this.props.id } };
           request.resource = '/schemas/{schemaId}/items';
 
           // no body needed in a DELETE
@@ -151,18 +145,19 @@ class SchemaDataPage extends React.Component {
           // modifying item requires itemId
           if (['PUT', 'DELETE'].includes(item.status)) {
             request.resource += '/{schemaId}';
-            request.pathParameters = { schemaId : item.id };
+            request.pathParameters = { schemaId: item.id };
           }
           body.push(request);
         }
       }
+      // console.log(request);
     }
     // console.log(body)
     const resp = await API.POST('/bulk', body);
     let error = false;
     for (const i of resp) {
       if (i.error) {
-        error = true
+        error = true;
         console.log('SAVE RESPONSE: ');
         console.log(JSON.stringify(resp, null, 2));
         return;
@@ -181,12 +176,12 @@ class SchemaDataPage extends React.Component {
       schemaid: this.props.id,
       data: this.buildObject(this.state.schema.schema),
       status: 'POST'
-    }
+    };
     console.log('addItem newItem');
     console.log(newItem);
     copy.push(newItem);
     console.log(copy);
-    this.setState({ data: copy, changes: true, unsavedData: copy })
+    this.setState({ data: copy, changes: true, unsavedData: copy });
   }
 
   // flags an item for DELETE
@@ -195,7 +190,7 @@ class SchemaDataPage extends React.Component {
     // console.log(copy);
     // a POST is a new row that hasn't been added yet, so it can't be deleted
     if (copy[index].status === 'POST')
-      copy.splice(index,1);
+      copy.splice(index, 1);
     else
       copy[index].status = 'DELETE';
 
@@ -204,12 +199,10 @@ class SchemaDataPage extends React.Component {
 
   // builds an empty dict of schema
   buildObject = (schema, stop = false) => {
-
     const newItem = {};
-    let isRef = false;
+    const isRef = false;
 
-    for (let [k, v] of Object.entries(schema.properties)){
-
+    for (const [k, v] of Object.entries(schema.properties)) {
       // TODO
       // don't create items that are onlyIf, this protects from infinite loop with self ref schemas
       // BUG: when making a new schema, items/properties have left over vals from changing types, causing save errors
@@ -217,9 +210,8 @@ class SchemaDataPage extends React.Component {
         continue;
 
       if (v.type === 'object') {
-        console.log('object' + isRef)
-        newItem[k] = this.buildObject(v, isRef)
-
+        console.log('object' + isRef);
+        newItem[k] = this.buildObject(v, isRef);
       } else if (v.type === 'array')
         newItem[k] = [];
       else
@@ -235,12 +227,10 @@ class SchemaDataPage extends React.Component {
     obj[path[0]].status = obj[path[0]].status || 'PUT';
 
     for (let j = 0; j < path.length; j++) {
-
       if (obj[path[j]] == null) {
         obj[path[j]] = type;
         console.log('getItem NULL');
       }
-
 
       obj = obj[path[j]];
     }
@@ -251,22 +241,21 @@ class SchemaDataPage extends React.Component {
   addIndex = (path, schema) => {
     console.log(path);
     const copy = [...this.state.data];
-    let item = this.getItemFromPath(path, copy, []);
+    const item = this.getItemFromPath(path, copy, []);
     let newItem = null;
 
-    if (schema.type == 'object')
+    if (schema.type === 'object')
       newItem = this.buildObject(schema);
 
     item.push(newItem);
     console.log(item);
     console.log('Adding new stuffs');
     console.log(copy);
-    this.setState({ data: copy, changes: true, unsavedData: copy })
+    this.setState({ data: copy, changes: true, unsavedData: copy });
   }
 
   // removes an index from an Array
   removeIndex = (path, index) => {
-
     var copy = [...this.state.data];
     var item = this.getItemFromPath(path, copy);
     item.splice(index, 1);
@@ -315,7 +304,7 @@ class SchemaDataPage extends React.Component {
     let schema = { ...this.state.schema.schema };
 
     for (var i = 1; i < refs.length; i++)
-      schema = schema[refs[i]]
+      schema = schema[refs[i]];
 
     return schema;
   }
@@ -325,12 +314,10 @@ class SchemaDataPage extends React.Component {
     if (success) {
       this.loadData();
       this.setState({ insert: false, dialog: true, saveError: false, changes: false });
-    }
-    else {
+    } else {
       // console.log('Im here');
       this.setState({ insert: true, dialog: true, saveError: true, errorMessage: message });
     }
-
   }
 
   render () {
@@ -348,23 +335,23 @@ class SchemaDataPage extends React.Component {
 
             <Button
 
-              color={this.state.changes ? "secondary" : "primary"}
-              size="small"
-              value="SAVE"
+              color={this.state.changes ? 'secondary' : 'primary'}
+              size='small'
+              value='SAVE'
               onClick={this.saveData}
               startIcon={<SaveRoundedIcon />}
-              style={{ marginRight: "10px" }}
+              style={{ marginRight: '10px' }}
             >
               Save
             </Button>
             <Button
 
-              value="BULK"
-              size="small"
+              value='BULK'
+              size='small'
               onClick={event => this.setState({ insert: true })}
-              color="primary"
+              color='primary'
               startIcon={<InsertDriveFileRoundedIcon />}
-              style={{ marginRight: "10px" }}
+              style={{ marginRight: '10px' }}
             >
               BULK
             </Button>
@@ -372,12 +359,12 @@ class SchemaDataPage extends React.Component {
               control={
                 <Switch
                   checked={this.state.edit}
-                  onChange={event => this.setState({edit: !this.state.edit})}
-                  name="edit"
-                  color="primary"
+                  onChange={event => this.setState({ edit: !this.state.edit })}
+                  name='edit'
+                  color='primary'
                 />
               }
-              label="EDIT"
+              label='EDIT'
             />
             {/* <TextField
               size='small'
@@ -396,7 +383,7 @@ class SchemaDataPage extends React.Component {
         )}
 
         {(!this.state.data && !this.state.load) && (
-          <Paper style={{padding: '10px', textAlign: 'center'}}>
+          <Paper style={{ padding: '10px', textAlign: 'center' }}>
             <Typography>
               There doesn't appear to be anything here yet. {this.state.edit ? 'Click the + to add an item!' : ''}
             </Typography>
@@ -404,14 +391,15 @@ class SchemaDataPage extends React.Component {
         )}
         {this.state.data.map((item, i) => (
           item.status !== 'DELETE' && (
-            <Paper style={{padding: '10px', marginTop: '10px'}} key={(this.state.data.length)*(i+1)}>
-            {/* <Paper style={{padding: '10px', marginTop: '10px'}} key={item.data}></Paper> */}
-              {this.state.edit == true && (
-                <IconButton onClick={this.removeItem.bind(this, i)} style={{float: 'right'}}>
+            <Paper style={{ padding: '10px', marginTop: '10px' }} key={(this.state.data.length) * (i + 1)}>
+              {/* <Paper style={{padding: '10px', marginTop: '10px'}} key={item.data}></Paper> */}
+              {this.state.edit === true && (
+                <IconButton onClick={this.removeItem.bind(this, i)} style={{ float: 'right' }}>
                   <ClearIcon />
                 </IconButton>
               )}
               <View
+                key={(this.state.data.length) * (i + 1)}
                 edit={this.state.edit}
                 data={item.data}
                 schema={this.state.schema.schema}
@@ -428,23 +416,23 @@ class SchemaDataPage extends React.Component {
         ))}
 
         {this.state.edit === true && (
-          <div style={{display: 'flex', marginTop: '10px', justifyContent: 'center'}}>
-          <IconButton onClick={this.addItem} style={{position: ''}}>
-            <AddIcon />
-          </IconButton>
+          <div style={{ display: 'flex', marginTop: '10px', justifyContent: 'center' }}>
+            <IconButton onClick={this.addItem} style={{ position: '' }}>
+              <AddIcon />
+            </IconButton>
           </div>
         )}
 
         <Dialog
           open={this.state.dialog}
-          onClose={event => {this.setState({dialog: false}); this.loadData()}}
+          onClose={event => { this.setState({ dialog: false }); this.loadData(); }}
         >
           <DialogContent>
-            <DialogContentText style={{color:'inherit'}}>
+            <DialogContentText style={{ color: 'inherit' }}>
               {this.state.saveError === true ? (
-                "Save failed. " + this.state.errorMessage
+                'Save failed. ' + this.state.errorMessage
               ) : (
-                "Save successful!"
+                'Save successful!'
               )}
             </DialogContentText>
           </DialogContent>
@@ -463,7 +451,7 @@ class SchemaDataPage extends React.Component {
           insert={this.state.insert}
           insertError={this.state.insertError}
           errorData={this.state.errorData}
-          closeInsert={event => this.setState({insert:false})}
+          closeInsert={event => this.setState({ insert: false })}
           handleInsert={this.handleInsert}
         />
 
@@ -471,7 +459,12 @@ class SchemaDataPage extends React.Component {
     );
   }
 }
-
+SchemaDataPage.propTypes = {
+  history: PropTypes.object.isRequired,
+  id: PropTypes.number.isRequired,
+  classes: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired
+};
 export default withRouter(withStyles(style)(SchemaDataPage));
 // <Button value="SAVE" onClick={this.saveData}> SAVE </Button>
 // {/* <Button value="VIEW" onClick={event => this.setState({yaml: !this.state.yaml})}>VIEW</Button> */}

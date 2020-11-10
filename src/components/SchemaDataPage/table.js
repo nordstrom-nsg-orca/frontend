@@ -1,14 +1,15 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-import Button from '@material-ui/core/Button';
+// import Typography from '@material-ui/core/Typography';
+// import Paper from '@material-ui/core/Paper';
+// import InputBase from '@material-ui/core/InputBase';
+// import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
-import RemoveIcon from '@material-ui/icons/Remove';
+// import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
+// import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -23,19 +24,19 @@ class TABLE extends React.Component {
   }
 }
 
-const Arr = (props) => {
-  // console.log('Arr');
-  // console.log(props)
-  return (
-    <div />
-  );
-};
-
-const Field = (props) => {
-  return (
-    <div />
-  );
-};
+// const Arr = (props) => {
+//   // console.log('Arr');
+//   // console.log(props)
+//   return (
+//     <div />
+//   );
+// };
+//
+// const Field = (props) => {
+//   return (
+//     <div />
+//   );
+// };
 
 const Obj = (props) => {
   // console.log('Obj');
@@ -45,7 +46,7 @@ const Obj = (props) => {
       <TableHead>
         <TableRow>
           {props.schema.order.map((propName, i) => (
-            <TableCell style={{ fontWeight: 'bold', color: '#26c6da' }}>
+            <TableCell style={{ fontWeight: 'bold', color: '#26c6da' }} key={propName}>
               {propName}
             </TableCell>
           ))}
@@ -55,9 +56,9 @@ const Obj = (props) => {
       {/* need to update this part with the ordered props, forgot what this does though */}
       {Array.isArray(props.data) ? (
         props.data.map((item, i) => (
-          <TableRow>
+          <TableRow key={item}>
             {Object.entries(props.schema.properties).map(([propName, prop], j) => (
-              <TableCell>
+              <TableCell key={propName}>
                 {item[propName]}
               </TableCell>
             ))}
@@ -68,7 +69,7 @@ const Obj = (props) => {
           {props.schema.order.map((propName, i) => {
             const prop = props.schema.properties[propName];
             return (
-              <TableCell>
+              <TableCell key={propName}>
                 {prop.type === 'object' ? (
                   <Obj
                     {...props}
@@ -108,4 +109,15 @@ const Obj = (props) => {
   );
 };
 
+Obj.propTypes = {
+  schema: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
+  path: PropTypes.string.isRequired,
+  addIndex: PropTypes.func.isRequired,
+  edit: PropTypes.bool.isRequired
+};
+TABLE.propTypes = {
+  schema: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired
+};
 export default TABLE;

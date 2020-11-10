@@ -9,11 +9,11 @@ class API {
   }
 
   static async GET (path, options = {}) {
-    return await API.FETCH(path, { method: 'GET' });
+    return API.FETCH(path, { method: 'GET' });
   }
 
   static async POST (path, body) {
-    return await API.FETCH(path, { method: 'POST', body: JSON.stringify(body) });
+    return API.FETCH(path, { method: 'POST', body: JSON.stringify(body) });
   }
 
   static async FETCH (path, options) {

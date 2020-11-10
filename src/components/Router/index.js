@@ -9,7 +9,7 @@ import PageContent from 'components/PageContent';
 import Dashboard from 'pages/Dashboard';
 import Settings from 'pages/Settings';
 import Error from 'pages/Error';
-import API from 'util/api.js';
+// import API from 'util/api.js';
 import SchemaDataPage from 'components/SchemaDataPage';
 
 class Router extends React.Component {
@@ -56,7 +56,8 @@ class Router extends React.Component {
 Router.propTypes = {
   auth: PropTypes.object.isRequired,
   changeSetting: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired
+  settings: PropTypes.object.isRequired,
+  schemas: PropTypes.array.isRequired
   // tabs: PropTypes.object.isRequired
 };
 export default Router;

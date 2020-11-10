@@ -1,6 +1,7 @@
 import yaml from 'yaml';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -36,18 +37,18 @@ class BulkView extends React.Component {
   insert = async (event) => {
     event.preventDefault();
     const str = event.target.insertInput.value;
-    let parsed, isJSON, error;
+    let parsed, error;
     const body = [];
 
     try {
       parsed = JSON.parse(str);
       // console.log(parsed);
-      isJSON = true;
+      // isJSON = true;
     } catch (err) {
       try {
         parsed = yaml.parse(str);
         // console.log(parsed);
-        isJSON = false;
+        // isJSON = false;
       } catch (err) {
         console.log('COULD NOT PARSE');
         this.props.handleInsert(false, 'Bad Data Format.');
@@ -55,10 +56,10 @@ class BulkView extends React.Component {
       }
     }
 
-    if (typeof parsed === 'object' || !parsed) {
+    if (typeof parsed === 'object' || !parsed)
       parsed = Object.values(parsed)[0];
       // console.log(parsed);
-    } else if (!(parsed instanceof Array)) {
+    else if (!(parsed instanceof Array)) {
       error = true;
       this.setState({ insertError: error, errorData: null });
       return;
@@ -69,17 +70,17 @@ class BulkView extends React.Component {
 
     var properties;
     var key;
-    for (key in newItem) {
-      properties = this.props.schema.properties[key].items.properties;
-      key = key;
+    for (var tempKey in newItem) {
+      properties = this.props.schema.properties[tempKey].items.properties;
+      key = tempKey;
     }
     // console.log(properties);
     // console.log(key);
     for (const item of parsed) {
       var temp = {};
-      for (var uuid in properties) {
+      for (var uuid in properties)
         temp[uuid] = item[properties[uuid].name];
-      }
+
       newItem[key].push(temp);
     }
     // console.log(newItem);
@@ -92,45 +93,44 @@ class BulkView extends React.Component {
     // console.log(body);
     const resp = await API.POST('/bulk', body);
     console.log(resp);
-    if ("id" in resp[0]) {
+    if ('id' in resp[0]) {
       console.log('Successfully added.');
       this.props.handleInsert(true);
-    } else {
+    } else
       this.props.handleInsert(false, 'Invalid Schema.');
-    }
-  //   if (response.length === 0) {
-  //       this.setState({ insertError: true });
-  //       return;
-  //   }
-  //   let errors = [];
-  //   for (let i = 0; i < response.length; i++) {
-  //     const info = response[i];
-  //      if ('error' in info) {
-  //         error = true;
-  //         const temp = {
-  //           data: data[i]
-  //         };
-  //         temp.errors = info.error.message;
-  //         if (isJSON) {
-  //           // errors.push(JSON.stringify([temp], null, 2));
-  //           temp.isJSON = true;
-  //         } else {
-  //           temp.isJSON = false;
-  //           // errors.push(yaml.stringify([temp], { indent: 2, indentSeq: false, prettyErrors: true }));
-  //         }
-  //         errors.push(temp);
-  //      }
-  //   }
-  //   console.log(errors);
-  //   if (error) {
-  //      this.setState({ errorData: errors, insertError: error });
-  //   }
-  //
-  // if (!error) {
-  //   this.setState({ insert: false, insertError: false, insertData: null });
-  //   this.loadData();
-  // }
 
+    //   if (response.length === 0) {
+    //       this.setState({ insertError: true });
+    //       return;
+    //   }
+    //   let errors = [];
+    //   for (let i = 0; i < response.length; i++) {
+    //     const info = response[i];
+    //      if ('error' in info) {
+    //         error = true;
+    //         const temp = {
+    //           data: data[i]
+    //         };
+    //         temp.errors = info.error.message;
+    //         if (isJSON) {
+    //           // errors.push(JSON.stringify([temp], null, 2));
+    //           temp.isJSON = true;
+    //         } else {
+    //           temp.isJSON = false;
+    //           // errors.push(yaml.stringify([temp], { indent: 2, indentSeq: false, prettyErrors: true }));
+    //         }
+    //         errors.push(temp);
+    //      }
+    //   }
+    //   console.log(errors);
+    //   if (error) {
+    //      this.setState({ errorData: errors, insertError: error });
+    //   }
+    //
+    // if (!error) {
+    //   this.setState({ insert: false, insertError: false, insertData: null });
+    //   this.loadData();
+    // }
   }
 
   handleTabCharacter = async (event) => {
@@ -181,7 +181,6 @@ class BulkView extends React.Component {
                 autoFocus
                 type='text'
                 name='insertInput'
-                inputRef={event => this.insertData = event}
                 placeholder='Paste Your Data Here'
                 inputProps={{
                   style: { fontSize: 15, letterSpacing: '0.1em', fontFamily: 'monospace, monospace', overflow: 'auto', minHeight: '45vh', maxHeight: '95vh' }
@@ -193,7 +192,7 @@ class BulkView extends React.Component {
                   <span style={{ fontWeight: 'bold', color: 'red', fontSize: 17, letterSpacing: '0.1em', fontFamily: 'monospace, monospace', marginTop: '10px' }}> Bad Lines Below: </span>
                   <Typography style={{ minHeight: '30vh', maxHeight: '30vh', overflow: 'auto' }}>
                     {this.props.errorData.map(err =>
-                      <div style={{ fontSize: 15, letterSpacing: '0.1em', fontFamily: 'monospace, monospace' }}>
+                      <div style={{ fontSize: 15, letterSpacing: '0.1em', fontFamily: 'monospace, monospace' }} key={err.data}>
                         <pre>
                           {!err.isJSON ? yaml.stringify([err.data], { indent: 2, indentSeq: false, prettyErrors: true }) : JSON.stringify(err.data, null, 4)}
                         </pre>
@@ -217,5 +216,16 @@ class BulkView extends React.Component {
     );
   }
 }
+BulkView.propTypes = {
+  handleInsert: PropTypes.func.isRequired,
+  buildObject: PropTypes.func.isRequired,
+  schema: PropTypes.object,
+  classes: PropTypes.object.isRequired,
+  schemaId: PropTypes.number.isRequired,
+  insert: PropTypes.bool.isRequired,
+  closeInsert: PropTypes.func.isRequired,
+  insertError: PropTypes.bool.isRequired,
+  errorData: PropTypes.array
+};
 
 export default BulkView;

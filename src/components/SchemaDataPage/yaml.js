@@ -1,10 +1,11 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
+// import Typography from '@material-ui/core/Typography';
+// import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+// import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
@@ -17,7 +18,6 @@ const font = {
 };
 
 class YAML extends React.Component {
-
   // componentDidMount () {
   //   console.log(this.props);
   // }
@@ -63,7 +63,7 @@ const Arr = (props) => {
           </IconButton>
 
           {props.schema.type === 'object' ? (
-            <Obj {...props} data={item} path={props.path.concat([i])} />
+            <Obj {...props} data={item} path={props.path.concat([i])} key={(props.data.length) * (i + 1)} />
           ) : (
             <Input
               onBlur={props.onBlur}
@@ -75,9 +75,7 @@ const Arr = (props) => {
             />
           )}
         </div>
-      ))
-    }
-
+      ))}
 
       {props.edit === true && (
         <IconButton
@@ -108,10 +106,9 @@ const Label = (props) => {
 
 // key is needed in order to know the value has changed for a rerender
 const Input = (props) => {
-
   if (!props.edit) {
     return (
-      <Label val={props.val}/>
+      <Label val={props.val} />
     );
   // if it is an ENUM, render a select with the options
   } else if (Array.isArray(props.schema.enum)) {
@@ -131,7 +128,7 @@ const Input = (props) => {
         value={props.val}
       >
         {props.schema.enum.map(item => (
-          <MenuItem style={{ ...font, cursor: 'pointer' }} value={item}>{item}</MenuItem>
+          <MenuItem style={{ ...font, cursor: 'pointer' }} value={item} key={item}> {item} </MenuItem>
         ))}
       </Select>
     );
@@ -151,7 +148,7 @@ const Input = (props) => {
         onChange={props.selectChange.bind(this, props.path, props.itemKey, props.schema, props.val)}
         value={props.val}
       >
-        <MenuItem style={{ ...font, cursor: 'pointer' }} value={true}>true</MenuItem>
+        <MenuItem style={{ ...font, cursor: 'pointer' }} value>true</MenuItem>
         <MenuItem style={{ ...font, cursor: 'pointer' }} value={false}>false</MenuItem>
       </Select>
     );
@@ -232,4 +229,25 @@ const Obj = (props) => {
   );
 };
 
+Arr.propTypes = {
+  schema: PropTypes.object.isRequired,
+  addIndex: PropTypes.func.isRequired,
+  removeIndex: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
+  path: PropTypes.array.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  edit: PropTypes.bool.isRequired
+};
+
+Label.propTypes = {
+  val: PropTypes.bool,
+  name: PropTypes.string
+};
+
+YAML.propTypes = {
+  schema: PropTypes.object.isRequired,
+  addIndex: PropTypes.func.isRequired,
+  removeIndex: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
+};
 export default YAML;

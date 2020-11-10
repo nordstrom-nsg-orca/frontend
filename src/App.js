@@ -13,7 +13,7 @@ import APIDoc from 'pages/APIDoc';
 import Error from 'pages/Error';
 
 import { buildTheme } from 'util/theme.js';
-import generateTabs from 'util/pages.js';
+// import generateTabs from 'util/pages.js';
 
 import API from 'util/api.js';
 
