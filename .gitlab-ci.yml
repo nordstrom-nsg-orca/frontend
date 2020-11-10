@@ -39,6 +39,7 @@ build-stage:
   image: node:latest
   before_script:
     - "export REACT_APP_API_VERSION=$(cat serverless.yml | grep -oP \"apiVersion: \\K\\d\")"
+    - echo $REACT_APP_API_VERSION
     - export REACT_APP_STAGE=nonprod
     - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
     - export REACT_APP_OKTA_ISSUER=$REACT_APP_OKTA_ISSUER
