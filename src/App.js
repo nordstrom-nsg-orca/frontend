@@ -13,7 +13,7 @@ import APIDoc from 'pages/APIDoc';
 import Error from 'pages/Error';
 
 import { buildTheme } from 'util/theme.js';
-import generateTabs from 'util/pages.js';
+// import generateTabs from 'util/pages.js';
 
 import API from 'util/api.js';
 
@@ -71,52 +71,14 @@ class App extends React.Component {
     localStorage.setItem('token', token);
     // console.log(token);
 
-    const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
-    // console.log(allowedPages);
-    const tabs = await generateTabs(allowedPages.json);
+    // const allowedPages = await API.endpoint('/auth/page', { method: 'GET' }) || {};
+    // const tabs = generateTabs(allowedPages.json);
     // console.log(tabs);
-
-    // const option = {
-    //   method: 'POST',
-    //   data:
-    //   [
-    //     {
-    //       httpMethod: 'POST',
-    //       resource: 'schemas',
-    //       body: {
-    //         name: 'test',
-    //         properties: [{
-    //           name: 'name',
-    //           type: 'string',
-    //           required: true
-    //         }, {
-    //           name: 'Array',
-    //           type: 'array',
-    //           required: false,
-    //           items: {
-    //             type: 'object',
-    //             properties: [{
-    //               name: 'name',
-    //               type: 'string',
-    //               required: true
-    //             }]
-    //           }
-    //         }]
-    //       }
-    //     },
-    //     {
-    //       httpMethod: 'GET',
-    //       resource: 'schemas/{schemaId}/items',
-    //       pathParameters: { schemaId: 240 }
-    //     }
-    // ]
-    // };
-    // const bulk = await API.endpoint('/bulk', option);
-    // console.log(bulk.json);
-
+    const schemas = await API.GET('/schemas');
+    console.log(schemas);
     this.sessionTimer = setInterval(this.logout, this.sessionTime);
     this.setState({
-      tabs: tabs,
+      schemas: schemas,
       auth: {
         authenticated: authenticated,
         user: user,
@@ -168,7 +130,7 @@ class App extends React.Component {
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
             <div style={{ background: 'theme.palette.background', minHeight: '100vh' }}>
-              <Navbar auth={this.state.auth} logout={this.logout} tabs={this.state.tabs}>
+              <Navbar auth={this.state.auth} logout={this.logout} schemas={this.state.schemas}>
 
                 {this.state.auth.authenticated === false && (
                   <div>
@@ -189,7 +151,7 @@ class App extends React.Component {
                     auth={this.state.auth}
                     changeSetting={this.changeSetting}
                     settings={this.state.settings}
-                    tabs={this.state.tabs}
+                    schemas={this.state.schemas}
                   />
                 )}
                 <Route

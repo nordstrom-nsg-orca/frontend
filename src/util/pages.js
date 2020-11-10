@@ -1,6 +1,6 @@
 import React from 'react';
 
-import OrcaDataPage from 'components/OrcaDataPage';
+// import OrcaDataPage from 'components/OrcaDataPage';
 import SchemaDataPage from 'components/SchemaDataPage';
 
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
@@ -42,7 +42,7 @@ export default async function generateTabs (allowedTabs) {
   return allowedTabs;
 }
 
-async function getSchemaId(page) {
+async function getSchemaId (page) {
   const schemas = await API.GET('/schemas');
   for (var i = 0; i < schemas.length; i++) {
     const schema = schemas[i];

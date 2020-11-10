@@ -4,38 +4,29 @@ import base64 from 'base-64';
 
 class API {
   static URL (path) {
-    // return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
-    const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001': window.location.origin;
-    return `${origin}/${process.env.REACT_APP_STAGE}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
+    const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001/nonprod' : window.location.origin;
+    return `${origin}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
   }
 
   static async GET (path, options = {}) {
-    return await API.FETCH(path, { method: 'GET' });
+    return API.FETCH(path, { method: 'GET' });
   }
 
   static async POST (path, body) {
-    return await API.FETCH(path, { method: 'POST', body: JSON.stringify(body) });
+    return API.FETCH(path, { method: 'POST', body: JSON.stringify(body) });
   }
 
   static async FETCH (path, options) {
-    let url = API.URL(path);
+    const url = API.URL(path);
 
-    options.headers =  {
+    options.headers = {
       Authorization: options.auth || `${localStorage.getItem('token')}`
     };
 
-    let resp;
-    try {
-      resp = await fetch(url, options);
-      // resp.json = await resp.json();
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
+    const resp = await fetch(url, options);
+    resp.json = await resp.json();
 
-    resp = await resp.json();
-    // console.log(resp);
-    return resp;
+    return resp.json;
   }
 
   static async endpoint (path, options) {

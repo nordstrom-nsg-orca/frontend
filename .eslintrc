@@ -22,7 +22,9 @@
       "no-useless-escape": "off",
       "curly": ["error", "multi-or-nest"],
       "function-paren-newline": ["error", "multiline"],
-      "react/jsx-handler-names": ["off"]
+      "react/jsx-handler-names": ["off"],
+      "no-return-assign": "off",
+      "react/jsx-no-bind": ["off"]
     },
     "parser": "babel-eslint"
 }
