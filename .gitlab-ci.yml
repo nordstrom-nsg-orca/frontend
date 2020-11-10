@@ -38,7 +38,8 @@ build-stage:
   stage: build
   image: node:latest
   before_script:
-    - "export REACT_APP_API_VERSION=$(cat serverless.yml | grep -oP \"apiVersion: \\K\\d++\")"
+    # - "export REACT_APP_API_VERSION=$(cat serverless.yml | grep -oP \"apiVersion: \\K\\d++\")"
+    - if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then export REACT_APP_API_VERSION=1000; else export REACT_APP_API_VERSION=1; fi
     - echo $REACT_APP_API_VERSION
     - export REACT_APP_STAGE=nonprod
     - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
