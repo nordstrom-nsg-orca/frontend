@@ -177,7 +177,9 @@ const Obj = (props) => {
       if (prop.onlyIf) {
         const key = Object.keys(prop.onlyIf)[0];
         if (props.data[key] !== prop.onlyIf[key])
-          return;
+          return (
+            <div> </div>
+          );
       }
 
       // if the prop is a reference, get the referenced object
