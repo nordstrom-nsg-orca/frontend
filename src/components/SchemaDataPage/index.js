@@ -152,14 +152,14 @@ class SchemaDataPage extends React.Component {
       }
       // console.log(request);
     }
-    console.log(body)
+    console.log(body);
     const resp = await API.POST('/bulk', body);
     let error = false;
     let message = null;
     for (const i of resp) {
       if (i.error) {
         error = true;
-        message = "";
+        message = '';
         console.log('SAVE RESPONSE: ');
         console.log(JSON.stringify(resp, null, 2));
         break;
@@ -448,7 +448,7 @@ class SchemaDataPage extends React.Component {
         <Bulk
           schemaId={this.props.id}
           schema={this.state.schema.schema}
-          buildObject={this.buildObject}
+          /* buildObject={this.buildObject} */
           classes={classes}
           insert={this.state.insert}
           insertError={this.state.insertError}

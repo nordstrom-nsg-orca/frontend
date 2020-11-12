@@ -62,23 +62,20 @@ class BulkView extends React.Component {
     for (var key in parsed) {
       const value = parsed[key];
       for (var uuid in properties) {
-        if (properties[uuid].name === key && properties[uuid].type === 'string') {
+        if (properties[uuid].name === key && properties[uuid].type === 'string')
           data[uuid] = value;
-        } else if (properties[uuid].name === key && properties[uuid].type === 'array') {
+        else if (properties[uuid].name === key && properties[uuid].type === 'array') {
           data[uuid] = [];
           const childProperties = properties[uuid].items.properties;
           const reverseChildProperties = {};
-          for (var childUUID in childProperties) {
+          for (var childUUID in childProperties)
             reverseChildProperties[childProperties[childUUID].name] = childUUID;
-          }
           for (const eachValue of value) {
             const temp = {};
-            for (const itemKey in eachValue) {
+            for (const itemKey in eachValue)
               temp[reverseChildProperties[itemKey]] = eachValue[itemKey];
-            }
             data[uuid].push(temp);
           }
-
         }
       }
     }
@@ -89,7 +86,7 @@ class BulkView extends React.Component {
       pathParameters: { schemaId: this.props.schemaId },
       body: data
     });
-    console.log(body);
+    // console.log(body);
     const resp = await API.POST('/bulk', body);
     console.log(resp);
     if ('id' in resp[0]) {
@@ -97,7 +94,6 @@ class BulkView extends React.Component {
       this.props.handleInsert(true);
     } else
       this.props.handleInsert(false, 'Invalid Schema.');
-
 
     // if (typeof parsed === 'object' || !parsed) {
     //   parsed = Object.values(parsed);
@@ -149,8 +145,6 @@ class BulkView extends React.Component {
     //   this.props.handleInsert(true);
     // } else
     //   this.props.handleInsert(false, 'Invalid Schema.');
-
-
   }
 
   handleTabCharacter = async (event) => {
@@ -238,7 +232,7 @@ class BulkView extends React.Component {
 }
 BulkView.propTypes = {
   handleInsert: PropTypes.func.isRequired,
-  buildObject: PropTypes.func.isRequired,
+  // buildObject: PropTypes.func,
   schema: PropTypes.object,
   classes: PropTypes.object.isRequired,
   schemaId: PropTypes.number.isRequired,
