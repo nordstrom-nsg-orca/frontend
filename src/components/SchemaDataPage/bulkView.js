@@ -37,7 +37,7 @@ class BulkView extends React.Component {
   insert = async (event) => {
     event.preventDefault();
     const str = event.target.insertInput.value;
-    let parsed, error;
+    let parsed;
     const body = [];
 
     try {
@@ -55,42 +55,41 @@ class BulkView extends React.Component {
         return;
       }
     }
-
-    if (typeof parsed === 'object' || !parsed)
-      parsed = Object.values(parsed)[0];
-      // console.log(parsed);
-    else if (!(parsed instanceof Array)) {
-      error = true;
-      this.setState({ insertError: error, errorData: null });
-      return;
-    }
-    // console.log(parsed)
-    const newItem = this.props.buildObject(this.props.schema);
-    // console.log(newItem);
-
-    var properties;
-    var key;
-    for (var tempKey in newItem) {
-      properties = this.props.schema.properties[tempKey].items.properties;
-      key = tempKey;
-    }
+    // console.log(parsed);
+    const properties = this.props.schema.properties;
     // console.log(properties);
-    // console.log(key);
-    for (const item of parsed) {
-      var temp = {};
-      for (var uuid in properties)
-        temp[uuid] = item[properties[uuid].name];
+    const data = {};
+    for (var key in parsed) {
+      const value = parsed[key];
+      for (var uuid in properties) {
+        if (properties[uuid].name === key && properties[uuid].type === 'string') {
+          data[uuid] = value;
+        } else if (properties[uuid].name === key && properties[uuid].type === 'array') {
+          data[uuid] = [];
+          const childProperties = properties[uuid].items.properties;
+          const reverseChildProperties = {};
+          for (var childUUID in childProperties) {
+            reverseChildProperties[childProperties[childUUID].name] = childUUID;
+          }
+          for (const eachValue of value) {
+            const temp = {};
+            for (const itemKey in eachValue) {
+              temp[reverseChildProperties[itemKey]] = eachValue[itemKey];
+            }
+            data[uuid].push(temp);
+          }
 
-      newItem[key].push(temp);
+        }
+      }
     }
-    // console.log(newItem);
+    // console.log(data);
     body.push({
       httpMethod: 'POST',
       resource: '/schemas/{schemaId}/items',
       pathParameters: { schemaId: this.props.schemaId },
-      body: newItem
+      body: data
     });
-    // console.log(body);
+    console.log(body);
     const resp = await API.POST('/bulk', body);
     console.log(resp);
     if ('id' in resp[0]) {
@@ -99,38 +98,59 @@ class BulkView extends React.Component {
     } else
       this.props.handleInsert(false, 'Invalid Schema.');
 
-    //   if (response.length === 0) {
-    //       this.setState({ insertError: true });
-    //       return;
-    //   }
-    //   let errors = [];
-    //   for (let i = 0; i < response.length; i++) {
-    //     const info = response[i];
-    //      if ('error' in info) {
-    //         error = true;
-    //         const temp = {
-    //           data: data[i]
-    //         };
-    //         temp.errors = info.error.message;
-    //         if (isJSON) {
-    //           // errors.push(JSON.stringify([temp], null, 2));
-    //           temp.isJSON = true;
-    //         } else {
-    //           temp.isJSON = false;
-    //           // errors.push(yaml.stringify([temp], { indent: 2, indentSeq: false, prettyErrors: true }));
-    //         }
-    //         errors.push(temp);
-    //      }
-    //   }
-    //   console.log(errors);
-    //   if (error) {
-    //      this.setState({ errorData: errors, insertError: error });
-    //   }
-    //
-    // if (!error) {
-    //   this.setState({ insert: false, insertError: false, insertData: null });
-    //   this.loadData();
+
+    // if (typeof parsed === 'object' || !parsed) {
+    //   parsed = Object.values(parsed);
+    //   console.log(parsed);
     // }
+    // else if (!(parsed instanceof Array)) {
+    //   error = true;
+    //   this.setState({ insertError: error, errorData: null });
+    //   return;
+    // }
+
+    // const newItem = this.props.buildObject(this.props.schema);
+    // console.log(newItem);
+    //
+    // var properties;
+    // var key;
+    // for (var tempKey in newItem) {
+    //   // console.log(tempKey);
+    //   // console.log(this.props.schema.properties[tempKey]);
+    //   if ('items' in this.props.schema.properties[tempKey]) {
+    //     properties = this.props.schema.properties[tempKey].items.properties;
+    //     key = tempKey;
+    //   } else {
+    //     console.log(this.props.schema.properties);
+    //   }
+    // }
+    // console.log(properties);
+    // console.log(key);
+    // for (const item of parsed) {
+    //   var temp = {};
+    //   console.log(item);
+    //   for (var uuid in properties)
+    //     temp[uuid] = item[properties[uuid].name];
+    //   console.log(temp);
+    //   newItem[key].push(temp);
+    // }
+    // console.log(newItem);
+    // body.push({
+    //   httpMethod: 'POST',
+    //   resource: '/schemas/{schemaId}/items',
+    //   pathParameters: { schemaId: this.props.schemaId },
+    //   body: newItem
+    // });
+    // console.log(body);
+    // const resp = await API.POST('/bulk', body);
+    // console.log(resp);
+    // if ('id' in resp[0]) {
+    //   console.log('Successfully added.');
+    //   this.props.handleInsert(true);
+    // } else
+    //   this.props.handleInsert(false, 'Invalid Schema.');
+
+
   }
 
   handleTabCharacter = async (event) => {
@@ -229,3 +249,36 @@ BulkView.propTypes = {
 };
 
 export default BulkView;
+
+//   if (response.length === 0) {
+//       this.setState({ insertError: true });
+//       return;
+//   }
+//   let errors = [];
+//   for (let i = 0; i < response.length; i++) {
+//     const info = response[i];
+//      if ('error' in info) {
+//         error = true;
+//         const temp = {
+//           data: data[i]
+//         };
+//         temp.errors = info.error.message;
+//         if (isJSON) {
+//           // errors.push(JSON.stringify([temp], null, 2));
+//           temp.isJSON = true;
+//         } else {
+//           temp.isJSON = false;
+//           // errors.push(yaml.stringify([temp], { indent: 2, indentSeq: false, prettyErrors: true }));
+//         }
+//         errors.push(temp);
+//      }
+//   }
+//   console.log(errors);
+//   if (error) {
+//      this.setState({ errorData: errors, insertError: error });
+//   }
+//
+// if (!error) {
+//   this.setState({ insert: false, insertError: false, insertData: null });
+//   this.loadData();
+// }
