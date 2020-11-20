@@ -4,13 +4,36 @@ import base64 from 'base-64';
 
 class API {
   static URL (path) {
-    return `${process.env.REACT_APP_API_URL || ''}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
+    const origin = window.location.hostname === 'localhost' ? 'http://localhost:3001/nonprod' : window.location.origin;
+    // console.log(origin);
+    // return `https://orca-nonprod.nordstrom.net/api/v1000${path}`;
+    return `${origin}/api/v${process.env.REACT_APP_API_VERSION}${path}`;
+  }
+
+  static async GET (path, options = {}) {
+    return API.FETCH(path, { method: 'GET' });
+  }
+
+  static async POST (path, body) {
+    return API.FETCH(path, { method: 'POST', body: JSON.stringify(body) });
+  }
+
+  static async FETCH (path, options) {
+    const url = API.URL(path);
+
+    options.headers = {
+      Authorization: options.auth || `${localStorage.getItem('token')}`
+    };
+
+    const resp = await fetch(url, options);
+    resp.json = await resp.json();
+
+    return resp.json;
   }
 
   static async endpoint (path, options) {
     let resp;
     let url = API.URL(path);
-    console.log(url);
 
     if (['DELETE', 'PUT'].includes(options.method)) {
       url += `/${options.data.id}`;
@@ -27,7 +50,8 @@ class API {
 
     try {
       resp = await fetch(url, opts);
-    } catch {
+    } catch (err) {
+      console.log(err);
       return null;
     }
 
@@ -36,6 +60,7 @@ class API {
       await postToSlack(window.location, message);
       return resp;
     }
+    // console.log(resp);
 
     resp.json = await resp.json();
     return resp;

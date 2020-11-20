@@ -3,7 +3,8 @@ stages:
   - lint
   - version
   - build
-  - deploy
+  - deploy-nonprod
+  - deploy-prod
 
 eslint:
  stage: lint
@@ -37,7 +38,10 @@ build-stage:
   stage: build
   image: node:latest
   before_script:
-    - "export REACT_APP_API_VERSION=$(cat serverless.yml | grep -oP \"apiVersion: \\K\\d\")"
+    # - "export REACT_APP_API_VERSION=$(cat serverless.yml | grep -oP \"apiVersion: \\K\\d++\")"
+    - if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then export REACT_APP_API_VERSION=1000; else export REACT_APP_API_VERSION=1; fi
+    - echo $REACT_APP_API_VERSION
+    - export REACT_APP_STAGE=nonprod
     - export REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
     - export REACT_APP_OKTA_ISSUER=$REACT_APP_OKTA_ISSUER
     - export REACT_APP_INFOBLOX_PASS=$REACT_APP_INFOBLOX_PASS
@@ -51,9 +55,10 @@ build-stage:
       - build/
   only:
      - master
+     - dev
 
-deploy:
-  stage: deploy
+deploy-nonprod:
+  stage: deploy-nonprod
   image: gitlab-registry.nordstrom.com/cicd/container-image-composer/deployment/serverless:1.57
   before_script:
     - export AWS_ACCESS_KEY_ID=$(echo ${nsg_ci} | jq -r '.Credentials.AccessKeyId')
@@ -62,6 +67,21 @@ deploy:
     - npm install serverless-s3-sync
   script:
     - sls deploy
+  dependencies:
+    - build-stage
+  only:
+     - dev
+
+deploy-prod:
+  stage: deploy-prod
+  image: gitlab-registry.nordstrom.com/cicd/container-image-composer/deployment/serverless:1.57
+  before_script:
+    - export AWS_ACCESS_KEY_ID=$(echo ${nsg_ci} | jq -r '.Credentials.AccessKeyId')
+    - export AWS_SECRET_ACCESS_KEY=$(echo ${nsg_ci} | jq -r '.Credentials.SecretAccessKey')
+    - export AWS_SESSION_TOKEN=$(echo ${nsg_ci} | jq -r '.Credentials.SessionToken')
+    - npm install serverless-s3-sync
+  script:
+    - sls deploy --stage prod
   dependencies:
     - build-stage
   only:

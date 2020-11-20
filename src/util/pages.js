@@ -1,86 +1,53 @@
 import React from 'react';
 
-// import Acl from 'pages/NetworkData/ACL';
-// import InfobloxGroup from 'pages/Infoblox/Group';
-// import Server from 'pages/NetworkData/Server';
-
-import OrcaDataPage from 'components/OrcaDataPage';
+// import OrcaDataPage from 'components/OrcaDataPage';
+import SchemaDataPage from 'components/SchemaDataPage';
 
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import StorageIcon from '@material-ui/icons/Storage';
 // import AccessibilityRoundedIcon from '@material-ui/icons/AccessibilityRounded';
 
-// const tabs = {
-//   data: {
-//     name: 'Network Data',
-//     pages: {
-//       acl: {
-//         name: 'ACLs',
-//         component: Acl,
-//         icon: <ViewHeadlineIcon />
-//       },
-//       server: {
-//         name: 'Servers',
-//         component: Server,
-//         icon: <StorageIcon />
-//       }
-//     }
-//   },
-//   infoblox: {
-//     name: 'Infoblox',
-//     pages: {
-//       group: {
-//         name: 'Group Permission',
-//         component: InfobloxGroup,
-//         icon: <AccessibilityRoundedIcon />
-//       }
-//     }
-//   }
-// };
+import API from 'util/api.js';
 
 const icons = {
   acl: <ViewHeadlineIcon />,
   server: <StorageIcon />
 };
 
-export default function generateTabs (allowedTabs) {
+export default async function generateTabs (allowedTabs) {
   if (!allowedTabs) return {};
   for (const tab in allowedTabs) {
     if (!allowedTabs[tab].allowed) continue;
     for (const page in allowedTabs[tab].pages) {
+      const schemaId = await getSchemaId(page);
       const pageData = allowedTabs[tab].pages[page];
+      // pageData.component = props =>
+      //   <OrcaDataPage
+      //     title={pageData.name}
+      //     loadUrl={pageData.loadUrl}
+      //     crudUrl={pageData.crudUrl}
+      //     parentId={pageData.parentId}
+      //     write={pageData.write}
+      //   />;
+      // pageData.icon = icons[page];
       pageData.component = props =>
-        <OrcaDataPage
+        <SchemaDataPage
           title={pageData.name}
-          loadUrl={pageData.loadUrl}
-          crudUrl={pageData.crudUrl}
-          parentId={pageData.parentId}
+          id={schemaId}
           write={pageData.write}
         />;
       pageData.icon = icons[page];
     }
   }
-  // if (!allowedTabs) return {};
-  // for (const key in tabs) {
-  //   const tab = tabs[key];
-  //   let tabAllowed = false;
-  //   for (const pkey in tab.pages) {
-  //     const page = tab.pages[pkey];
-  //     const url = `${key}/${pkey}`;
-  //     if (typeof allowedTabs[url] === 'boolean') {
-  //       page.allowed = true;
-  //       page.write = allowedTabs[url];
-  //     } else if (typeof allowedTabs[`${key}/.*`] === 'boolean') {
-  //       page.allowed = true;
-  //       page.write = allowedTabs[`${key}/.*`];
-  //     } else if (typeof allowedTabs['.*'] === 'boolean') {
-  //       page.allowed = true;
-  //       page.write = allowedTabs['.*'];
-  //     } else
-  //       page.allowed = false;
-  //     tabAllowed = tabAllowed || page.allowed;
-  //   }
-  //   tab.allowed = tabAllowed;
-  // }
   return allowedTabs;
+}
+
+async function getSchemaId (page) {
+  const schemas = await API.GET('/schemas');
+  for (var i = 0; i < schemas.length; i++) {
+    const schema = schemas[i];
+    if (schema.name === page)
+      return schema.id;
+  }
+  return null;
 }

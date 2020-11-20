@@ -11,13 +11,13 @@ class ContentPage extends React.Component {
 
 const style = theme => ({
   content: {
-    width: '900px',
+    maxWidth: '900px',
     margin: '0 auto'
   }
 });
 
 ContentPage.propTypes = {
   classes: PropTypes.object.isRequired,
-  children: PropTypes.array.isRequired
+  children: PropTypes.object.isRequired
 };
 export default withStyles(style)(ContentPage);

@@ -13,7 +13,7 @@ resources:
     nsgweb:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.domainName}
+        BucketName: ${file(./config.${self:provider.stage}.json):domainName}
         AccessControl: BucketOwnerFullControl
         WebsiteConfiguration:
           IndexDocument: index.html
@@ -24,14 +24,14 @@ resources:
       Properties:
         DistributionConfig:
           Enabled: true
-          Comment: "Changed API subdomain"
+          Comment: "Orca Frontend"
           PriceClass: PriceClass_100
           Aliases:
-            - ${self:custom.domainName}
+            - ${file(./config.${self:provider.stage}.json):domainName}
           DefaultRootObject: index.html
           Origins:
             -
-              DomainName: !Sub ${self:custom.domainName}.${self:custom.webEndpoint}
+              DomainName: !Sub ${file(./config.${self:provider.stage}.json):domainName}.${self:custom.webEndpoint}
               Id: S3Origin
               CustomOriginConfig:
                 HTTPPort: 80
@@ -39,7 +39,7 @@ resources:
                 OriginProtocolPolicy: http-only
             # added this here
             -
-              DomainName: { 'Fn::ImportValue': 'ApiHostname-v${self:custom.apiVersion}' }
+              DomainName: { 'Fn::ImportValue': 'ApiHostname-v${file(./config.${self:provider.stage}.json):apiVersion}' }
               OriginPath: /${self:provider.stage}
               Id: APIGatewayOrigin
               CustomOriginConfig:
@@ -118,13 +118,13 @@ resources:
               QueryString: true
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate:
-            AcmCertificateArn: arn:aws:acm:us-east-1:046711174152:certificate/ecbcbeef-8eb4-44aa-8c7b-9d8a92922fb4
+            AcmCertificateArn: ${file(./config.${self:provider.stage}.json):certificate}
             SslSupportMethod: sni-only
 
     wwwnsgweb:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: !Sub www.${self:custom.domainName}
+        BucketName: !Sub www.${file(./config.${self:provider.stage}.json):domainName}
         AccessControl: BucketOwnerFullControl
         WebsiteConfiguration:
           RedirectAllRequestsTo:
@@ -133,12 +133,12 @@ resources:
 
 
 custom:
-  domainName: orca-nonprod.nordstrom.net
+  # domainName: orca-nonprod.nordstrom.net
   webEndpoint: s3-website-us-west-2.amazonaws.com
-  apiVersion: 1
+  # apiVersion: 1
   # uploads npm run build to S3
   s3Sync:
-    - bucketName: ${self:custom.domainName}
+    - bucketName: ${file(./config.${self:provider.stage}.json):domainName}
       localDir: build
       acl: public-read-write
 

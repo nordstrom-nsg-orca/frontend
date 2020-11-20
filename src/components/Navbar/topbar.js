@@ -10,19 +10,27 @@ import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import PropTypes from 'prop-types';
+import { Divider } from '@material-ui/core';
 
 class Topbar extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
       userAnchor: null,
-      tabAnchor: []
+      // tabAnchor: []
+      schemaAnchor: null
     };
   }
 
   handleUserMenu = (open) => (event) => {
     this.setState({
       userAnchor: (open) ? event.currentTarget : null
+    });
+  }
+
+  handleSchemaMenu = (open) => (event) => {
+    this.setState({
+      schemaAnchor: (open) ? event.currentTarget : null
     });
   }
 
@@ -55,7 +63,34 @@ class Topbar extends React.Component {
 
             {this.props.auth.authenticated && (
               <div style={{ marginLeft: '140px' }}>
-                {Object.entries(this.props.tabs).map(([key, tab], index) => (
+                <Button onClick={this.handleSchemaMenu(true)}>Schemas</Button>
+                <Menu
+                  style={{ marginTop: '24px' }}
+                  anchorEl={this.state.schemaAnchor}
+                  keepMounted
+                  open={Boolean(this.state.schemaAnchor)}
+                  onClose={this.handleSchemaMenu(false)}
+                  onClick={this.handleSchemaMenu(false)}
+                >
+                  <Link to='/schemas' underline='none'>
+                    <MenuItem>EDIT SCHEMAS</MenuItem>
+                  </Link>
+                  <Divider style={{ backgroundColor: '#808080', margin: '3px' }} />
+                  {this.props.schemas !== 'undefined' && this.props.schemas.map((schema, index) => (
+                    <Link
+                      color='inherit'
+                      key={index}
+                      to={`/schemas/${schema.id}`}
+                      underline='none'
+                      // onClick={this.handleLink(index, key)}
+                    >
+                      <MenuItem key={index} color='inherit'>
+                        {schema.name}
+                      </MenuItem>
+                    </Link>
+                  ))}
+                </Menu>
+                {/* {Object.entries(this.props.tabs).map(([key, tab], index) => (
                   tab.allowed && (
                     <div key={index} style={{ display: 'inline' }}>
                       <Button
@@ -88,7 +123,7 @@ class Topbar extends React.Component {
                       </Menu>
                     </div>
                   )
-                ))}
+                ))} */}
               </div>
             )}
 
@@ -109,6 +144,7 @@ class Topbar extends React.Component {
             </div>
 
             <Menu
+              style={{ marginTop: '24px' }}
               anchorEl={this.state.userAnchor}
               keepMounted
               open={Boolean(this.state.userAnchor)}
@@ -136,6 +172,7 @@ Topbar.propTypes = {
   changeSidebar: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
-  tabs: PropTypes.object.isRequired
+  schemas: PropTypes.array
+  // tabs: PropTypes.object.isRequired
 };
 export default Topbar;

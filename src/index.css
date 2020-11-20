@@ -10,9 +10,17 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+  color: rgb(38,198,218)
 }
 
 a, a:active {
 	text-decoration: none;
 	color: inherit;
+}
+
+textarea:focus {
+  outline: none;
+}
+textarea {
+  font-family: inherit;
 }
